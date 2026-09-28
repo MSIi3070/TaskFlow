@@ -107,7 +107,6 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     transition: background 0.3s ease, color 0.3s ease;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
   }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -127,6 +126,7 @@
     overflow: hidden;
   }
 
+  /* ==================== SIDEBAR (desktop) ==================== */
   .sidebar {
     width: 280px;
     background: var(--sidebar-bg);
@@ -266,9 +266,7 @@
     display: block;
     min-width: 0;
   }
-  .tooltip-wrap > .side-mini-btn {
-    width: 100%;
-  }
+  .tooltip-wrap > .side-mini-btn { width: 100%; }
   .tooltip {
     position: absolute;
     bottom: calc(100% + 8px);
@@ -333,6 +331,7 @@
     border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
+  /* ==================== MAIN ==================== */
   .main {
     flex: 1;
     padding: 18px 22px;
@@ -344,10 +343,7 @@
     height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-bottom: calc(18px + env(safe-area-inset-bottom));
   }
-
-  .mobile-topbar { display: none; }
 
   .top {
     display: flex;
@@ -400,6 +396,7 @@
   .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .btn.small { height: 34px; padding: 0 12px; font-size: 12px; }
 
+  /* ==================== STATS ==================== */
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -441,6 +438,7 @@
   .stat .num { font-size: 28px; font-weight: 800; margin-top: 6px; letter-spacing: -0.02em; line-height: 1.1; }
   .stat .sub { font-size: 12px; color: var(--text-mute); margin-top: 3px; line-height: 1.2; }
 
+  /* ==================== FILTERS ==================== */
   .filters-bar {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -483,6 +481,7 @@
     letter-spacing: 0.02em;
   }
 
+  /* ==================== KANBAN ==================== */
   .kanban {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -587,6 +586,7 @@
   }
   .card-move-btn:hover { color: var(--primary); border-color: var(--primary); }
 
+  /* ==================== LIST ==================== */
   .task-list { display: flex; flex-direction: column; gap: 10px; }
   .task-row {
     background: var(--surface);
@@ -667,6 +667,7 @@
     gap: 3px;
   }
 
+  /* ==================== CALENDAR ==================== */
   .calendar-header {
     display: flex;
     align-items: center;
@@ -760,6 +761,7 @@
   }
   .cal-cell:hover .cal-more { color: var(--primary); }
 
+  /* ==================== MODAL ==================== */
   .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -1057,6 +1059,7 @@
   .inline-add input::placeholder { color: var(--text-mute); }
   .inline-add input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
 
+  /* ==================== DATE PICKER ==================== */
   .date-picker { position: relative; display: flex; gap: 6px; align-items: center; flex: 1; }
   .date-picker-trigger {
     flex: 1;
@@ -1213,6 +1216,7 @@
   .dp-actions { display: flex; gap: 6px; }
   .dp-actions .btn { flex: 1; justify-content: center; height: 36px; font-size: 12px; }
 
+  /* ==================== PRIORITY SEG ==================== */
   .priority-seg {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1256,6 +1260,7 @@
   .prio-seg-btn.active .prio-label { opacity: 1; }
   .prio-seg-btn[data-prio="high"].active { color: #1a1a1a; }
 
+  /* ==================== DAY POPUP ==================== */
   .day-popup-backdrop {
     position: fixed;
     inset: 0;
@@ -1323,6 +1328,7 @@
   .day-task.done .day-task-title { text-decoration: line-through; color: var(--text-mute); }
   .day-task-time { font-size: 11.5px; color: var(--text-mute); font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0; }
 
+  /* ==================== SETTINGS ==================== */
   .settings-panel {
     position: fixed;
     top: 66px;
@@ -1449,6 +1455,7 @@
   }
   .settings-reset:hover { color: var(--danger); border-color: var(--danger); }
 
+  /* ==================== CONFIRM ==================== */
   .confirm-backdrop {
     position: fixed;
     inset: 0;
@@ -1551,6 +1558,7 @@
     min-height: calc(100dvh - 130px);
   }
 
+  /* ==================== ANALYTICS ==================== */
   .an2-wrap {
     display: flex;
     flex-direction: column;
@@ -1867,6 +1875,7 @@
 
   .an2-empty { text-align: center; padding: 60px 20px; color: var(--text-mute); font-size: 14px; }
 
+  /* ==================== TEMPLATES ==================== */
   .tpl-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -1903,8 +1912,6 @@
     color: var(--text);
     letter-spacing: -0.005em;
     line-height: 1.25;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
   .tpl-card-title {
     font-size: 11.5px;
@@ -1912,14 +1919,11 @@
     font-weight: 500;
     margin-top: 3px;
     line-height: 1.4;
-    letter-spacing: 0.005em;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
   .tpl-card-meta {
     display: flex;
@@ -1927,7 +1931,6 @@
     gap: 5px;
     font-size: 10.5px;
     color: var(--tpl-muted);
-    letter-spacing: 0.01em;
   }
   .tpl-card-meta .tpl-tag {
     display: inline-flex;
@@ -1940,9 +1943,6 @@
     font-weight: 600;
     font-size: 10.5px;
     color: var(--text-dim);
-    letter-spacing: 0.01em;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
   .tpl-card-actions {
     display: flex;
@@ -1955,10 +1955,10 @@
 
   [data-theme="dark"] .tpl-card { background: #1e2233; border-color: #2e3448; }
   [data-theme="dark"] .tpl-card:hover { background: #232842; border-color: var(--primary); }
-  [data-theme="dark"] .tpl-card-name { color: #e6e9f2; font-weight: 600; letter-spacing: 0.005em; }
-  [data-theme="dark"] .tpl-card-title { color: #a8b0c9; font-weight: 500; letter-spacing: 0.01em; }
+  [data-theme="dark"] .tpl-card-name { color: #e6e9f2; font-weight: 600; }
+  [data-theme="dark"] .tpl-card-title { color: #a8b0c9; font-weight: 500; }
   [data-theme="dark"] .tpl-card-icon { background: #232842; border-color: #2e3448; }
-  [data-theme="dark"] .tpl-card-meta .tpl-tag { background: #232842; border-color: #2e3448; color: #b8c0d9; font-weight: 600; }
+  [data-theme="dark"] .tpl-card-meta .tpl-tag { background: #232842; border-color: #2e3448; color: #b8c0d9; }
   [data-theme="dark"] .tpl-card-actions { border-top-color: #2e3448; }
 
   .tpl-editor-row { display: flex; gap: 12px; align-items: center; }
@@ -1974,9 +1974,7 @@
     color: var(--text);
     font-family: inherit;
     flex-shrink: 0;
-    transition: border-color 0.18s, box-shadow 0.18s;
   }
-  .tpl-icon-input:hover { border-color: var(--border-strong); }
   .tpl-icon-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
 
   .tpl-text-input {
@@ -1988,10 +1986,7 @@
     color: var(--text);
     font-family: inherit;
     font-size: 13px;
-    transition: border-color 0.18s, box-shadow 0.18s;
   }
-  .tpl-text-input::placeholder { color: var(--text-mute); }
-  .tpl-text-input:hover { border-color: var(--border-strong); }
   .tpl-text-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
 
   .tpl-subtask-row {
@@ -2089,148 +2084,260 @@
     box-shadow: 0 0 0 3px var(--primary-glow);
   }
 
-  /* ============ TOUCH ============ */
+  /* ============================================================
+     MOBILE — НИЖНИЙ ТАБ-БАР И ПЕРЕСТРОЙКА
+     ============================================================ */
+  .mobile-header { display: none; }
+  .mobile-tabbar { display: none; }
+
   @media (hover: none) and (pointer: coarse) {
-    .btn:active { transform: scale(0.97); }
-    .kanban-card:active { transform: scale(0.99); }
-    .cal-cell:active { background: rgba(var(--primary-rgb), 0.06); }
     .card-move-btn { display: inline-flex; }
     .subtasks li .subtask-drag,
     .subtasks li .subtask-remove { opacity: 1; }
   }
-  @media (hover: none) {
-    .btn:hover,
-    .kanban-card:hover,
-    .task-row:hover,
-    .cal-cell.has-tasks:hover,
-    .tpl-card:hover { transform: none; }
-  }
 
-  /* ============ TABLET ============ */
+  /* ------------ TABLET ------------ */
   @media (max-width: 1100px) {
     .sidebar { width: 240px; padding: 20px 12px; }
-    .main { padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
+    .main { padding: 16px; }
   }
   @media (max-width: 900px) {
     .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
     .an2-grid { grid-template-columns: 1fr; }
   }
 
-  /* ============ MOBILE ============ */
-  @media (max-width: 640px) {
-    input, select, textarea { font-size: 16px !important; }
-    .field-title { font-size: 18px !important; }
-    .dp-time-input { font-size: 16px !important; }
-
+  /* ------------ MOBILE (<= 720px) ------------ */
+  @media (max-width: 720px) {
     .app { flex-direction: column; }
+    .sidebar { display: none; }
 
-    .sidebar {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      top: auto;
-      width: 100%;
-      height: auto;
-      min-height: 60px;
-      flex-direction: row;
+    body { font-size: 15px; }
+
+    /* Заголовок-шапка мобильная */
+    .mobile-header {
+      display: flex;
       align-items: center;
-      justify-content: space-around;
-      padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
-      gap: 4px;
-      overflow: visible;
-      z-index: 120;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      flex-shrink: 0;
     }
-    .sidebar .logo-row,
-    .sidebar .side-section-title,
-    .sidebar .side-selector,
-    .sidebar .side-board-actions,
-    .sidebar .side-bottom {
-      display: none;
+    .mobile-header .logo-sm {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
-    .side-section { flex: 1; }
-    .nav { display: flex; justify-content: space-around; gap: 0; width: 100%; }
-    .nav button {
+    .mobile-header .logo-sm span { color: var(--primary); }
+    .mobile-header #board-select-mobile {
       flex: 1;
-      flex-direction: column;
-      gap: 2px;
-      font-size: 10px !important;
-      padding: 8px 4px;
-      min-height: 48px;
-      border-radius: 10px;
-      text-align: center;
-      justify-content: center;
-      align-items: center;
-    }
-    .nav button .icon { font-size: 18px; width: auto; }
-
-    .main {
-      padding: 12px 12px calc(80px + env(safe-area-inset-bottom));
-      height: 100dvh;
-      max-width: 100%;
-    }
-
-    .mobile-topbar {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-    .mobile-topbar .filter-input {
-      height: 44px;
-      padding: 0 12px;
+      min-width: 0;
+      height: 38px;
+      padding: 0 30px 0 12px;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: 10px;
       background: var(--input-bg);
       color: var(--text);
       font-family: inherit;
       font-size: 14px;
-      min-width: 0;
-      width: 100%;
+      font-weight: 600;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237b8498' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
     }
-    .mobile-topbar .btn {
-      height: 44px;
-      min-width: 44px;
-      padding: 0 12px;
-      font-size: 14px;
+    .mobile-header .mh-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-dim);
+      font-family: inherit;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .mobile-header .mh-btn.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px var(--primary-glow);
+      font-weight: 700;
+    }
+    .mobile-header .mh-btn:active { transform: scale(0.94); }
+
+    /* Основной контейнер */
+    .main {
+      padding: 10px 12px;
+      padding-bottom: calc(84px + env(safe-area-inset-bottom));
+      max-width: 100%;
+      height: calc(100dvh - 60px);
     }
 
-    .top { align-items: flex-start; flex-direction: column; }
-    .task-row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 16px; }
-    .task-row .meta { width: 100%; }
-    .meta-row { grid-template-columns: 1fr; }
-    .priority-seg { grid-template-columns: repeat(4, 1fr); height: auto; min-height: 48px; }
-    .priority-seg .prio-seg-btn { padding: 8px 2px; min-height: 44px; }
-    .prio-seg-btn .prio-label { font-size: 9px; }
+    /* Скрываем заголовок и сайдбар-фильтры, они не нужны */
+    .top { display: none; }
+    .mobile-tabbar { display: flex; }
 
-    .repeat-row { grid-template-columns: repeat(2, 1fr); }
-    .repeat-btn { min-height: 44px; padding: 10px 6px; font-size: 12px; }
+    /* Нижний таб-бар */
+    .mobile-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--sidebar-bg);
+      color: #fff;
+      padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+      z-index: 100;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      align-items: stretch;
+      justify-content: space-around;
+      gap: 2px;
+    }
+    .mobile-tabbar button {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--sidebar-text);
+      font-family: inherit;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 6px 4px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-height: 52px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .mobile-tabbar button .tab-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+    .mobile-tabbar button .tab-label {
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .mobile-tabbar button.active {
+      background: var(--sidebar-active);
+      color: #fff;
+    }
+    .mobile-tabbar button:active { transform: scale(0.96); }
 
-    .filters-bar { grid-template-columns: 1fr 1fr; }
-    .filters-bar #f-search { grid-column: 1 / -1; }
+    /* Скрытие/показ блоков фильтров — они нужны только в Списке */
+    #filters-bar { grid-template-columns: 1fr 1fr; }
+    #filters-bar #f-search { grid-column: 1 / -1; }
+    #filters-bar .filter-input { font-size: 15px; }
 
-    /* Kanban — горизонтальный скролл как в Trello */
+    /* KANBAN — горизонтальный свайп */
     .kanban {
       display: flex;
       overflow-x: auto;
-      overflow-y: visible;
+      overflow-y: hidden;
       scroll-snap-type: x mandatory;
       gap: 12px;
-      padding-bottom: 12px;
-      margin: 8px -12px 0;
-      padding-left: 12px;
-      padding-right: 12px;
+      margin: 0 -12px;
+      padding: 4px 12px 16px;
       -webkit-overflow-scrolling: touch;
+      min-height: calc(100dvh - 180px);
     }
     .kanban-col {
-      flex: 0 0 82vw;
-      max-width: 340px;
+      flex: 0 0 86vw;
+      max-width: 400px;
+      min-height: 100%;
       scroll-snap-align: start;
-      min-height: calc(100dvh - 320px);
+      padding: 14px 12px;
+    }
+    .kanban-card {
+      padding: 14px 40px 14px 16px;
+      font-size: 14.5px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    .kanban-card .deadline { font-size: 12.5px; }
+    .card-move-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 15px;
     }
 
-    /* Модалки — bottom sheet */
+    /* LIST */
+    .task-list { gap: 8px; }
+    .task-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      padding: 14px 16px;
+    }
+    .task-row .title { font-size: 15.5px; }
+    .task-row .meta { font-size: 12.5px; width: 100%; }
+
+    /* STATS — 2 колонки на мобиле */
+    .stats {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .stat {
+      padding: 12px 12px;
+      min-height: 80px;
+      border-radius: 12px;
+    }
+    .stat .num { font-size: 22px; margin-top: 4px; }
+    .stat .label { font-size: 10.5px; }
+    .stat .sub { font-size: 10.5px; }
+
+    /* CALENDAR */
+    .calendar-header h2 { min-width: 140px; font-size: 15px; }
+    .calendar-weekdays { font-size: 9px; gap: 3px; margin-bottom: 4px; }
+    .calendar { gap: 3px; }
+    .cal-cell {
+      min-height: 68px;
+      padding: 4px;
+      border-radius: 8px;
+    }
+    .cal-date { font-size: 10.5px; margin-bottom: 2px; }
+    .cal-task { font-size: 9.5px; padding: 1px 4px; border-left-width: 2px; }
+    .cal-more { font-size: 9px; padding: 1px 3px; }
+
+    /* ANALYTICS */
+    .an2-kpis { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .an2-kpi {
+      min-height: 72px;
+      padding: 10px 12px;
+      gap: 10px;
+      border-radius: 12px;
+    }
+    .an2-kpi-icon { width: 34px; height: 34px; font-size: 15px; border-radius: 10px; }
+    .an2-kpi-num { font-size: 20px; }
+    .an2-kpi-label { font-size: 9.5px; }
+    .an2-kpi-sub { font-size: 10px; }
+    .an2-grid { grid-template-columns: 1fr; gap: 10px; }
+    .an2-panel { padding: 12px 14px; min-height: auto; border-radius: 12px; }
+    .an2-donut-wrap { flex-direction: column; gap: 12px; align-items: center; }
+    .an2-donut { width: 110px; height: 110px; }
+    .an2-donut-legend { width: 100%; }
+    .an2-bar { grid-template-columns: minmax(90px, 1fr) 2fr auto; gap: 8px; font-size: 11.5px; }
+    .an2-bar-label { font-size: 11.5px; }
+    .an2-week { min-height: 70px; gap: 3px; }
+    .an2-week-bar { max-width: 100%; }
+    .an2-week-labels span { font-size: 9px; }
+
+    /* MODAL — bottom sheet */
     .modal-backdrop { padding: 0; align-items: flex-end; }
     .modal {
       max-width: 100%;
@@ -2245,20 +2352,52 @@
       to   { transform: translateY(0); }
     }
     .modal-head {
+      padding: 14px 16px 12px;
       position: sticky;
       top: 0;
       z-index: 3;
-      padding: 16px 18px 14px;
+      border-radius: 18px 18px 0 0;
     }
-    .modal-body { padding: 18px 18px; gap: 20px; }
+    .modal-head h2 { font-size: 11px; }
+    .modal-body { padding: 16px 16px; gap: 18px; }
     .modal-foot {
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
       position: sticky;
       bottom: 0;
       z-index: 3;
-      padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
     }
-    .field-description { height: 130px; min-height: 130px; max-height: 130px; }
+    .save-as-tpl-btn {
+      padding: 5px 8px;
+      font-size: 10.5px;
+    }
+    .field-title { font-size: 18px; }
+    .field-description { height: 110px; min-height: 110px; max-height: 110px; font-size: 15px; }
+    .meta-row { grid-template-columns: 1fr; padding-top: 16px; gap: 14px; }
+    .repeat-row { grid-template-columns: repeat(3, 1fr); }
+    .priority-seg { height: auto; min-height: 48px; }
+    .prio-seg-btn { min-height: 44px; padding: 6px 4px; }
+    .prio-seg-btn .prio-icon { font-size: 15px; }
+    .prio-seg-btn .prio-label { font-size: 10px; }
+    .date-picker-trigger { min-height: 46px; font-size: 15px; }
 
+    /* Date popover — фиксированный снизу, как bottom sheet */
+    .date-popover {
+      position: fixed;
+      left: 8px;
+      right: 8px;
+      bottom: calc(8px + env(safe-area-inset-bottom));
+      top: auto;
+      width: auto;
+      max-height: 78dvh;
+      overflow-y: auto;
+      z-index: 600;
+      transform: translateY(20px) scale(0.98);
+    }
+    .date-popover.open { transform: translateY(0) scale(1); }
+    .dp-day { max-height: 38px; font-size: 14px; }
+    .dp-time-input { font-size: 16px; }
+
+    /* Day popup */
     .day-popup-backdrop { padding: 0; align-items: flex-end; }
     .day-popup {
       max-width: 100%;
@@ -2266,56 +2405,26 @@
       max-height: 88dvh;
       border-radius: 18px 18px 0 0;
     }
+
+    /* Confirm */
     .confirm-backdrop { padding: 12px; align-items: flex-end; }
-    .confirm-modal {
-      max-width: 100%;
-      width: 100%;
-      border-radius: 18px;
-      padding: 20px;
-    }
+    .confirm-modal { max-width: 100%; width: 100%; border-radius: 18px; padding: 20px; }
 
-    /* Date popover — фиксированный снизу */
-    .date-popover {
-      position: fixed;
-      left: 12px;
-      right: 12px;
-      bottom: calc(12px + env(safe-area-inset-bottom));
-      top: auto;
-      width: auto;
-      max-height: 78dvh;
-      overflow-y: auto;
-      z-index: 600;
-    }
-
+    /* Settings */
     .settings-panel {
       top: auto;
       bottom: calc(70px + env(safe-area-inset-bottom));
-      left: 12px;
-      right: 12px;
+      left: 8px;
+      right: 8px;
       width: auto;
-      max-height: 60dvh;
+      max-height: 62dvh;
     }
 
-    .calendar { gap: 3px; }
-    .calendar-weekdays { font-size: 9px; gap: 3px; }
-    .cal-cell { min-height: 72px; padding: 4px; border-radius: 8px; }
-    .cal-date { font-size: 10.5px; margin-bottom: 2px; }
-    .cal-task { font-size: 10px; padding: 2px 4px; border-left-width: 2px; }
-    .cal-more { font-size: 9.5px; }
-    .calendar-header h2 { min-width: 140px; font-size: 15px; }
-
+    /* Templates */
     .tpl-list { grid-template-columns: 1fr; }
-    .tpl-card-actions .btn { height: 38px; font-size: 12px; }
+    .tpl-card-actions .btn { height: 38px; font-size: 12.5px; }
 
-    .an2-kpis { grid-template-columns: 1fr 1fr; gap: 8px; }
-    .an2-kpi { min-height: 76px; padding: 12px; gap: 10px; }
-    .an2-kpi-icon { width: 36px; height: 36px; font-size: 16px; border-radius: 10px; }
-    .an2-donut-wrap { flex-direction: column; align-items: stretch; }
-    .an2-donut { width: 100px; height: 100px; align-self: center; }
-    .an2-bar { grid-template-columns: 110px 1fr 42px; gap: 6px; font-size: 11px; }
-    .an2-week { gap: 3px; }
-    .an2-week-bar { max-width: 100%; }
-
+    /* Board editor */
     .board-editor-row {
       grid-template-columns: 1fr 40px;
       grid-template-areas:
@@ -2327,14 +2436,11 @@
     .board-editor-row input[type="color"] { grid-area: color; justify-self: end; }
     .board-editor-row select { grid-area: type; }
     .board-editor-row button[data-del] { grid-area: del; justify-self: end; }
-
-    .icon-btn { width: 40px; height: 40px; }
   }
 
   @media (max-width: 380px) {
     .an2-kpis { grid-template-columns: 1fr; }
-    .filters-bar { grid-template-columns: 1fr; }
-    .filters-bar #f-search { grid-column: auto; }
+    .stats { grid-template-columns: 1fr; }
   }
 
   @media (min-width: 1900px) {
@@ -2374,31 +2480,23 @@
           <button class="side-mini-btn" id="side-templates" aria-label="Шаблоны">📁 <span>Шаблоны</span></button>
           <span class="tooltip">Шаблоны задач</span>
         </span>
-        <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="side-export" aria-label="Экспорт данных">⬇ <span>Экспорт</span></button>
-          <span class="tooltip">Экспорт JSON</span>
-        </span>
-        <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="side-import" aria-label="Импорт данных">⬆ <span>Импорт</span></button>
-          <span class="tooltip">Импорт JSON</span>
-        </span>
       </div>
     </div>
 
     <div class="side-section">
       <div class="side-section-title">Вид</div>
-      <div class="nav" role="tablist">
-        <button class="active" data-view="kanban" onclick="switchView('kanban', this)" role="tab" aria-selected="true">
-          <span class="icon">▦</span><span class="nav-label">Канбан</span>
+      <div class="nav">
+        <button class="active" data-view="kanban" onclick="switchView('kanban', this)">
+          <span class="icon">▦</span>Канбан
         </button>
-        <button data-view="list" onclick="switchView('list', this)" role="tab" aria-selected="false">
-          <span class="icon">☰</span><span class="nav-label">Список</span>
+        <button data-view="list" onclick="switchView('list', this)">
+          <span class="icon">☰</span>Список
         </button>
-        <button data-view="calendar" onclick="switchView('calendar', this)" role="tab" aria-selected="false">
-          <span class="icon">▤</span><span class="nav-label">Календарь</span>
+        <button data-view="calendar" onclick="switchView('calendar', this)">
+          <span class="icon">▤</span>Календарь
         </button>
-        <button data-view="analytics" onclick="switchView('analytics', this)" role="tab" aria-selected="false">
-          <span class="icon">◔</span><span class="nav-label">Аналитика</span>
+        <button data-view="analytics" onclick="switchView('analytics', this)">
+          <span class="icon">◔</span>Аналитика
         </button>
       </div>
     </div>
@@ -2410,10 +2508,13 @@
   </aside>
 
   <main class="main">
-    <div class="mobile-topbar">
-      <select id="board-select-mobile" class="filter-input" aria-label="Активная воронка"></select>
-      <button class="btn small primary" id="mobile-task-add" type="button" aria-label="Новая задача">+</button>
-      <button class="btn small" id="mobile-templates" type="button" aria-label="Шаблоны">📁</button>
+    <!-- МОБИЛЬНАЯ ШАПКА -->
+    <div class="mobile-header">
+      <div class="logo-sm">Task<span>Flow</span></div>
+      <select id="board-select-mobile" aria-label="Выбор воронки"></select>
+      <button class="mh-btn primary" id="mobile-task-add" type="button" aria-label="Новая задача">+</button>
+      <button class="mh-btn" id="mobile-templates" type="button" aria-label="Шаблоны">📁</button>
+      <button class="mh-btn" id="mobile-settings" type="button" aria-label="Настройки">⚙</button>
     </div>
 
     <div class="top">
@@ -2426,14 +2527,14 @@
 
     <section class="stats" id="stats-bar" style="display:none">
       <div class="stat s-total" data-status-target="all">
-        <div class="label">Всего задач</div>
+        <div class="label">Всего</div>
         <div class="num" id="st-total">0</div>
         <div class="sub">в воронке</div>
       </div>
       <div class="stat s-todo" data-status-target="todo">
         <div class="label">Новые</div>
         <div class="num" id="st-todo">0</div>
-        <div class="sub">ожидают работы</div>
+        <div class="sub">ожидают</div>
       </div>
       <div class="stat s-progress" data-status-target="in_progress">
         <div class="label">В работе</div>
@@ -2441,9 +2542,9 @@
         <div class="sub">активные</div>
       </div>
       <div class="stat s-done" data-status-target="done">
-        <div class="label">Выполнено</div>
+        <div class="label">Готово</div>
         <div class="num" id="st-done">0</div>
-        <div class="sub">готово</div>
+        <div class="sub">выполнено</div>
       </div>
     </section>
 
@@ -2479,6 +2580,26 @@
       <div id="analytics-content"></div>
     </section>
   </main>
+
+  <!-- НИЖНИЙ ТАБ-БАР ДЛЯ МОБИЛЬНЫХ -->
+  <nav class="mobile-tabbar" aria-label="Основная навигация">
+    <button data-view="kanban" class="active" type="button">
+      <span class="tab-icon">▦</span>
+      <span class="tab-label">Канбан</span>
+    </button>
+    <button data-view="list" type="button">
+      <span class="tab-icon">☰</span>
+      <span class="tab-label">Список</span>
+    </button>
+    <button data-view="calendar" type="button">
+      <span class="tab-icon">▤</span>
+      <span class="tab-label">Календарь</span>
+    </button>
+    <button data-view="analytics" type="button">
+      <span class="tab-icon">◔</span>
+      <span class="tab-label">Аналитика</span>
+    </button>
+  </nav>
 </div>
 
 <div class="settings-panel" id="settings-panel" role="dialog" aria-label="Настройки внешнего вида">
@@ -2517,10 +2638,6 @@
       <input type="range" id="volume-slider" min="0" max="100" value="100" aria-label="Громкость">
       <span class="vol-value" id="volume-value">100%</span>
     </div>
-  </div>
-  <div class="settings-section">
-    <h4>Уведомления</h4>
-    <button class="settings-reset" id="notify-toggle" type="button">Включить уведомления браузера</button>
   </div>
   <button class="settings-reset" id="settings-reset">Сбросить к значениям по умолчанию</button>
 </div>
@@ -2794,8 +2911,8 @@
         </div>
       </div>
 
-      <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer">
-        <input type="checkbox" id="sm-done" style="width:16px;height:16px;accent-color:var(--primary)" />
+      <label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--text-dim);cursor:pointer">
+        <input type="checkbox" id="sm-done" style="width:18px;height:18px;accent-color:var(--primary)" />
         Выполнено
       </label>
     </div>
@@ -2807,8 +2924,6 @@
     </div>
   </div>
 </div>
-
-<input type="file" id="import-file" accept="application/json,.json" style="display:none" />
 
 <script>
 /* ============================================================
@@ -2973,22 +3088,6 @@ function syncSettingsUI() {
   const volVal = $("#volume-value");
   if (vol) vol.value = Math.round(Sound.volume * 100);
   if (volVal) volVal.textContent = `${Math.round(Sound.volume * 100)}%`;
-
-  const nt = $("#notify-toggle");
-  if (nt) {
-    if (!("Notification" in window)) {
-      nt.textContent = "Уведомления не поддерживаются";
-      nt.disabled = true;
-    } else if (Notification.permission === "granted") {
-      nt.textContent = "Уведомления включены";
-      nt.classList.add("active");
-    } else if (Notification.permission === "denied") {
-      nt.textContent = "Уведомления запрещены";
-    } else {
-      nt.textContent = "Включить уведомления браузера";
-      nt.classList.remove("active");
-    }
-  }
 }
 function bindSettingsEvents() {
   const settingsBtn = $("#settings-btn");
@@ -3006,6 +3105,7 @@ function bindSettingsEvents() {
   document.addEventListener("click", (e) => {
     if (panel.contains(e.target)) return;
     if (settingsBtn === e.target || settingsBtn.contains(e.target)) return;
+    if (e.target.closest("#mobile-settings")) return;
     panel.classList.remove("open");
     settingsBtn.classList.remove("active");
   });
@@ -3030,22 +3130,6 @@ function bindSettingsEvents() {
     if (volVal) volVal.textContent = `${e.target.value}%`;
     Sound.save();
     if (Sound.volume > 0) Sound.init();
-  });
-
-  const nt = $("#notify-toggle");
-  if (nt) nt.addEventListener("click", async () => {
-    if (!("Notification" in window)) return;
-    if (Notification.permission === "granted") {
-      showAlert({ title: "Уведомления включены", text: "Браузер уже разрешил показ уведомлений." });
-      return;
-    }
-    try {
-      const p = await Notification.requestPermission();
-      syncSettingsUI();
-      if (p === "granted") {
-        try { new Notification("TaskFlow", { body: "Уведомления включены" }); } catch (e) {}
-      }
-    } catch (e) {}
   });
 
   $("#settings-reset").addEventListener("click", () => {
@@ -3228,17 +3312,7 @@ const Sound = {
 });
 
 /* ============================================================
-   6. NOTIFICATIONS
-   ============================================================ */
-function notify(title, body) {
-  if (!("Notification" in window)) return;
-  if (Notification.permission !== "granted") return;
-  if (!document.hidden) return;
-  try { new Notification(title, { body, silent: false }); } catch (e) {}
-}
-
-/* ============================================================
-   7. STORE + МИГРАЦИИ
+   6. STORE
    ============================================================ */
 const STORAGE_KEY = "taskflow_v1";
 const SCHEMA_VERSION = 2;
@@ -3547,14 +3621,14 @@ const Store = {
 };
 
 /* ============================================================
-   8. UI STATE
+   7. UI STATE
    ============================================================ */
 let currentView = "kanban";
 let currentStatusFilter = "all";
 let calDate = new Date();
 
 /* ============================================================
-   9. HELPERS
+   8. HELPERS
    ============================================================ */
 function getBoardFilters() {
   const f = {
@@ -3605,7 +3679,7 @@ function updateStats() {
 }
 
 /* ============================================================
-   10. RENDER — KANBAN
+   9. RENDER — KANBAN
    ============================================================ */
 let draggedTaskId = null;
 
@@ -3652,7 +3726,7 @@ function renderKanban() {
       const card = document.createElement("div");
       card.className = `kanban-card p-${t.priority}`;
       if (isOverdue(t.deadline, Store.isTaskDone(t))) card.classList.add("overdue");
-      card.draggable = true;
+      card.draggable = !isTouch();
       card.dataset.id = t.id;
 
       const subDone = (t.subtasks || []).filter((s) => s.done).length;
@@ -3747,7 +3821,7 @@ function openMoveTaskPopover(task, columns) {
   backdrop.setAttribute("aria-modal", "true");
   const items = columns.map((c) => {
     const active = c.id === task.status ? "✓ " : "";
-    return `<button class="btn" data-col="${c.id}" style="width:100%;justify-content:flex-start;margin-bottom:6px">
+    return `<button class="btn" data-col="${c.id}" style="width:100%;justify-content:flex-start;margin-bottom:6px;min-height:44px">
       <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c.color};margin-right:8px"></span>
       ${active}${escapeHtml(c.label)}
     </button>`;
@@ -3805,7 +3879,7 @@ function openMoveTaskPopover(task, columns) {
 }
 
 /* ============================================================
-   11. RENDER — LIST
+   10. RENDER — LIST
    ============================================================ */
 function renderList() {
   const board = Store.getActiveBoard();
@@ -3853,7 +3927,7 @@ function renderList() {
 }
 
 /* ============================================================
-   12. RENDER — CALENDAR
+   11. RENDER — CALENDAR
    ============================================================ */
 const WEEKDAYS_FULL = ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"];
 
@@ -3887,7 +3961,7 @@ function renderCalendar() {
   const grid = $("#calendar");
   grid.innerHTML = "";
   const tKey = todayKey();
-  const isMobile = window.matchMedia("(max-width: 640px)").matches;
+  const isMobile = window.matchMedia("(max-width: 720px)").matches;
   const MAX = isMobile ? 2 : 3;
 
   for (let i = 0; i < 42; i++) {
@@ -3934,7 +4008,7 @@ function renderCalendar() {
 }
 
 /* ============================================================
-   13. RENDER — ANALYTICS
+   12. RENDER — ANALYTICS
    ============================================================ */
 const AN_PRIO = {
   low:     { label: "Низкий",  color: "var(--prio-low)" },
@@ -4028,7 +4102,7 @@ function renderAnalytics() {
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${total}</div>
             <div class="an2-kpi-label">Всего</div>
-            <div class="an2-kpi-sub">в воронке «${escapeHtml(board.name)}»</div>
+            <div class="an2-kpi-sub">«${escapeHtml(board.name)}»</div>
           </div>
         </div>
         <div class="an2-kpi k-done">
@@ -4044,7 +4118,7 @@ function renderAnalytics() {
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${inProgress}</div>
             <div class="an2-kpi-label">В работе</div>
-            <div class="an2-kpi-sub">активных задач</div>
+            <div class="an2-kpi-sub">активных</div>
           </div>
         </div>
         <div class="an2-kpi k-overdue">
@@ -4052,7 +4126,7 @@ function renderAnalytics() {
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${overdue}</div>
             <div class="an2-kpi-label">Просрочено</div>
-            <div class="an2-kpi-sub">требуют внимания</div>
+            <div class="an2-kpi-sub">внимание</div>
           </div>
         </div>
       </div>
@@ -4060,7 +4134,7 @@ function renderAnalytics() {
       <div class="an2-grid">
         <div class="an2-panel">
           <div class="an2-panel-head">
-            <h3>Прогресс выполнения</h3>
+            <h3>Прогресс</h3>
             <span class="an2-badge">${done} / ${total}</span>
           </div>
           <div class="an2-donut-wrap">
@@ -4094,7 +4168,7 @@ function renderAnalytics() {
         <div class="an2-panel">
           <div class="an2-panel-head">
             <h3>Дедлайны</h3>
-            <span class="an2-badge">${dlOverdue + dlToday + dlWeek} активных</span>
+            <span class="an2-badge">${dlOverdue + dlToday + dlWeek}</span>
           </div>
           <div class="an2-urgency">
             <div class="an2-urg u-overdue">
@@ -4133,7 +4207,7 @@ function renderAnalytics() {
                   <div class="an2-bar-track">
                     <div class="an2-bar-fill" style="width:${w}%;background:${meta.color}"></div>
                   </div>
-                  <div class="an2-bar-val">${c} <span class="an2-dim">/ ${total}</span></div>
+                  <div class="an2-bar-val">${c}</div>
                 </div>
               `;
             }).join("")}
@@ -4165,7 +4239,7 @@ function renderAnalytics() {
       <div class="an2-grid">
         <div class="an2-panel">
           <div class="an2-panel-head">
-            <h3>Дедлайны на текущей неделе</h3>
+            <h3>Дедлайны на неделю</h3>
             <span class="an2-badge">пн — вс</span>
           </div>
           <div class="an2-week">
@@ -4246,7 +4320,7 @@ function openDayPopup(day, tasks) {
 }
 
 /* ============================================================
-   14. DATE PICKER
+   13. DATE PICKER
    ============================================================ */
 const MONTHS_RU = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
 const WEEKDAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
@@ -4480,7 +4554,7 @@ function bindDatePicker() {
 }
 
 /* ============================================================
-   15. MODAL TASK + SUBTASKS
+   14. MODAL TASK + SUBTASKS
    ============================================================ */
 let currentTaskId = null;
 let currentPriority = "medium";
@@ -4788,7 +4862,7 @@ function updateSubtaskProgress() {
 }
 
 /* ============================================================
-   16. TEMPLATES UI
+   15. TEMPLATES UI
    ============================================================ */
 let editingTemplateId = null;
 let tplPriority = "medium";
@@ -5074,7 +5148,7 @@ function bindTemplatesEvents() {
 }
 
 /* ============================================================
-   17. BOARD MANAGEMENT
+   16. BOARD MANAGEMENT
    ============================================================ */
 function renderBoardSelector() {
   const sel = $("#board-select");
@@ -5161,6 +5235,14 @@ function bindBoardSelector() {
 
   const mobileTaskAdd = $("#mobile-task-add");
   if (mobileTaskAdd) mobileTaskAdd.addEventListener("click", () => openTaskModal(null));
+
+  const mobileSettings = $("#mobile-settings");
+  if (mobileSettings) mobileSettings.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const panel = $("#settings-panel");
+    const isOpen = panel.classList.toggle("open");
+    $("#settings-btn").classList.toggle("active", isOpen);
+  });
 }
 
 function openBoardEditor(board) {
@@ -5259,52 +5341,18 @@ function confirmDeleteBoard(boardId) {
 }
 
 /* ============================================================
-   18. EXPORT / IMPORT
-   ============================================================ */
-function exportData() {
-  try {
-    const blob = new Blob([JSON.stringify(Store.data, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `taskflow-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 100);
-  } catch (e) {
-    showAlert({ title: "Ошибка экспорта", text: escapeHtml(String(e.message || e)) });
-  }
-}
-function importData(file) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = JSON.parse(reader.result);
-      if (!data || !Array.isArray(data.boards)) throw new Error("Неверный формат файла");
-      Store.data = data;
-      Store._migrate();
-      Store._ensureIntegrity();
-      Store.save();
-      renderBoardSelector();
-      render();
-      showAlert({ title: "Импорт выполнен", text: `Загружено воронок: ${data.boards.length}, задач: ${data.tasks?.length || 0}.` });
-    } catch (e) {
-      showAlert({ title: "Ошибка импорта", text: escapeHtml(String(e.message || e)) });
-    }
-  };
-  reader.readAsText(file);
-}
-
-/* ============================================================
-   19. VIEWS
+   17. VIEWS
    ============================================================ */
 function switchView(view, btn) {
   currentView = view;
-  $$(".nav button[data-view]").forEach((b) => {
-    b.classList.remove("active");
-    b.setAttribute("aria-selected", "false");
-  });
-  btn.classList.add("active");
-  btn.setAttribute("aria-selected", "true");
+  $$(".nav button[data-view]").forEach((b) => b.classList.remove("active"));
+  $$(".mobile-tabbar button[data-view]").forEach((b) => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  const mobileBtn = document.querySelector(`.mobile-tabbar button[data-view="${view}"]`);
+  if (mobileBtn) mobileBtn.classList.add("active");
+  const desktopBtn = document.querySelector(`.nav button[data-view="${view}"]`);
+  if (desktopBtn) desktopBtn.classList.add("active");
+
   $$(".view").forEach((v) => (v.style.display = "none"));
 
   const filtersBar = $("#filters-bar");
@@ -5344,7 +5392,7 @@ function setStatusFilter(status) {
 }
 
 /* ============================================================
-   20. RENDER MASTER + TICK
+   18. RENDER MASTER + TICK
    ============================================================ */
 function render() {
   if (currentView === "kanban") renderKanban();
@@ -5367,7 +5415,7 @@ function tick() {
 }
 
 /* ============================================================
-   21. EVENTS
+   19. EVENTS
    ============================================================ */
 function bindDateMask(input) {
   if (!input) return;
@@ -5590,25 +5638,17 @@ function bindEvents() {
   $("#cal-prev").addEventListener("click", () => { calDate.setMonth(calDate.getMonth() - 1); renderCalendar(); });
   $("#cal-next").addEventListener("click", () => { calDate.setMonth(calDate.getMonth() + 1); renderCalendar(); });
 
-  const expBtn = $("#side-export");
-  if (expBtn) expBtn.addEventListener("click", exportData);
-  const impBtn = $("#side-import");
-  const impFile = $("#import-file");
-  if (impBtn && impFile) {
-    impBtn.addEventListener("click", () => impFile.click());
-    impFile.addEventListener("change", (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (file) importData(file);
-      impFile.value = "";
-    });
-  }
+  // нижний таб-бар
+  $$(".mobile-tabbar button[data-view]").forEach((btn) => {
+    btn.addEventListener("click", () => switchView(btn.dataset.view, null));
+  });
 
   bindSubtaskEditor();
   bindTemplatesEvents();
 }
 
 /* ============================================================
-   22. DEADLINE WATCHER
+   20. DEADLINE WATCHER
    ============================================================ */
 const APPROACH_THRESHOLDS_MIN = [15, 10, 5];
 const OVERDUE_TICK_MS = 5 * 60 * 1000;
@@ -5649,7 +5689,6 @@ function scheduleApproachSound(taskId, minutesBefore) {
     if (!deadlineState.approachingPlayed[taskId]) deadlineState.approachingPlayed[taskId] = new Set();
     deadlineState.approachingPlayed[taskId].add(minutesBefore);
     Sound.playApproaching(minutesBefore);
-    notify("Скоро дедлайн", `${t2.title} — через ~${minutesBefore} мин`);
   }, delay);
 
   deadlineState.scheduledTimers[taskId].add(timerId);
@@ -5674,7 +5713,6 @@ function checkDeadlines() {
       if (now - last > OVERDUE_TICK_MS) {
         deadlineState.overduePlayed[t.id] = now;
         Sound.playOverdue();
-        notify("Дедлайн просрочен", t.title);
       }
       clearScheduledTimers(t.id);
       deadlineState.approachingPlayed[t.id] = new Set();
@@ -5690,7 +5728,7 @@ function checkDeadlines() {
 }
 
 /* ============================================================
-   23. TAB TITLE BADGE
+   21. TAB TITLE BADGE
    ============================================================ */
 const _baseTitle = "TaskFlow — трекер задач";
 let _blinkState = false;
@@ -5739,7 +5777,7 @@ function updateTabBadge() {
 }
 
 /* ============================================================
-   24. INIT
+   22. INIT
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   loadAppearance();
