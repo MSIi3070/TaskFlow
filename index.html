@@ -2,16 +2,12 @@
 <html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+<meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="TaskFlow" />
-<meta name="theme-color" content="#635bff" />
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23635bff'/%3E%3Ctext x='90' y='120' font-family='system-ui' font-size='90' font-weight='800' fill='white' text-anchor='middle'%3ETF%3C/text%3E%3C/svg%3E" />
-<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22TaskFlow%22%2C%22short_name%22%3A%22TaskFlow%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230b0d17%22%2C%22theme_color%22%3A%22%23635bff%22%7D" />
+<meta name="format-detection" content="telephone=no" />
 <title>TaskFlow — трекер задач</title>
 <style>
   :root,
@@ -34,7 +30,7 @@
     --warning: #e89a28;
     --danger: #e65353;
     --sidebar-bg: #111827;
-    --sidebar-text: #c8cfdd;
+    --sidebar-text: #aeb6c7;
     --sidebar-active: #242b3c;
     --shadow-sm: 0 5px 20px rgba(35, 43, 70, 0.04);
     --shadow: 0 12px 35px rgba(35, 43, 70, 0.08);
@@ -46,7 +42,6 @@
     --prio-high: #f5c518;
     --prio-urgent: #ef4444;
     --tpl-muted: #5a6275;
-    --icon-stroke: 2;
   }
 
   [data-theme="dark"] {
@@ -68,7 +63,7 @@
     --warning: #fbbf24;
     --danger: #f87171;
     --sidebar-bg: #0a0c15;
-    --sidebar-text: #c8cfdd;
+    --sidebar-text: #8b92a8;
     --sidebar-active: #1a1d2a;
     --shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.3);
     --shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
@@ -92,9 +87,6 @@
     --radius-lg: 18px;
     --control-h: 44px;
     --grid-gap: 12px;
-    --mobile-nav-h: 62px;
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-    --safe-top: env(safe-area-inset-top, 0px);
   }
 
   * { box-sizing: border-box; }
@@ -102,7 +94,9 @@
 
   html, body {
     height: 100%;
+    height: 100dvh;
     overflow: hidden;
+    overscroll-behavior: none;
   }
   body {
     margin: 0;
@@ -113,33 +107,8 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     transition: background 0.3s ease, color 0.3s ease;
-    -webkit-tap-highlight-color: transparent;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
   }
-  /* Блокировка скролла при открытой модалке — без position: fixed, чтобы не ломать fixed-элементы */
-  body.modal-open {
-    overflow: hidden;
-    touch-action: none;
-  }
-
-  /* ===== ИКОНКИ ===== */
-  .ico {
-    width: 18px;
-    height: 18px;
-    display: inline-block;
-    flex-shrink: 0;
-    vertical-align: middle;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: var(--icon-stroke);
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    pointer-events: none;
-  }
-  .ico-14 { width: 14px; height: 14px; }
-  .ico-16 { width: 16px; height: 16px; }
-  .ico-20 { width: 20px; height: 20px; }
-  .ico-22 { width: 22px; height: 22px; }
-  .ico-24 { width: 24px; height: 24px; }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -153,11 +122,9 @@
 
   .app {
     display: flex;
+    height: 100vh;
     height: 100dvh;
     overflow: hidden;
-  }
-  @supports not (height: 100dvh) {
-    .app { height: 100vh; }
   }
 
   .sidebar {
@@ -170,13 +137,11 @@
     flex-shrink: 0;
     gap: 20px;
     position: relative;
-    z-index: 90;
+    z-index: 95;
+    height: 100vh;
     height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
-  }
-  @supports not (height: 100dvh) {
-    .sidebar { height: 100vh; }
   }
   .logo-row {
     display: flex;
@@ -192,14 +157,14 @@
     user-select: none;
   }
   .logo span { color: var(--primary-2); }
-
   .icon-btn {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border-radius: 9px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: var(--sidebar-text);
+    font-size: 15px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -219,14 +184,13 @@
     border-color: var(--primary);
     box-shadow: 0 6px 18px var(--primary-glow);
   }
-  .icon-btn .ico { opacity: 0.95; }
 
   .side-section-title {
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #6b7285;
+    color: #5c6479;
     padding: 0 10px;
     margin-bottom: 6px;
   }
@@ -244,7 +208,7 @@
     font-weight: 600;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c8cfdd' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b92a8' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 34px;
@@ -275,7 +239,7 @@
     white-space: nowrap;
   }
   .side-mini-btn {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     color: var(--sidebar-text);
@@ -285,18 +249,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
     min-width: 0;
     max-width: 100%;
     overflow: hidden;
-    min-height: 38px;
   }
   .side-mini-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.09);
     color: #fff;
     border-color: rgba(255, 255, 255, 0.16);
   }
-  .side-mini-btn .ico { opacity: 0.95; }
   .side-mini-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
   .tooltip-wrap {
@@ -304,7 +266,9 @@
     display: block;
     min-width: 0;
   }
-  .tooltip-wrap > .side-mini-btn { width: 100%; }
+  .tooltip-wrap > .side-mini-btn {
+    width: 100%;
+  }
   .tooltip {
     position: absolute;
     bottom: calc(100% + 8px);
@@ -354,18 +318,15 @@
     gap: 10px;
     border: none;
     cursor: pointer;
-    min-height: 44px;
   }
-  .nav button .ico { opacity: 0.9; transition: opacity .18s; }
+  .nav button .icon { font-size: 15px; width: 18px; text-align: center; }
   .nav button.active,
   .nav button:hover { background: var(--sidebar-active); color: #fff; }
   .nav button.active { font-weight: 600; }
-  .nav button.active .ico,
-  .nav button:hover .ico { opacity: 1; }
 
   .side-bottom {
     margin-top: auto;
-    color: #6b7285;
+    color: #5c6479;
     font-size: 11.5px;
     padding: 12px 10px;
     line-height: 1.5;
@@ -379,15 +340,14 @@
     margin: 0 auto;
     width: 100%;
     min-width: 0;
+    height: 100vh;
     height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom));
   }
-  @supports not (height: 100dvh) {
-    .main { height: 100vh; }
-  }
+
+  .mobile-topbar { display: none; }
 
   .top {
     display: flex;
@@ -518,7 +478,10 @@
     cursor: pointer;
   }
   .filters-bar select.filter-input option { background: var(--surface); color: var(--text); }
-  .filters-bar .date-mask { font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+  .filters-bar .date-mask {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
 
   .kanban {
     display: grid;
@@ -584,6 +547,7 @@
     position: relative;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(35, 43, 70, 0.03);
+    padding-right: 34px;
   }
   .kanban-card::before {
     content: "";
@@ -601,26 +565,27 @@
   .kanban-card.overdue .deadline { color: var(--danger); font-weight: 600; }
   .kanban-card .card-bottom { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
   .kanban-card .deadline { font-size: 11.5px; color: var(--text-mute); display: flex; align-items: center; gap: 4px; font-weight: 500; }
-  .kanban-card .card-move-btn {
+  .kanban-empty { text-align: center; padding: 30px 20px; color: var(--text-mute); font-size: 12.5px; }
+
+  .card-move-btn {
     position: absolute;
     top: 6px;
     right: 6px;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 8px;
-    background: var(--surface-hover);
     border: 1px solid var(--border);
+    background: var(--surface-2);
     color: var(--text-dim);
     cursor: pointer;
     display: none;
     align-items: center;
     justify-content: center;
+    font-size: 14px;
+    font-family: inherit;
     z-index: 2;
-    transition: all .15s;
   }
-  .kanban-card .card-move-btn:hover { color: var(--primary); border-color: var(--primary); }
-  .kanban-card .card-move-btn .ico { width: 16px; height: 16px; }
-  .kanban-empty { text-align: center; padding: 30px 20px; color: var(--text-mute); font-size: 12.5px; }
+  .card-move-btn:hover { color: var(--primary); border-color: var(--primary); }
 
   .task-list { display: flex; flex-direction: column; gap: 10px; }
   .task-row {
@@ -795,14 +760,6 @@
   }
   .cal-cell:hover .cal-more { color: var(--primary); }
 
-  .cal-dots { display: none; gap: 3px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
-  .cal-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .cal-dot.p-low { background: var(--prio-low); }
-  .cal-dot.p-medium { background: var(--prio-medium); }
-  .cal-dot.p-high { background: var(--prio-high); }
-  .cal-dot.p-urgent { background: var(--prio-urgent); }
-
-  /* ===== МОДАЛКИ ===== */
   .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -815,7 +772,6 @@
     padding: 24px 16px;
     z-index: 100;
     overflow-y: auto;
-    overscroll-behavior: contain;
   }
   .modal-backdrop.open { display: flex; }
   .modal {
@@ -827,13 +783,11 @@
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
+    max-height: calc(100vh - 48px);
     max-height: calc(100dvh - 48px);
     animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
     overflow: visible;
     position: relative;
-  }
-  @supports not (max-height: 100dvh) {
-    .modal { max-height: calc(100vh - 48px); }
   }
   @keyframes modalIn {
     from { opacity: 0; transform: translateY(16px) scale(0.98); }
@@ -866,8 +820,6 @@
     flex-direction: column;
     gap: 24px;
     flex: 1;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
   }
   .modal-foot {
     padding: 16px 26px;
@@ -1071,7 +1023,7 @@
     flex-shrink: 0;
   }
   .subtask-remove {
-    width: 22px; height: 22px;
+    width: 20px; height: 20px;
     border-radius: 6px;
     background: transparent;
     border: none;
@@ -1100,7 +1052,7 @@
     color: var(--text);
     font-family: inherit;
     transition: all 0.15s;
-    min-height: 40px;
+    min-width: 0;
   }
   .inline-add input::placeholder { color: var(--text-mute); }
   .inline-add input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
@@ -1131,12 +1083,12 @@
     border-color: var(--primary);
     box-shadow: 0 0 0 3px var(--primary-glow);
   }
-  .date-picker-trigger .icon { font-size: 15px; flex-shrink: 0; display: inline-flex; color: var(--text-mute); }
+  .date-picker-trigger .icon { font-size: 15px; flex-shrink: 0; }
   .date-picker-trigger .value { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
   .date-picker-trigger .value.placeholder { color: var(--text-mute); font-weight: 500; }
   .date-picker-trigger .value.overdue { color: var(--danger); }
   .date-picker-trigger .clear-inline {
-    width: 20px; height: 20px;
+    width: 18px; height: 18px;
     border-radius: 5px;
     border: none;
     background: transparent;
@@ -1172,7 +1124,7 @@
   .dp-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
   .dp-month { font-size: 13px; font-weight: 700; text-transform: capitalize; }
   .dp-nav {
-    width: 28px; height: 28px;
+    width: 26px; height: 26px;
     border-radius: 7px;
     background: var(--surface-hover);
     border: 1px solid var(--border);
@@ -1181,6 +1133,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    font-size: 13px;
     font-family: inherit;
     transition: all 0.15s;
   }
@@ -1303,30 +1256,6 @@
   .prio-seg-btn.active .prio-label { opacity: 1; }
   .prio-seg-btn[data-prio="high"].active { color: #1a1a1a; }
 
-  .status-select-wrap { display: flex; flex-direction: column; gap: 8px; }
-  .status-select {
-    width: 100%;
-    padding: 10px 13px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--input-bg);
-    color: var(--text);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237b8498' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 34px;
-    transition: all 0.15s;
-    min-height: var(--control-h);
-  }
-  .status-select:hover { border-color: var(--border-strong); }
-  .status-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
-  .status-select option { background: var(--surface); color: var(--text); }
-
   .day-popup-backdrop {
     position: fixed;
     inset: 0;
@@ -1345,15 +1274,13 @@
     border-radius: var(--radius-lg);
     width: 100%;
     max-width: 460px;
+    max-height: calc(100vh - 80px);
     max-height: calc(100dvh - 80px);
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
     animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
     overflow: hidden;
-  }
-  @supports not (max-height: 100dvh) {
-    .day-popup { max-height: calc(100vh - 80px); }
   }
   .day-popup-head {
     padding: 16px 22px;
@@ -1372,7 +1299,7 @@
     border: 1px solid var(--border);
     font-weight: 700;
   }
-  .day-popup-body { padding: 14px 18px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; overscroll-behavior: contain; }
+  .day-popup-body { padding: 14px 18px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
   .day-task {
     display: flex;
     align-items: center;
@@ -1396,22 +1323,6 @@
   .day-task.done .day-task-title { text-decoration: line-through; color: var(--text-mute); }
   .day-task-time { font-size: 11.5px; color: var(--text-mute); font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0; }
 
-  /* ===== НАСТРОЙКИ ===== */
-  /* Backdrop для настроек — только для мобилы. На ПК всегда display:none. */
-  .settings-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(12, 18, 32, 0.45);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .2s ease;
-    z-index: 88;
-    display: none;
-  }
-  .settings-backdrop.open { opacity: 1; pointer-events: auto; display: block; }
-
   .settings-panel {
     position: fixed;
     top: 66px;
@@ -1422,17 +1333,14 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
     padding: 14px;
-    z-index: 89;
+    z-index: 200;
     opacity: 0;
     transform: translateY(-6px) scale(0.98);
     pointer-events: none;
     transition: opacity 0.2s, transform 0.2s;
+    max-height: calc(100vh - 82px);
     max-height: calc(100dvh - 82px);
     overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  @supports not (max-height: 100dvh) {
-    .settings-panel { max-height: calc(100vh - 82px); }
   }
   .settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
   .settings-section { margin-bottom: 12px; }
@@ -1445,22 +1353,6 @@
     letter-spacing: 0.08em;
     color: var(--text-mute);
   }
-  .settings-close {
-    display: none;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    color: var(--text-dim);
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-  }
-  .settings-close:hover { color: var(--text); }
   .palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .swatch {
     aspect-ratio: 1;
@@ -1509,18 +1401,17 @@
     min-width: 0;
     background: transparent;
     border: none;
-    padding: 8px 4px;
+    padding: 6px 2px;
     border-radius: 6px;
     cursor: pointer;
     color: var(--text-dim);
-    font-size: 11px;
+    font-size: 10px;
     font-family: inherit;
     font-weight: 600;
     transition: all 0.15s;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 34px;
   }
   .density-btn:hover { color: var(--text); }
   .density-btn.active { background: var(--primary); color: #fff; box-shadow: 0 3px 10px var(--primary-glow); }
@@ -1533,7 +1424,7 @@
     border-radius: var(--radius-sm);
     padding: 5px 9px;
   }
-  .volume-row .vol-icon { color: var(--text-dim); flex-shrink: 0; display: inline-flex; }
+  .volume-row .vol-icon { font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
   .volume-row .vol-value {
     font-size: 10.5px;
     font-weight: 700;
@@ -1546,7 +1437,7 @@
   .settings-reset {
     width: 100%;
     margin-top: 6px;
-    padding: 9px;
+    padding: 7px;
     border-radius: var(--radius-sm);
     border: 1px dashed var(--border-strong);
     background: transparent;
@@ -1555,7 +1446,6 @@
     font-size: 11px;
     font-weight: 600;
     cursor: pointer;
-    min-height: 40px;
   }
   .settings-reset:hover { color: var(--danger); border-color: var(--danger); }
 
@@ -1580,6 +1470,8 @@
     box-shadow: var(--shadow-lg);
     padding: 24px;
     animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
   }
   .confirm-title {
     margin: 0 0 10px;
@@ -1589,6 +1481,7 @@
     align-items: center;
     gap: 10px;
   }
+  .confirm-title::before { content: "⚠"; font-size: 20px; color: var(--danger); }
   .confirm-title.no-icon::before { display: none; }
   .confirm-text { font-size: 13.5px; color: var(--text-dim); line-height: 1.55; margin-bottom: 20px; }
   .confirm-text strong { color: var(--text); font-weight: 700; }
@@ -1605,7 +1498,6 @@
     background: var(--input-bg);
     color: var(--text);
     transition: border-color 0.15s, box-shadow 0.15s;
-    min-height: 42px;
   }
   .prompt-input:focus {
     outline: none;
@@ -1649,18 +1541,14 @@
   #view-calendar {
     display: flex;
     flex-direction: column;
+    min-height: calc(100vh - 130px);
     min-height: calc(100dvh - 130px);
-  }
-  @supports not (min-height: 100dvh) {
-    #view-calendar { min-height: calc(100vh - 130px); }
   }
   #view-analytics {
     display: flex;
     flex-direction: column;
+    min-height: calc(100vh - 130px);
     min-height: calc(100dvh - 130px);
-  }
-  @supports not (min-height: 100dvh) {
-    #view-analytics { min-height: calc(100vh - 130px); }
   }
 
   .an2-wrap {
@@ -1698,6 +1586,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    font-size: 19px;
     flex-shrink: 0;
     background: rgba(var(--primary-rgb), 0.1);
   }
@@ -2014,6 +1903,8 @@
     color: var(--text);
     letter-spacing: -0.005em;
     line-height: 1.25;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   .tpl-card-title {
     font-size: 11.5px;
@@ -2021,11 +1912,14 @@
     font-weight: 500;
     margin-top: 3px;
     line-height: 1.4;
+    letter-spacing: 0.005em;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   .tpl-card-meta {
     display: flex;
@@ -2033,6 +1927,7 @@
     gap: 5px;
     font-size: 10.5px;
     color: var(--tpl-muted);
+    letter-spacing: 0.01em;
   }
   .tpl-card-meta .tpl-tag {
     display: inline-flex;
@@ -2045,6 +1940,9 @@
     font-weight: 600;
     font-size: 10.5px;
     color: var(--text-dim);
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   .tpl-card-actions {
     display: flex;
@@ -2057,10 +1955,10 @@
 
   [data-theme="dark"] .tpl-card { background: #1e2233; border-color: #2e3448; }
   [data-theme="dark"] .tpl-card:hover { background: #232842; border-color: var(--primary); }
-  [data-theme="dark"] .tpl-card-name { color: #e6e9f2; }
-  [data-theme="dark"] .tpl-card-title { color: #a8b0c9; }
+  [data-theme="dark"] .tpl-card-name { color: #e6e9f2; font-weight: 600; letter-spacing: 0.005em; }
+  [data-theme="dark"] .tpl-card-title { color: #a8b0c9; font-weight: 500; letter-spacing: 0.01em; }
   [data-theme="dark"] .tpl-card-icon { background: #232842; border-color: #2e3448; }
-  [data-theme="dark"] .tpl-card-meta .tpl-tag { background: #232842; border-color: #2e3448; color: #b8c0d9; }
+  [data-theme="dark"] .tpl-card-meta .tpl-tag { background: #232842; border-color: #2e3448; color: #b8c0d9; font-weight: 600; }
   [data-theme="dark"] .tpl-card-actions { border-top-color: #2e3448; }
 
   .tpl-editor-row { display: flex; gap: 12px; align-items: center; }
@@ -2091,7 +1989,6 @@
     font-family: inherit;
     font-size: 13px;
     transition: border-color 0.18s, box-shadow 0.18s;
-    min-height: var(--control-h);
   }
   .tpl-text-input::placeholder { color: var(--text-mute); }
   .tpl-text-input:hover { border-color: var(--border-strong); }
@@ -2113,7 +2010,7 @@
   .tpl-subtask-row .subtask-remove { opacity: 1; }
 
   .save-as-tpl-btn {
-    padding: 8px 12px;
+    padding: 6px 12px;
     font-size: 11.5px;
     font-weight: 700;
     border-radius: 8px;
@@ -2123,10 +2020,6 @@
     cursor: pointer;
     font-family: inherit;
     transition: all 0.15s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
   }
   .save-as-tpl-btn:hover {
     color: var(--primary);
@@ -2158,6 +2051,7 @@
     color: var(--text);
     font-family: inherit;
     font-size: 13px;
+    min-width: 0;
   }
   .board-editor-row input[type="color"] {
     width: 40px;
@@ -2175,6 +2069,7 @@
     color: var(--text);
     font-family: inherit;
     font-size: 12px;
+    min-width: 0;
   }
 
   .board-editor-name {
@@ -2194,499 +2089,265 @@
     box-shadow: 0 0 0 3px var(--primary-glow);
   }
 
-  /* ===== "ЕЩЁ" МЕНЮ ===== */
-  .more-menu-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(12, 18, 32, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .2s;
-    z-index: 96;
-    display: none;
-  }
-  .more-menu-backdrop.open { opacity: 1; pointer-events: auto; display: block; }
-
-  .more-menu {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--modal-bg);
-    border-radius: 20px 20px 0 0;
-    box-shadow: var(--shadow-lg);
-    padding: 10px 16px calc(20px + var(--safe-bottom));
-    transform: translateY(100%);
-    transition: transform .28s cubic-bezier(.16,1,.3,1);
-    z-index: 97;
-    display: none;
-    max-height: 80dvh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  .more-menu.open { transform: translateY(0); display: block; }
-  .more-menu::before {
-    content: "";
-    display: block;
-    width: 40px; height: 4px;
-    background: var(--border-strong);
-    border-radius: 2px;
-    margin: 0 auto 12px;
-  }
-  .more-menu-title {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-mute);
-    font-weight: 700;
-    margin: 6px 4px;
-  }
-  .more-menu-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 12px;
-  }
-  .more-menu-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 12px;
-    border-radius: 12px;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: left;
-    min-height: 48px;
-    transition: background .15s;
-  }
-  .more-menu-item:hover { background: var(--surface-hover); }
-  .more-menu-item:disabled { opacity: .4; cursor: not-allowed; }
-  .more-menu-item .ico { color: var(--text-dim); }
-
-  .move-menu-list { display: grid; gap: 6px; }
-  .move-menu-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border-radius: 10px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: left;
-    min-height: 48px;
-  }
-  .move-menu-item:hover { border-color: var(--primary); background: var(--surface-hover); }
-  .move-menu-item .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .move-menu-item.current { border-color: var(--primary); background: rgba(var(--primary-rgb), 0.06); }
-  .move-menu-item.current::after { content: "✓"; margin-left: auto; color: var(--primary); font-weight: 800; }
-
-  /* Кнопка "Ещё" — по умолчанию скрыта, показывается только на мобиле через жёсткий фикс */
-  .mobile-more-btn { display: none !important; }
-
-  /* ===== СТАРЫЕ АДАПТАЦИИ ===== */
-  @media (max-width: 900px) {
-    .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-  }
-
-  @media (max-width: 850px) {
-    .sidebar { width: 74px; padding: 20px 10px; }
-    .logo-row { justify-content: center; padding: 0 0 8px; flex-direction: column; gap: 8px; }
-    .logo { font-size: 0; }
-    .logo::after { content: "TF"; font-size: 20px; }
-    .side-section-title { display: none; }
-    .side-selector { display: none; }
-    .side-board-actions { grid-template-columns: 1fr; }
-    .side-board-actions > .tooltip-wrap:last-child { grid-column: auto; }
-    .side-mini-btn { padding: 8px 4px; font-size: 14px; min-height: 40px; }
-    .side-mini-btn span { display: none; }
-    .nav button { font-size: 0; padding: 12px 0; text-align: center; justify-content: center; }
-    .nav button .ico { width: 20px; height: 20px; }
-    .side-bottom { display: none; }
-    .settings-panel { top: 96px; left: 82px; width: 240px; }
-    .tooltip { left: calc(100% + 8px); bottom: 50%; transform: translateY(50%); }
-    .tooltip::after { top: 50%; left: -10px; transform: translateY(-50%); border-top-color: transparent; border-right-color: #0f1424; }
-    .tooltip-wrap:hover .tooltip { transform: translateY(50%); }
-  }
-
-  @media (max-width: 640px) {
-    .top { align-items: flex-start; flex-direction: column; }
-    .task-row { flex-direction: column; align-items: flex-start; gap: 8px; }
-    .meta-row { grid-template-columns: 1fr; }
-    .priority-seg { grid-template-columns: repeat(2, 1fr); height: auto; }
-    .priority-seg .prio-seg-btn { padding: 8px 4px; }
-    .modal { min-height: auto; }
-    .field-description { height: 130px; min-height: 130px; max-height: 130px; }
-    .date-popover { width: 290px; bottom: auto; top: calc(100% + 8px); }
-    .an2-donut-wrap { flex-direction: column; align-items: flex-start; }
-    .an2-donut { width: 100px; height: 100px; align-self: center; }
-    .an2-bar { grid-template-columns: 120px 1fr 46px; }
-    .calendar { gap: 4px; }
-    .calendar-weekdays { font-size: 9px; }
-    .cal-cell { min-height: 82px; padding: 6px; }
-    .cal-date { font-size: 11px; margin-bottom: 4px; }
-    .cal-task { font-size: 10.5px; padding: 2px 5px; }
-    .tpl-list { grid-template-columns: 1fr; }
-    .repeat-row { grid-template-columns: repeat(2, 1fr); }
-  }
-
+  /* ============ TOUCH ============ */
   @media (hover: none) and (pointer: coarse) {
+    .btn:active { transform: scale(0.97); }
+    .kanban-card:active { transform: scale(0.99); }
+    .cal-cell:active { background: rgba(var(--primary-rgb), 0.06); }
+    .card-move-btn { display: inline-flex; }
     .subtasks li .subtask-drag,
     .subtasks li .subtask-remove { opacity: 1; }
-    .kanban-card { cursor: default; }
-    .kanban-card .card-move-btn { display: inline-flex; }
+  }
+  @media (hover: none) {
+    .btn:hover,
+    .kanban-card:hover,
+    .task-row:hover,
+    .cal-cell.has-tasks:hover,
+    .tpl-card:hover { transform: none; }
   }
 
-  /* ============================================================
-     ЖЁСТКИЙ ФИКС МОБИЛЬНОЙ ВЕРСИИ — перебивает всё
-     ============================================================ */
+  /* ============ TABLET ============ */
+  @media (max-width: 1100px) {
+    .sidebar { width: 240px; padding: 20px 12px; }
+    .main { padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
+  }
+  @media (max-width: 900px) {
+    .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+    .an2-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ============ MOBILE ============ */
   @media (max-width: 640px) {
+    input, select, textarea { font-size: 16px !important; }
+    .field-title { font-size: 18px !important; }
+    .dp-time-input { font-size: 16px !important; }
 
-    html, body {
-      height: auto !important;
-      min-height: 100dvh !important;
-      overflow: auto !important;
-    }
-    body.modal-open {
-      overflow: hidden !important;
-      position: static !important;
-    }
+    .app { flex-direction: column; }
 
-    .app {
-      display: block !important;
-      height: auto !important;
-      min-height: 100dvh !important;
-      overflow: visible !important;
-    }
-
-    /* Нижняя навигация — главное */
     .sidebar {
-      display: flex !important;
-      position: fixed !important;
-      bottom: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      top: auto !important;
-      width: 100% !important;
-      height: 62px !important;
-      min-height: 62px !important;
-      max-height: 62px !important;
-      flex-direction: row !important;
-      align-items: center !important;
-      justify-content: space-around !important;
-      padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
-      margin: 0 !important;
-      border-radius: 0 !important;
-      border-top: 1px solid rgba(255,255,255,0.08) !important;
-      z-index: 9999 !important;
-      overflow: visible !important;
-      transform: none !important;
-      box-sizing: border-box !important;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: auto;
+      width: 100%;
+      height: auto;
+      min-height: 60px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+      gap: 4px;
+      overflow: visible;
+      z-index: 120;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
-
     .sidebar .logo-row,
-    .sidebar .side-section,
-    .sidebar .side-bottom,
-    .sidebar .tooltip { display: none !important; }
-
-    .sidebar .nav {
-      display: flex !important;
-      flex-direction: row !important;
-      gap: 2px !important;
-      flex: 1 !important;
-      justify-content: space-around !important;
-      align-items: center !important;
+    .sidebar .side-section-title,
+    .sidebar .side-selector,
+    .sidebar .side-board-actions,
+    .sidebar .side-bottom {
+      display: none;
     }
-
-    .sidebar .nav button {
-      display: inline-flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      justify-content: center !important;
-      min-width: 48px !important;
-      min-height: 48px !important;
-      padding: 6px 8px !important;
-      font-size: 0 !important;
-      color: #c8cfdd !important;
-      background: transparent !important;
-      border: none !important;
-      border-radius: 10px !important;
-      flex: 0 0 auto !important;
-      gap: 0 !important;
+    .side-section { flex: 1; }
+    .nav { display: flex; justify-content: space-around; gap: 0; width: 100%; }
+    .nav button {
+      flex: 1;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 10px !important;
+      padding: 8px 4px;
+      min-height: 48px;
+      border-radius: 10px;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
     }
+    .nav button .icon { font-size: 18px; width: auto; }
 
-    .sidebar .nav button .ico,
-    .sidebar .nav button svg {
-      width: 22px !important;
-      height: 22px !important;
-      color: inherit !important;
-      stroke: currentColor !important;
-    }
-
-    .sidebar .nav button.active,
-    .sidebar .nav button:active {
-      background: #242b3c !important;
-      color: #fff !important;
-    }
-
-    /* Кнопка "Ещё" — показываем только тут */
-    .sidebar .nav button.mobile-more-btn {
-      display: inline-flex !important;
-    }
-
-    /* Основной контент */
     .main {
-      display: block !important;
-      height: auto !important;
-      min-height: 100dvh !important;
-      padding: 10px 12px calc(62px + env(safe-area-inset-bottom, 0px) + 14px) 12px !important;
-      overflow: visible !important;
-      margin: 0 !important;
-      max-width: 100% !important;
+      padding: 12px 12px calc(80px + env(safe-area-inset-bottom));
+      height: 100dvh;
+      max-width: 100%;
     }
 
-    .title h1 { font-size: 18px; }
-    .title p { font-size: 11px; }
+    .mobile-topbar {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .mobile-topbar .filter-input {
+      height: 44px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      min-width: 0;
+      width: 100%;
+    }
+    .mobile-topbar .btn {
+      height: 44px;
+      min-width: 44px;
+      padding: 0 12px;
+      font-size: 14px;
+    }
 
+    .top { align-items: flex-start; flex-direction: column; }
+    .task-row { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px 16px; }
+    .task-row .meta { width: 100%; }
+    .meta-row { grid-template-columns: 1fr; }
+    .priority-seg { grid-template-columns: repeat(4, 1fr); height: auto; min-height: 48px; }
+    .priority-seg .prio-seg-btn { padding: 8px 2px; min-height: 44px; }
+    .prio-seg-btn .prio-label { font-size: 9px; }
+
+    .repeat-row { grid-template-columns: repeat(2, 1fr); }
+    .repeat-btn { min-height: 44px; padding: 10px 6px; font-size: 12px; }
+
+    .filters-bar { grid-template-columns: 1fr 1fr; }
+    .filters-bar #f-search { grid-column: 1 / -1; }
+
+    /* Kanban — горизонтальный скролл как в Trello */
     .kanban {
-      grid-template-columns: 1fr !important;
-      gap: 10px !important;
-      margin-top: 10px !important;
+      display: flex;
+      overflow-x: auto;
+      overflow-y: visible;
+      scroll-snap-type: x mandatory;
+      gap: 12px;
+      padding-bottom: 12px;
+      margin: 8px -12px 0;
+      padding-left: 12px;
+      padding-right: 12px;
+      -webkit-overflow-scrolling: touch;
     }
-    .kanban-col { padding: 12px !important; border-radius: 14px !important; min-height: 120px !important; }
-    .kanban-card { padding: 10px 42px 10px 12px !important; font-size: 13px !important; }
-
-    .task-row { padding: 12px 14px !important; gap: 8px !important; border-radius: 12px !important; }
-    .task-row .title { font-size: 13.5px !important; }
-
-    .stats {
-      grid-template-columns: repeat(2, 1fr) !important;
-      gap: 8px !important;
-      margin: 12px 0 8px !important;
+    .kanban-col {
+      flex: 0 0 82vw;
+      max-width: 340px;
+      scroll-snap-align: start;
+      min-height: calc(100dvh - 320px);
     }
-    .stat { padding: 12px 14px !important; min-height: 76px !important; }
-    .stat .num { font-size: 22px !important; }
-    .stat .label { font-size: 10px !important; }
-    .stat .sub { font-size: 10px !important; }
 
-    .filters-bar { grid-template-columns: 1fr !important; gap: 8px !important; }
-
-    .calendar-header h2 { font-size: 14px !important; min-width: 140px !important; }
-    .cal-cell { min-height: 68px !important; padding: 5px !important; border-radius: 8px !important; }
-    .cal-date { font-size: 11px !important; margin-bottom: 0 !important; }
-    .cal-task { display: none !important; }
-    .cal-more { display: none !important; }
-    .cal-dots { display: flex !important; }
-    .calendar-weekdays { font-size: 9px !important; gap: 3px !important; }
-
-    /* Модалки — bottom-sheet */
-    .modal-backdrop {
-      padding: 0 !important;
-      align-items: flex-end !important;
-      justify-content: stretch !important;
-    }
+    /* Модалки — bottom sheet */
+    .modal-backdrop { padding: 0; align-items: flex-end; }
     .modal {
-      max-width: 100% !important;
-      min-height: auto !important;
-      max-height: 94dvh !important;
-      border-radius: 20px 20px 0 0 !important;
-      animation: sheetIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      max-width: 100%;
+      width: 100%;
+      min-height: auto;
+      max-height: 92dvh;
+      border-radius: 18px 18px 0 0;
+      animation: sheetIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
     @keyframes sheetIn {
       from { transform: translateY(100%); }
       to   { transform: translateY(0); }
     }
     .modal-head {
-      padding: 14px 18px 12px !important;
-      border-radius: 20px 20px 0 0 !important;
-      flex-wrap: wrap !important;
-      gap: 8px !important;
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      padding: 16px 18px 14px;
     }
-    .modal-head h2 { font-size: 11px !important; }
-    .save-as-tpl-btn {
-      order: 3 !important;
-      flex-basis: 100% !important;
-      padding: 10px !important;
-      font-size: 12px !important;
-      justify-content: center !important;
-    }
-
-    .modal-body { padding: 16px 18px !important; gap: 18px !important; }
+    .modal-body { padding: 18px 18px; gap: 20px; }
     .modal-foot {
-      padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-      border-radius: 0 !important;
-      flex-wrap: wrap !important;
-      gap: 8px !important;
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
+      padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
     }
-    .modal-foot .btn { flex: 1 1 auto !important; min-width: 0 !important; padding: 0 12px !important; font-size: 13px !important; height: 46px !important; }
-    .modal-foot .btn.danger { order: 3 !important; flex-basis: 100% !important; }
-    .modal-foot .spacer { display: none !important; }
+    .field-description { height: 130px; min-height: 130px; max-height: 130px; }
 
-    .field-title { font-size: 17px !important; }
-    .field-description { height: 120px !important; min-height: 120px !important; max-height: 120px !important; }
-
-    .meta-row { gap: 14px !important; padding-top: 16px !important; }
-
-    .priority-seg {
-      grid-template-columns: repeat(4, 1fr) !important;
-      height: auto !important;
-      gap: 3px !important;
-      padding: 3px !important;
+    .day-popup-backdrop { padding: 0; align-items: flex-end; }
+    .day-popup {
+      max-width: 100%;
+      width: 100%;
+      max-height: 88dvh;
+      border-radius: 18px 18px 0 0;
     }
-    .prio-seg-btn { padding: 8px 2px !important; gap: 2px !important; min-height: 44px !important; }
-    .prio-seg-btn .prio-icon { font-size: 13px !important; }
-    .prio-seg-btn .prio-label { font-size: 9px !important; }
+    .confirm-backdrop { padding: 12px; align-items: flex-end; }
+    .confirm-modal {
+      max-width: 100%;
+      width: 100%;
+      border-radius: 18px;
+      padding: 20px;
+    }
 
-    .repeat-row { grid-template-columns: repeat(2, 1fr) !important; }
-    .repeat-btn { font-size: 11px !important; padding: 10px 6px !important; min-height: 42px !important; }
-
-    .subtasks-block { padding: 12px !important; }
-    .subtasks li { padding: 8px 6px !important; gap: 8px !important; font-size: 12.5px !important; min-height: 42px !important; }
-    .subtask-deadline { font-size: 10px !important; }
-    .subtask-title { font-size: 12.5px !important; }
-
+    /* Date popover — фиксированный снизу */
     .date-popover {
-      position: fixed !important;
-      left: 50% !important;
-      right: auto !important;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 12px) !important;
-      top: auto !important;
-      transform: translateX(-50%) translateY(12px) !important;
-      width: calc(100vw - 32px) !important;
-      max-width: 360px !important;
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      top: auto;
+      width: auto;
+      max-height: 78dvh;
+      overflow-y: auto;
+      z-index: 600;
     }
-    .date-popover.open { transform: translateX(-50%) translateY(0) !important; }
 
-    /* Настройки — bottom-sheet */
-    .settings-backdrop { display: block !important; }
     .settings-panel {
-      position: fixed !important;
-      top: auto !important;
-      bottom: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      width: auto !important;
-      max-height: 82dvh !important;
-      border-radius: 20px 20px 0 0 !important;
-      padding: 14px 16px calc(20px + env(safe-area-inset-bottom, 0px)) !important;
-      transform: translateY(100%) !important;
-      transition: transform .28s cubic-bezier(.16,1,.3,1) !important;
-      opacity: 1 !important;
-      pointer-events: none !important;
-      z-index: 89 !important;
+      top: auto;
+      bottom: calc(70px + env(safe-area-inset-bottom));
+      left: 12px;
+      right: 12px;
+      width: auto;
+      max-height: 60dvh;
     }
-    .settings-panel.open {
-      transform: translateY(0) !important;
-      pointer-events: auto !important;
-    }
-    .settings-panel::before {
-      content: "";
-      display: block;
-      width: 40px; height: 4px;
-      background: var(--border-strong);
-      border-radius: 2px;
-      margin: 0 auto 12px;
-    }
-    .settings-close { display: inline-flex !important; }
-    .settings-section h4 { font-size: 11px !important; }
-    .density-btn { padding: 10px 4px !important; min-height: 42px !important; font-size: 12px !important; }
 
-    .an2-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
-    .an2-kpis { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
-    .an2-kpi { padding: 12px 14px !important; min-height: 80px !important; gap: 10px !important; }
-    .an2-kpi-icon { width: 36px !important; height: 36px !important; border-radius: 10px !important; }
-    .an2-kpi-num { font-size: 20px !important; }
-    .an2-kpi-label { font-size: 10px !important; }
-    .an2-kpi-sub { font-size: 10px !important; }
+    .calendar { gap: 3px; }
+    .calendar-weekdays { font-size: 9px; gap: 3px; }
+    .cal-cell { min-height: 72px; padding: 4px; border-radius: 8px; }
+    .cal-date { font-size: 10.5px; margin-bottom: 2px; }
+    .cal-task { font-size: 10px; padding: 2px 4px; border-left-width: 2px; }
+    .cal-more { font-size: 9.5px; }
+    .calendar-header h2 { min-width: 140px; font-size: 15px; }
 
-    .an2-panel { padding: 12px 14px !important; min-height: 140px !important; }
-    .an2-panel-head h3 { font-size: 11px !important; }
-    .an2-donut { width: 90px !important; height: 90px !important; }
-    .an2-donut-pct { font-size: 18px !important; }
+    .tpl-list { grid-template-columns: 1fr; }
+    .tpl-card-actions .btn { height: 38px; font-size: 12px; }
 
-    .an2-urgency { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
-    .an2-urg { padding: 10px 12px !important; }
-    .an2-urg-num { font-size: 18px !important; }
-    .an2-urg-label { font-size: 10px !important; }
-
-    .an2-bar { grid-template-columns: minmax(90px, max-content) 1fr minmax(42px, 50px) !important; font-size: 11px !important; gap: 8px !important; }
-    .an2-week { gap: 4px !important; }
-    .an2-week-labels span { font-size: 9px !important; }
-
-    .tpl-list { grid-template-columns: 1fr !important; }
-    .tpl-card { padding: 12px 14px !important; }
-    .tpl-card-name { font-size: 12.5px !important; }
-    .tpl-card-title { font-size: 11px !important; }
-
-    .tpl-icon-input { width: 46px !important; height: 46px !important; font-size: 20px !important; }
-    .tpl-editor-row .field-title { font-size: 17px !important; }
+    .an2-kpis { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .an2-kpi { min-height: 76px; padding: 12px; gap: 10px; }
+    .an2-kpi-icon { width: 36px; height: 36px; font-size: 16px; border-radius: 10px; }
+    .an2-donut-wrap { flex-direction: column; align-items: stretch; }
+    .an2-donut { width: 100px; height: 100px; align-self: center; }
+    .an2-bar { grid-template-columns: 110px 1fr 42px; gap: 6px; font-size: 11px; }
+    .an2-week { gap: 3px; }
+    .an2-week-bar { max-width: 100%; }
 
     .board-editor-row {
-      grid-template-columns: 1fr !important;
-      grid-template-areas: "label" "color" "type" "del" !important;
-      gap: 6px !important;
-      padding: 10px !important;
+      grid-template-columns: 1fr 40px;
+      grid-template-areas:
+        "name color"
+        "type del";
+      gap: 6px;
     }
-    .board-editor-row input[type="text"] { grid-area: label !important; font-size: 13px !important; padding: 10px 11px !important; width: 100% !important; min-height: 42px !important; }
-    .board-editor-row input[type="color"] { grid-area: color !important; width: 100% !important; height: 42px !important; }
-    .board-editor-row select { grid-area: type !important; font-size: 12.5px !important; padding: 10px 11px !important; width: 100% !important; min-height: 42px !important; }
-    .board-editor-row .btn.ghost { grid-area: del !important; padding: 10px !important; font-size: 13px !important; width: 100% !important; min-height: 42px !important; }
+    .board-editor-row input[type="text"] { grid-area: name; }
+    .board-editor-row input[type="color"] { grid-area: color; justify-self: end; }
+    .board-editor-row select { grid-area: type; }
+    .board-editor-row button[data-del] { grid-area: del; justify-self: end; }
 
-    .board-editor-name { font-size: 14px !important; padding: 11px 13px !important; min-height: 44px !important; }
+    .icon-btn { width: 40px; height: 40px; }
+  }
 
-    .confirm-modal { padding: 20px 16px !important; max-width: 100% !important; }
-    .confirm-modal .confirm-title { font-size: 15px !important; }
-    .confirm-modal .confirm-text { font-size: 13px !important; margin-bottom: 16px !important; }
-    .confirm-modal .confirm-actions { flex-direction: column-reverse !important; gap: 8px !important; }
-    .confirm-modal .confirm-actions .btn { width: 100% !important; justify-content: center !important; height: 46px !important; font-size: 13px !important; }
-
-    .day-popup { max-width: 100% !important; border-radius: 20px 20px 0 0 !important; max-height: 88dvh !important; }
-    .day-popup-backdrop { padding: 0 !important; align-items: flex-end !important; }
-    .day-popup-head { padding: 14px 18px !important; border-radius: 20px 20px 0 0 !important; }
-    .day-popup-head h3 { font-size: 13px !important; }
-    .day-popup-body { padding: 12px 14px calc(14px + env(safe-area-inset-bottom, 0px)) !important; }
-    .day-task { padding: 12px !important; min-height: 52px !important; }
-    .day-task-title { font-size: 13px !important; }
+  @media (max-width: 380px) {
+    .an2-kpis { grid-template-columns: 1fr; }
+    .filters-bar { grid-template-columns: 1fr; }
+    .filters-bar #f-search { grid-column: auto; }
   }
 
   @media (min-width: 1900px) {
     .main { max-width: 1700px; }
   }
-
-  @media (hover: none) {
-    .btn:focus:not(:focus-visible),
-    input:focus:not(:focus-visible),
-    select:focus:not(:focus-visible),
-    textarea:focus:not(:focus-visible),
-    button:focus:not(:focus-visible) {
-      outline: none;
-      box-shadow: none;
-    }
-  }
 </style>
 </head>
 <body>
 <div class="app">
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Навигация">
     <div class="logo-row">
       <div class="logo">Task<span>Flow</span></div>
-      <button type="button" class="icon-btn" id="settings-btn" title="Настройки внешнего вида" aria-label="Настройки">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-        </svg>
-      </button>
+      <button type="button" class="icon-btn" id="settings-btn" title="Настройки внешнего вида" aria-label="Настройки">⚙</button>
     </div>
 
     <div class="side-section">
@@ -2694,64 +2355,50 @@
       <select class="side-selector" id="board-select" title="Активная воронка" aria-label="Выбор воронки"></select>
       <div class="side-board-actions">
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="board-add" aria-label="Новая воронка">
-            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span>Новая</span>
-          </button>
+          <button class="side-mini-btn" id="board-add" aria-label="Новая воронка">+ <span>Новая</span></button>
           <span class="tooltip">Создать воронку</span>
         </span>
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="board-edit" aria-label="Настроить воронку">
-            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            <span>Настроить</span>
-          </button>
+          <button class="side-mini-btn" id="board-edit" aria-label="Настроить воронку">⚙ <span>Настроить</span></button>
           <span class="tooltip">Настроить воронку</span>
         </span>
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="board-del" aria-label="Удалить воронку">
-            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-            <span>Удалить</span>
-          </button>
+          <button class="side-mini-btn" id="board-del" aria-label="Удалить воронку">🗑 <span>Удалить</span></button>
           <span class="tooltip">Удалить воронку</span>
         </span>
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="side-task-add" aria-label="Новая задача">
-            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span>Задача</span>
-          </button>
+          <button class="side-mini-btn" id="side-task-add" aria-label="Новая задача">➕ <span>Задача</span></button>
           <span class="tooltip">Новая задача</span>
         </span>
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="side-templates" aria-label="Шаблоны">
-            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            <span>Шаблоны</span>
-          </button>
+          <button class="side-mini-btn" id="side-templates" aria-label="Шаблоны">📁 <span>Шаблоны</span></button>
           <span class="tooltip">Шаблоны задач</span>
+        </span>
+        <span class="tooltip-wrap">
+          <button class="side-mini-btn" id="side-export" aria-label="Экспорт данных">⬇ <span>Экспорт</span></button>
+          <span class="tooltip">Экспорт JSON</span>
+        </span>
+        <span class="tooltip-wrap">
+          <button class="side-mini-btn" id="side-import" aria-label="Импорт данных">⬆ <span>Импорт</span></button>
+          <span class="tooltip">Импорт JSON</span>
         </span>
       </div>
     </div>
 
     <div class="side-section">
       <div class="side-section-title">Вид</div>
-      <div class="nav">
-        <button class="active" data-view="kanban" onclick="switchView('kanban', this)">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg>
-          Канбан
+      <div class="nav" role="tablist">
+        <button class="active" data-view="kanban" onclick="switchView('kanban', this)" role="tab" aria-selected="true">
+          <span class="icon">▦</span><span class="nav-label">Канбан</span>
         </button>
-        <button data-view="list" onclick="switchView('list', this)">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
-          Список
+        <button data-view="list" onclick="switchView('list', this)" role="tab" aria-selected="false">
+          <span class="icon">☰</span><span class="nav-label">Список</span>
         </button>
-        <button data-view="calendar" onclick="switchView('calendar', this)">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Календарь
+        <button data-view="calendar" onclick="switchView('calendar', this)" role="tab" aria-selected="false">
+          <span class="icon">▤</span><span class="nav-label">Календарь</span>
         </button>
-        <button data-view="analytics" onclick="switchView('analytics', this)">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="21" x2="21" y2="21"/><rect x="5" y="12" width="3" height="7"/><rect x="10.5" y="8" width="3" height="11"/><rect x="16" y="4" width="3" height="15"/></svg>
-          Аналитика
-        </button>
-        <button class="mobile-more-btn" id="mobile-more-btn" aria-label="Ещё" type="button">
-          <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+        <button data-view="analytics" onclick="switchView('analytics', this)" role="tab" aria-selected="false">
+          <span class="icon">◔</span><span class="nav-label">Аналитика</span>
         </button>
       </div>
     </div>
@@ -2763,6 +2410,12 @@
   </aside>
 
   <main class="main">
+    <div class="mobile-topbar">
+      <select id="board-select-mobile" class="filter-input" aria-label="Активная воронка"></select>
+      <button class="btn small primary" id="mobile-task-add" type="button" aria-label="Новая задача">+</button>
+      <button class="btn small" id="mobile-templates" type="button" aria-label="Шаблоны">📁</button>
+    </div>
+
     <div class="top">
       <div class="title">
         <h1 id="page-title">Канбан</h1>
@@ -2798,10 +2451,10 @@
       <input type="text" id="f-search" class="filter-input" placeholder="Поиск задач..." aria-label="Поиск задач" />
       <select id="f-priority" class="filter-input" aria-label="Фильтр по приоритету">
         <option value="">Все приоритеты</option>
-        <option value="low">Низкий</option>
-        <option value="medium">Средний</option>
-        <option value="high">Высокий</option>
-        <option value="urgent">Срочный</option>
+        <option value="low">🔵 Низкий</option>
+        <option value="medium">🟢 Средний</option>
+        <option value="high">🟡 Высокий</option>
+        <option value="urgent">🔴 Срочный</option>
       </select>
       <input type="text" id="f-deadline-after" class="filter-input date-mask" placeholder="дд.мм.гггг" inputmode="numeric" maxlength="10" aria-label="Дедлайн после" />
       <input type="text" id="f-deadline-before" class="filter-input date-mask" placeholder="дд.мм.гггг" inputmode="numeric" maxlength="10" aria-label="Дедлайн до" />
@@ -2813,13 +2466,9 @@
     </section>
     <section id="view-calendar" class="view" style="display:none">
       <div class="calendar-header">
-        <button id="cal-prev" class="btn ghost small" aria-label="Предыдущий месяц">
-          <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
+        <button id="cal-prev" class="btn ghost small" aria-label="Предыдущий месяц">‹</button>
         <h2 id="cal-title"></h2>
-        <button id="cal-next" class="btn ghost small" aria-label="Следующий месяц">
-          <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
+        <button id="cal-next" class="btn ghost small" aria-label="Следующий месяц">›</button>
       </div>
       <div class="calendar-weekdays">
         <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
@@ -2832,13 +2481,7 @@
   </main>
 </div>
 
-<!-- Backdrop для настроек — на ПК не активируется -->
-<div class="settings-backdrop" id="settings-backdrop"></div>
-
-<div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true" aria-label="Настройки внешнего вида">
-  <button class="settings-close" id="settings-close" aria-label="Закрыть настройки">
-    <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
+<div class="settings-panel" id="settings-panel" role="dialog" aria-label="Настройки внешнего вида">
   <div class="settings-section">
     <h4>Тема</h4>
     <div class="density-row">
@@ -2870,58 +2513,23 @@
   <div class="settings-section">
     <h4>Громкость</h4>
     <div class="volume-row">
-      <span class="vol-icon">
-        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-      </span>
+      <span class="vol-icon">🔊</span>
       <input type="range" id="volume-slider" min="0" max="100" value="100" aria-label="Громкость">
       <span class="vol-value" id="volume-value">100%</span>
     </div>
   </div>
+  <div class="settings-section">
+    <h4>Уведомления</h4>
+    <button class="settings-reset" id="notify-toggle" type="button">Включить уведомления браузера</button>
+  </div>
   <button class="settings-reset" id="settings-reset">Сбросить к значениям по умолчанию</button>
 </div>
 
-<!-- Меню "Ещё" -->
-<div class="more-menu-backdrop" id="more-menu-backdrop"></div>
-<div class="more-menu" id="more-menu" role="dialog" aria-modal="true" aria-label="Дополнительно">
-  <div class="more-menu-title">Воронка</div>
-  <div class="more-menu-list">
-    <button class="more-menu-item" id="mm-new-task">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Новая задача
-    </button>
-    <button class="more-menu-item" id="mm-new-board">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-      Новая воронка
-    </button>
-    <button class="more-menu-item" id="mm-edit-board">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      Настроить воронку
-    </button>
-    <button class="more-menu-item" id="mm-templates">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-      Шаблоны задач
-    </button>
-    <button class="more-menu-item" id="mm-settings">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Настройки
-    </button>
-    <button class="more-menu-item" id="mm-delete-board">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-      Удалить воронку
-    </button>
-  </div>
-  <div class="more-menu-title">Активная воронка</div>
-  <select class="side-selector" id="board-select-mobile" aria-label="Выбор воронки"></select>
-</div>
-
-<!-- ================== МОДАЛКА СОЗДАНИЯ ВОРОНКИ ================== -->
-<div class="modal-backdrop" id="board-create-backdrop">
-  <div class="modal" style="max-width:480px;min-height:auto" role="dialog" aria-modal="true">
+<div class="modal-backdrop" id="board-create-backdrop" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:480px;min-height:auto">
     <div class="modal-head">
       <h2>Новая воронка</h2>
-      <button class="btn ghost" id="board-create-close" type="button" aria-label="Закрыть">
-        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button class="btn ghost" id="board-create-close" type="button" aria-label="Закрыть">✕</button>
     </div>
     <div class="modal-body" style="gap:14px">
       <div class="description-block">
@@ -2937,14 +2545,11 @@
   </div>
 </div>
 
-<!-- ================== МОДАЛКА ШАБЛОНОВ ================== -->
-<div class="modal-backdrop" id="templates-backdrop">
-  <div class="modal" style="max-width:760px;min-height:auto" role="dialog" aria-modal="true">
+<div class="modal-backdrop" id="templates-backdrop" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:760px;min-height:auto">
     <div class="modal-head">
       <h2>Шаблоны задач</h2>
-      <button class="btn ghost" id="templates-close" aria-label="Закрыть">
-        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button class="btn ghost" id="templates-close" aria-label="Закрыть">✕</button>
     </div>
     <div class="modal-body" style="gap:14px">
       <div id="templates-list" class="tpl-list"></div>
@@ -2955,53 +2560,59 @@
     </div>
     <div class="modal-foot">
       <div class="spacer"></div>
-      <button class="btn primary" id="templates-new">
-        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Новый шаблон
-      </button>
+      <button class="btn primary" id="templates-new">+ Новый шаблон</button>
     </div>
   </div>
 </div>
 
-<!-- ================== МОДАЛКА РЕДАКТОРА ШАБЛОНА ================== -->
-<div class="modal-backdrop" id="tpl-editor-backdrop">
-  <div class="modal" style="max-width:600px;min-height:auto" role="dialog" aria-modal="true">
+<div class="modal-backdrop" id="tpl-editor-backdrop" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:600px;min-height:auto">
     <div class="modal-head">
       <h2 id="tpl-editor-title">Новый шаблон</h2>
-      <button class="btn ghost" id="tpl-editor-close" aria-label="Закрыть">
-        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button class="btn ghost" id="tpl-editor-close" aria-label="Закрыть">✕</button>
     </div>
     <div class="modal-body" style="gap:18px">
       <div class="tpl-editor-row">
         <input id="tpl-icon" class="tpl-icon-input" type="text" maxlength="2" placeholder="📝" aria-label="Иконка" />
         <input id="tpl-name" class="field-title" type="text" placeholder="Название шаблона" />
       </div>
+
       <div class="description-block">
         <div class="description-label">Заголовок задачи</div>
         <input id="tpl-task-title" class="tpl-text-input" type="text" placeholder="Что нужно сделать?" />
       </div>
+
       <div class="description-block">
         <div class="description-label">Описание</div>
         <textarea id="tpl-description" class="field-description" style="height:100px;min-height:100px;max-height:100px" placeholder="Детали, заметки..."></textarea>
       </div>
+
       <div class="meta-row" style="padding-top:16px">
         <div class="meta-field">
-          <div class="meta-label">Дедлайн через</div>
+          <div class="meta-label">📅 Дедлайн через</div>
           <input id="tpl-offset" class="tpl-text-input" type="number" min="0" max="365" placeholder="дней" />
         </div>
         <div class="meta-field">
-          <div class="meta-label">Приоритет</div>
+          <div class="meta-label">🏷 Приоритет</div>
           <div class="priority-seg" id="tpl-priority-row">
-            <button type="button" class="prio-seg-btn" data-prio="low"><span class="prio-icon">🔵</span><span class="prio-label">Низ</span></button>
-            <button type="button" class="prio-seg-btn" data-prio="medium"><span class="prio-icon">🟢</span><span class="prio-label">Сред</span></button>
-            <button type="button" class="prio-seg-btn" data-prio="high"><span class="prio-icon">🟡</span><span class="prio-label">Выс</span></button>
-            <button type="button" class="prio-seg-btn" data-prio="urgent"><span class="prio-icon">🔴</span><span class="prio-label">Сроч</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="low">
+              <span class="prio-icon">🔵</span><span class="prio-label">Низ</span>
+            </button>
+            <button type="button" class="prio-seg-btn" data-prio="medium">
+              <span class="prio-icon">🟢</span><span class="prio-label">Сред</span>
+            </button>
+            <button type="button" class="prio-seg-btn" data-prio="high">
+              <span class="prio-icon">🟡</span><span class="prio-label">Выс</span>
+            </button>
+            <button type="button" class="prio-seg-btn" data-prio="urgent">
+              <span class="prio-icon">🔴</span><span class="prio-label">Сроч</span>
+            </button>
           </div>
         </div>
       </div>
+
       <div class="repeat-block">
-        <div class="section-head"><h3>Повтор</h3></div>
+        <div class="section-head"><h3>🔁 Повтор</h3></div>
         <div class="repeat-row" id="tpl-repeat-row">
           <button type="button" class="repeat-btn" data-repeat="">Никогда</button>
           <button type="button" class="repeat-btn" data-repeat="daily">Ежедневно</button>
@@ -3010,9 +2621,10 @@
           <button type="button" class="repeat-btn" data-repeat="monthly">Ежемесячно</button>
         </div>
       </div>
+
       <div class="subtasks-block">
         <div class="section-head">
-          <h3>Подзадачи</h3>
+          <h3>☑ Подзадачи</h3>
           <span class="checklist-progress" id="tpl-subtask-progress">0</span>
         </div>
         <ul id="tpl-subtasks" class="subtasks"></ul>
@@ -3031,30 +2643,19 @@
   </div>
 </div>
 
-<!-- ================== МОДАЛКА ЗАДАЧИ ================== -->
-<div class="modal-backdrop" id="modal-backdrop">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal">
     <div class="modal-head">
       <h2 id="modal-title">Новая задача</h2>
-      <button type="button" class="save-as-tpl-btn" id="m-save-as-tpl">
-        <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Сохранить как шаблон
-      </button>
-      <button id="modal-close" class="btn ghost" aria-label="Закрыть">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button type="button" class="save-as-tpl-btn" id="m-save-as-tpl">📁 В шаблон</button>
+      <button id="modal-close" class="btn ghost" aria-label="Закрыть">✕</button>
     </div>
     <div class="modal-body">
       <input id="m-title" class="field-title" type="text" placeholder="Что нужно сделать?" />
 
-      <div class="status-select-wrap" id="m-status-wrap">
-        <div class="meta-label">Колонка</div>
-        <select id="m-status" class="status-select" aria-label="Колонка"></select>
-      </div>
-
       <div class="subtasks-block">
         <div class="section-head">
-          <h3>Подзадачи</h3>
+          <h3>☑ Подзадачи</h3>
           <span class="checklist-progress" id="m-subtask-progress">0/0</span>
         </div>
         <ul id="m-subtasks" class="subtasks"></ul>
@@ -3071,23 +2672,17 @@
 
       <div class="meta-row">
         <div class="meta-field">
-          <div class="meta-label">Дедлайн</div>
+          <div class="meta-label">📅 Дедлайн</div>
           <div class="date-picker">
             <button type="button" class="date-picker-trigger" id="dp-trigger">
-              <span class="icon">
-                <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              </span>
+              <span class="icon">📅</span>
               <span class="value placeholder" id="dp-value">Не задан</span>
             </button>
             <div class="date-popover" id="dp-popover">
               <div class="dp-header">
-                <button type="button" class="dp-nav" id="dp-prev" aria-label="Предыдущий месяц">
-                  <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-                </button>
+                <button type="button" class="dp-nav" id="dp-prev" aria-label="Предыдущий месяц">‹</button>
                 <div class="dp-month" id="dp-month"></div>
-                <button type="button" class="dp-nav" id="dp-next" aria-label="Следующий месяц">
-                  <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-                </button>
+                <button type="button" class="dp-nav" id="dp-next" aria-label="Следующий месяц">›</button>
               </div>
               <div class="dp-weekdays">
                 <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
@@ -3095,9 +2690,9 @@
               <div class="dp-days" id="dp-days"></div>
               <div class="dp-time">
                 <div class="dp-time-label">Время</div>
-                <input type="text" class="dp-time-input" id="dp-hour" maxlength="2" inputmode="numeric" pattern="[0-9]*" placeholder="00" />
+                <input type="text" class="dp-time-input" id="dp-hour" maxlength="2" inputmode="numeric" placeholder="00" />
                 <div class="dp-time-sep">:</div>
-                <input type="text" class="dp-time-input" id="dp-minute" maxlength="2" inputmode="numeric" pattern="[0-9]*" placeholder="00" />
+                <input type="text" class="dp-time-input" id="dp-minute" maxlength="2" inputmode="numeric" placeholder="00" />
               </div>
               <div class="dp-actions">
                 <button type="button" class="btn ghost" id="dp-clear">Очистить</button>
@@ -3107,19 +2702,31 @@
           </div>
         </div>
         <div class="meta-field">
-          <div class="meta-label">Приоритет</div>
+          <div class="meta-label">🏷 Приоритет</div>
           <div class="priority-seg" id="m-priority-row">
-            <button type="button" class="prio-seg-btn" data-prio="low"><span class="prio-icon">🔵</span><span class="prio-label">Низ</span></button>
-            <button type="button" class="prio-seg-btn" data-prio="medium"><span class="prio-icon">🟢</span><span class="prio-label">Сред</span></button>
-            <button type="button" class="prio-seg-btn" data-prio="high"><span class="prio-icon">🟡</span><span class="prio-label">Выс</span></button>
-            <button type="button" class="prio-seg-btn" data-prio="urgent"><span class="prio-icon">🔴</span><span class="prio-label">Сроч</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="low">
+              <span class="prio-icon">🔵</span>
+              <span class="prio-label">Низ</span>
+            </button>
+            <button type="button" class="prio-seg-btn" data-prio="medium">
+              <span class="prio-icon">🟢</span>
+              <span class="prio-label">Сред</span>
+            </button>
+            <button type="button" class="prio-seg-btn" data-prio="high">
+              <span class="prio-icon">🟡</span>
+              <span class="prio-label">Выс</span>
+            </button>
+            <button type="button" class="prio-seg-btn" data-prio="urgent">
+              <span class="prio-icon">🔴</span>
+              <span class="prio-label">Сроч</span>
+            </button>
           </div>
         </div>
       </div>
 
       <div class="repeat-block">
         <div class="section-head">
-          <h3>Повтор</h3>
+          <h3>🔁 Повтор</h3>
         </div>
         <div class="repeat-row" id="m-repeat-row">
           <button type="button" class="repeat-btn" data-repeat="">Никогда</button>
@@ -3132,6 +2739,7 @@
     </div>
     <div class="modal-foot">
       <button id="m-delete" class="btn danger">Удалить</button>
+      <button id="m-duplicate" class="btn ghost" style="display:none">Дублировать</button>
       <div class="spacer"></div>
       <button id="m-cancel" class="btn ghost">Отмена</button>
       <button id="m-save" class="btn primary">Сохранить</button>
@@ -3139,35 +2747,44 @@
   </div>
 </div>
 
-<!-- ================== МОДАЛКА ПОДЗАДАЧИ ================== -->
-<div class="modal-backdrop" id="subtask-modal-backdrop">
-  <div class="modal" style="max-width:520px;min-height:auto" role="dialog" aria-modal="true">
+<div class="modal-backdrop" id="subtask-modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:520px;min-height:auto">
     <div class="modal-head">
       <h2 id="subtask-modal-title">Подзадача</h2>
-      <button id="subtask-modal-close" class="btn ghost" type="button" aria-label="Закрыть">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button id="subtask-modal-close" class="btn ghost" type="button" aria-label="Закрыть">✕</button>
     </div>
     <div class="modal-body" style="gap:18px">
       <input id="sm-title" class="field-title" type="text" placeholder="Название подзадачи" />
+
       <div class="meta-row" style="padding-top:16px">
         <div class="meta-field">
-          <div class="meta-label">Дедлайн</div>
+          <div class="meta-label">📅 Дедлайн</div>
           <input id="sm-deadline" class="field-datetime" type="datetime-local" />
           <button type="button" class="btn ghost small" id="sm-deadline-clear" style="align-self:flex-start">Очистить</button>
         </div>
         <div class="meta-field">
-          <div class="meta-label">Приоритет</div>
+          <div class="meta-label">🏷 Приоритет</div>
           <div class="priority-seg" id="sm-priority-row">
-            <button type="button" class="prio-seg-btn" data-prio="low"><span class="prio-icon">🔵</span><span class="prio-label">Низ</span></button>
-            <button type="button" class="prio-seg-btn" data-prio="medium"><span class="prio-icon">🟢</span><span class="prio-label">Сред</span></button>
-            <button type="button" class="prio-seg-btn" data-prio="high"><span class="prio-icon">🟡</span><span class="prio-label">Выс</span></button>
-            <button type="button" class="prio-seg-btn" data-prio="urgent"><span class="prio-icon">🔴</span><span class="prio-label">Сроч</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="low">
+              <span class="prio-icon">🔵</span><span class="prio-label">Низ</span>
+            </button>
+            <button type="button" class="prio-seg-btn" data-prio="medium">
+              <span class="prio-icon">🟢</span><span class="prio-label">Сред</span>
+            </button>
+            <button type="button" class="prio-seg-btn" data-prio="high">
+              <span class="prio-icon">🟡</span><span class="prio-label">Выс</span>
+            </button>
+            <button type="button" class="prio-seg-btn" data-prio="urgent">
+              <span class="prio-icon">🔴</span><span class="prio-label">Сроч</span>
+            </button>
           </div>
         </div>
       </div>
+
       <div class="repeat-block">
-        <div class="section-head"><h3>Повтор</h3></div>
+        <div class="section-head">
+          <h3>🔁 Повтор</h3>
+        </div>
         <div class="repeat-row" id="sm-repeat-row">
           <button type="button" class="repeat-btn" data-repeat="">Никогда</button>
           <button type="button" class="repeat-btn" data-repeat="daily">Ежедневно</button>
@@ -3176,8 +2793,9 @@
           <button type="button" class="repeat-btn" data-repeat="monthly">Ежемесячно</button>
         </div>
       </div>
-      <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer;min-height:44px">
-        <input type="checkbox" id="sm-done" style="width:18px;height:18px;accent-color:var(--primary)" />
+
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer">
+        <input type="checkbox" id="sm-done" style="width:16px;height:16px;accent-color:var(--primary)" />
         Выполнено
       </label>
     </div>
@@ -3190,21 +2808,7 @@
   </div>
 </div>
 
-<!-- ================== МОДАЛКА ПЕРЕМЕЩЕНИЯ ================== -->
-<div class="modal-backdrop" id="move-backdrop">
-  <div class="modal" style="max-width:420px;min-height:auto" role="dialog" aria-modal="true">
-    <div class="modal-head">
-      <h2>Переместить в…</h2>
-      <button id="move-close" class="btn ghost" type="button" aria-label="Закрыть">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="modal-body" style="gap:14px">
-      <div id="move-title" style="font-size:13px;color:var(--text-mute);font-weight:600"></div>
-      <div class="move-menu-list" id="move-list"></div>
-    </div>
-  </div>
-</div>
+<input type="file" id="import-file" accept="application/json,.json" style="display:none" />
 
 <script>
 /* ============================================================
@@ -3243,7 +2847,11 @@ function isSameDay(a, b) {
 
 function fmtDateTime(dt) {
   if (!dt) return "";
-  return new Date(dt).toLocaleString("ru-RU", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  const d = new Date(dt);
+  const sameYear = d.getFullYear() === new Date().getFullYear();
+  return d.toLocaleString("ru-RU", sameYear
+    ? { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }
+    : { day: "2-digit", month: "short", year: "2-digit", hour: "2-digit", minute: "2-digit" });
 }
 function hexToRgb(hex) {
   const h = hex.replace("#", "");
@@ -3274,31 +2882,28 @@ function fromDatetimeLocalValue(v) {
 }
 
 const _ruDateCache = new Map();
-const _ruDateCacheMax = 200;
 function parseRuDate(str, endOfDay) {
   const cacheKey = str + "|" + (endOfDay ? 1 : 0);
   if (_ruDateCache.has(cacheKey)) return _ruDateCache.get(cacheKey);
   const m = String(str || "").trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-  let result = null;
-  if (m) {
-    const day = parseInt(m[1], 10);
-    const month = parseInt(m[2], 10) - 1;
-    const year = parseInt(m[3], 10);
-    if (day >= 1 && day <= 31 && month >= 0 && month <= 11) {
-      const d = new Date(year, month, day);
-      if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
-        if (endOfDay) d.setHours(23, 59, 59, 999);
-        else d.setHours(0, 0, 0, 0);
-        result = d.toISOString();
-      }
-    }
+  if (!m) { _ruDateCache.set(cacheKey, null); return null; }
+  const day = parseInt(m[1], 10);
+  const month = parseInt(m[2], 10) - 1;
+  const year = parseInt(m[3], 10);
+  if (day < 1 || day > 31 || month < 0 || month > 11) { _ruDateCache.set(cacheKey, null); return null; }
+  const d = new Date(year, month, day);
+  if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) {
+    _ruDateCache.set(cacheKey, null); return null;
   }
-  if (_ruDateCache.size >= _ruDateCacheMax) {
-    const firstKey = _ruDateCache.keys().next().value;
-    _ruDateCache.delete(firstKey);
-  }
-  _ruDateCache.set(cacheKey, result);
-  return result;
+  if (endOfDay) d.setHours(23, 59, 59, 999);
+  else d.setHours(0, 0, 0, 0);
+  const iso = d.toISOString();
+  _ruDateCache.set(cacheKey, iso);
+  return iso;
+}
+
+function isTouch() {
+  return window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 }
 
 /* ============================================================
@@ -3307,8 +2912,11 @@ function parseRuDate(str, endOfDay) {
 function nextDateByRepeat(deadlineIso, repeat) {
   if (!repeat) return null;
   const base = deadlineIso ? new Date(deadlineIso) : new Date();
+
   if (repeat === "daily") {
-    const d = new Date(base); d.setDate(d.getDate() + 1); return d.toISOString();
+    const d = new Date(base);
+    d.setDate(d.getDate() + 1);
+    return d.toISOString();
   }
   if (repeat === "weekdays") {
     const d = new Date(base);
@@ -3316,48 +2924,24 @@ function nextDateByRepeat(deadlineIso, repeat) {
     return d.toISOString();
   }
   if (repeat === "weekly") {
-    const d = new Date(base); d.setDate(d.getDate() + 7); return d.toISOString();
+    const d = new Date(base);
+    d.setDate(d.getDate() + 7);
+    return d.toISOString();
   }
   if (repeat === "monthly") {
     const d = new Date(base);
     const day = d.getDate();
+    d.setDate(1);
     d.setMonth(d.getMonth() + 1);
-    if (d.getDate() !== day) d.setDate(0);
+    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    d.setDate(Math.min(day, last));
     return d.toISOString();
   }
   return null;
 }
 
 /* ============================================================
-   3. DEADLINE STATE
-   ============================================================ */
-const APPROACH_THRESHOLDS_MIN = [15, 10, 5];
-const OVERDUE_TICK_MS = 5 * 60 * 1000;
-const CHECK_INTERVAL_MS = 15000;
-
-const deadlineState = {
-  approachingPlayed: {},
-  overduePlayed: {},
-  scheduledTimers: {},
-};
-
-/* ============================================================
-   4. BODY LOCK — без position:fixed, чтобы не ломать нижнюю панель
-   ============================================================ */
-function lockBody() {
-  if (!document.body.classList.contains("modal-open")) {
-    document.body.classList.add("modal-open");
-  }
-}
-function unlockBody() {
-  const anyOpen = document.querySelector(
-    ".modal-backdrop.open, .day-popup-backdrop.open, .confirm-backdrop.open, .more-menu.open"
-  );
-  if (!anyOpen) document.body.classList.remove("modal-open");
-}
-
-/* ============================================================
-   5. APPEARANCE
+   3. APPEARANCE
    ============================================================ */
 const APPEARANCE_KEY = "taskflow_appearance_v1";
 const APPEARANCE_DEFAULTS = { theme: "light", accent: "#635bff" };
@@ -3372,8 +2956,6 @@ function applyAppearance() {
   const mixTarget = appearance.theme === "dark" ? { r: 255, g: 255, b: 255 } : { r: 0, g: 0, b: 0 };
   root.style.setProperty("--primary-2", mix(appearance.accent, mixTarget, appearance.theme === "dark" ? 0.3 : 0.15));
   root.style.setProperty("--primary-glow", `rgba(${rgb}, 0.25)`);
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", appearance.accent);
   syncSettingsUI();
   try { localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearance)); } catch (e) {}
 }
@@ -3381,68 +2963,51 @@ function loadAppearance() {
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(APPEARANCE_KEY)); } catch (e) {}
   if (saved) Object.assign(appearance, APPEARANCE_DEFAULTS, saved);
-  if (!localStorage.getItem(APPEARANCE_KEY) && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    appearance.theme = "dark";
-  }
 }
 function syncSettingsUI() {
   $$("[data-theme-set]").forEach((b) => b.classList.toggle("active", b.dataset.themeSet === appearance.theme));
   $$("#palette .swatch").forEach((s) => s.classList.toggle("active", s.dataset.color.toLowerCase() === appearance.accent.toLowerCase()));
   const cc = $("#custom-color"); if (cc) cc.value = appearance.accent;
+
   const vol = $("#volume-slider");
   const volVal = $("#volume-value");
   if (vol) vol.value = Math.round(Sound.volume * 100);
   if (volVal) volVal.textContent = `${Math.round(Sound.volume * 100)}%`;
-}
 
-/* ==== ИСПРАВЛЕНО: openSettings/closeSettings — backdrop только на мобиле ==== */
-function openSettings() {
-  const panel = $("#settings-panel");
-  const backdrop = $("#settings-backdrop");
-  panel.classList.add("open");
-  if (window.innerWidth <= 640 && backdrop) backdrop.classList.add("open");
-  $("#settings-btn")?.classList.add("active");
-  lockBody();
+  const nt = $("#notify-toggle");
+  if (nt) {
+    if (!("Notification" in window)) {
+      nt.textContent = "Уведомления не поддерживаются";
+      nt.disabled = true;
+    } else if (Notification.permission === "granted") {
+      nt.textContent = "Уведомления включены";
+      nt.classList.add("active");
+    } else if (Notification.permission === "denied") {
+      nt.textContent = "Уведомления запрещены";
+    } else {
+      nt.textContent = "Включить уведомления браузера";
+      nt.classList.remove("active");
+    }
+  }
 }
-function closeSettings() {
-  const panel = $("#settings-panel");
-  const backdrop = $("#settings-backdrop");
-  panel.classList.remove("open");
-  if (backdrop) backdrop.classList.remove("open");
-  $("#settings-btn")?.classList.remove("active");
-  unlockBody();
-}
-
 function bindSettingsEvents() {
   const settingsBtn = $("#settings-btn");
   const panel = $("#settings-panel");
-  const backdrop = $("#settings-backdrop");
-  const closeBtn = $("#settings-close");
 
   settingsBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (panel.classList.contains("open")) closeSettings();
-    else openSettings();
+    const isOpen = panel.classList.toggle("open");
+    settingsBtn.classList.toggle("active", isOpen);
   });
-
-  if (closeBtn) closeBtn.addEventListener("click", closeSettings);
-  if (backdrop) {
-    backdrop.addEventListener("click", () => {
-      // На мобиле backdrop ловит клик и закрывает
-      if (window.innerWidth <= 640) closeSettings();
-    });
-  }
 
   panel.addEventListener("click", (e) => e.stopPropagation());
 
-  // Закрытие по клику вне панели — только на десктопе
   document.addEventListener("click", (e) => {
-    if (!panel.classList.contains("open")) return;
-    if (window.innerWidth <= 640) return; // на мобиле закрывает backdrop
     if (panel.contains(e.target)) return;
     if (settingsBtn === e.target || settingsBtn.contains(e.target)) return;
-    closeSettings();
+    panel.classList.remove("open");
+    settingsBtn.classList.remove("active");
   });
 
   $$("[data-theme-set]").forEach((b) => b.addEventListener("click", () => {
@@ -3467,6 +3032,22 @@ function bindSettingsEvents() {
     if (Sound.volume > 0) Sound.init();
   });
 
+  const nt = $("#notify-toggle");
+  if (nt) nt.addEventListener("click", async () => {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "granted") {
+      showAlert({ title: "Уведомления включены", text: "Браузер уже разрешил показ уведомлений." });
+      return;
+    }
+    try {
+      const p = await Notification.requestPermission();
+      syncSettingsUI();
+      if (p === "granted") {
+        try { new Notification("TaskFlow", { body: "Уведомления включены" }); } catch (e) {}
+      }
+    } catch (e) {}
+  });
+
   $("#settings-reset").addEventListener("click", () => {
     showConfirm({
       title: "Сбросить настройки?",
@@ -3483,13 +3064,15 @@ function bindSettingsEvents() {
 }
 
 /* ============================================================
-   6. КАСТОМНЫЕ ДИАЛОГИ
+   4. КАСТОМНЫЕ ДИАЛОГИ
    ============================================================ */
 function showConfirm({ title, text, confirmText = "Удалить", cancelText = "Отмена", confirmClass = "danger", onConfirm }) {
   const backdrop = document.createElement("div");
   backdrop.className = "confirm-backdrop open";
+  backdrop.setAttribute("role", "dialog");
+  backdrop.setAttribute("aria-modal", "true");
   backdrop.innerHTML = `
-    <div class="confirm-modal" role="dialog" aria-modal="true">
+    <div class="confirm-modal">
       <h3 class="confirm-title">${escapeHtml(title)}</h3>
       <p class="confirm-text">${text}</p>
       <div class="confirm-actions">
@@ -3499,11 +3082,7 @@ function showConfirm({ title, text, confirmText = "Удалить", cancelText =
     </div>
   `;
   document.body.appendChild(backdrop);
-  lockBody();
-  const close = () => {
-    backdrop.classList.remove("open");
-    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
-  };
+  const close = () => { backdrop.classList.remove("open"); setTimeout(() => backdrop.remove(), 200); };
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="cancel"]').addEventListener("click", close);
   backdrop.querySelector('[data-action="confirm"]').addEventListener("click", () => {
@@ -3514,13 +3093,16 @@ function showConfirm({ title, text, confirmText = "Удалить", cancelText =
     if (e.key === "Escape") { close(); document.removeEventListener("keydown", onEsc); }
   };
   document.addEventListener("keydown", onEsc);
+  setTimeout(() => backdrop.querySelector('[data-action="confirm"]')?.focus(), 50);
 }
 
 function showAlert({ title, text, okText = "Понятно" }) {
   const backdrop = document.createElement("div");
   backdrop.className = "confirm-backdrop open";
+  backdrop.setAttribute("role", "dialog");
+  backdrop.setAttribute("aria-modal", "true");
   backdrop.innerHTML = `
-    <div class="confirm-modal" role="dialog" aria-modal="true">
+    <div class="confirm-modal">
       <h3 class="confirm-title">${escapeHtml(title)}</h3>
       <p class="confirm-text">${text}</p>
       <div class="confirm-actions">
@@ -3529,20 +3111,19 @@ function showAlert({ title, text, okText = "Понятно" }) {
     </div>
   `;
   document.body.appendChild(backdrop);
-  lockBody();
-  const close = () => {
-    backdrop.classList.remove("open");
-    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
-  };
+  const close = () => { backdrop.classList.remove("open"); setTimeout(() => backdrop.remove(), 200); };
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="ok"]').addEventListener("click", close);
+  setTimeout(() => backdrop.querySelector('[data-action="ok"]')?.focus(), 50);
 }
 
 function showPrompt({ title, label, defaultValue = "", placeholder = "", confirmText = "OK", onConfirm }) {
   const backdrop = document.createElement("div");
   backdrop.className = "confirm-backdrop open";
+  backdrop.setAttribute("role", "dialog");
+  backdrop.setAttribute("aria-modal", "true");
   backdrop.innerHTML = `
-    <div class="confirm-modal" role="dialog" aria-modal="true">
+    <div class="confirm-modal">
       <h3 class="confirm-title no-icon">${escapeHtml(title)}</h3>
       ${label ? `<p class="confirm-text" style="margin-bottom:8px">${escapeHtml(label)}</p>` : ""}
       <input class="prompt-input" type="text" value="${escapeHtml(defaultValue)}" placeholder="${escapeHtml(placeholder)}" />
@@ -3553,13 +3134,10 @@ function showPrompt({ title, label, defaultValue = "", placeholder = "", confirm
     </div>
   `;
   document.body.appendChild(backdrop);
-  lockBody();
   const input = backdrop.querySelector(".prompt-input");
   setTimeout(() => { input.focus(); input.select(); }, 60);
-  const close = () => {
-    backdrop.classList.remove("open");
-    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
-  };
+
+  const close = () => { backdrop.classList.remove("open"); setTimeout(() => backdrop.remove(), 200); };
   const submit = () => {
     const v = input.value.trim();
     if (!v) { input.focus(); return; }
@@ -3569,7 +3147,9 @@ function showPrompt({ title, label, defaultValue = "", placeholder = "", confirm
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="cancel"]').addEventListener("click", close);
   backdrop.querySelector('[data-action="confirm"]').addEventListener("click", submit);
-  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } });
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); submit(); }
+  });
   const onEsc = (e) => {
     if (e.key === "Escape") { close(); document.removeEventListener("keydown", onEsc); }
   };
@@ -3577,7 +3157,7 @@ function showPrompt({ title, label, defaultValue = "", placeholder = "", confirm
 }
 
 /* ============================================================
-   7. SOUND
+   5. SOUND
    ============================================================ */
 const SOUND_KEY = "taskflow_sound_v1";
 const Sound = {
@@ -3648,7 +3228,17 @@ const Sound = {
 });
 
 /* ============================================================
-   8. STORE
+   6. NOTIFICATIONS
+   ============================================================ */
+function notify(title, body) {
+  if (!("Notification" in window)) return;
+  if (Notification.permission !== "granted") return;
+  if (!document.hidden) return;
+  try { new Notification(title, { body, silent: false }); } catch (e) {}
+}
+
+/* ============================================================
+   7. STORE + МИГРАЦИИ
    ============================================================ */
 const STORAGE_KEY = "taskflow_v1";
 const SCHEMA_VERSION = 2;
@@ -3817,11 +3407,33 @@ const Store = {
     this.data.tasks = this.data.tasks.filter((t) => t.id !== id);
     delete deadlineState.approachingPlayed[id];
     delete deadlineState.overduePlayed[id];
-    if (deadlineState.scheduledTimers[id]) {
-      deadlineState.scheduledTimers[id].forEach((tid) => clearTimeout(tid));
-      delete deadlineState.scheduledTimers[id];
-    }
+    delete deadlineState.scheduledTimers[id];
     this.save();
+  },
+  duplicateTask(id) {
+    const t = this.getTask(id);
+    if (!t) return null;
+    const copy = {
+      id: this.data.nextTaskId++,
+      board_id: t.board_id,
+      title: t.title + " (копия)",
+      description: t.description || "",
+      deadline: t.deadline,
+      priority: t.priority || "medium",
+      status: t.status,
+      repeat: t.repeat || "",
+      subtasks: (t.subtasks || []).map((s) => ({
+        id: this.data.nextItemId++,
+        title: s.title,
+        done: false,
+        deadline: s.deadline || null,
+        priority: s.priority || "medium",
+        repeat: s.repeat || "",
+      })),
+    };
+    this.data.tasks.push(copy);
+    this.save();
+    return copy;
   },
 
   addSubtask(taskId, payload) {
@@ -3912,7 +3524,8 @@ const Store = {
       const q = filters.search.toLowerCase();
       tasks = tasks.filter((t) =>
         t.title.toLowerCase().includes(q) ||
-        (t.description || "").toLowerCase().includes(q)
+        (t.description || "").toLowerCase().includes(q) ||
+        (t.subtasks || []).some((s) => (s.title || "").toLowerCase().includes(q))
       );
     }
     if (filters.deadline_before) {
@@ -3934,15 +3547,14 @@ const Store = {
 };
 
 /* ============================================================
-   9. UI STATE
+   8. UI STATE
    ============================================================ */
 let currentView = "kanban";
 let currentStatusFilter = "all";
 let calDate = new Date();
-let _pendingMoveTaskId = null;
 
 /* ============================================================
-   10. HELPERS
+   9. HELPERS
    ============================================================ */
 function getBoardFilters() {
   const f = {
@@ -3977,6 +3589,7 @@ function updateStats() {
   const progressCols = board.columns
     .filter((c) => c.id !== todoCol && !doneCols.includes(c.id) && c.type !== "overdue")
     .map((c) => c.id);
+
   const elTotal = $("#st-total");
   const elTodo = $("#st-todo");
   const elProg = $("#st-progress");
@@ -3985,13 +3598,14 @@ function updateStats() {
   if (elTodo) elTodo.textContent = tasks.filter((t) => t.status === todoCol).length;
   if (elProg) elProg.textContent = tasks.filter((t) => progressCols.includes(t.status)).length;
   if (elDone) elDone.textContent = tasks.filter((t) => doneCols.includes(t.status)).length;
+
   $$("#stats-bar .stat").forEach((el) => {
     el.classList.toggle("active", el.dataset.statusTarget === currentStatusFilter);
   });
 }
 
 /* ============================================================
-   11. RENDER — KANBAN
+   10. RENDER — KANBAN
    ============================================================ */
 let draggedTaskId = null;
 
@@ -4046,9 +3660,6 @@ function renderKanban() {
       const subAllDone = subTotal > 0 && subDone === subTotal;
 
       card.innerHTML = `
-        <button class="card-move-btn" type="button" aria-label="Переместить задачу" title="Переместить">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
-        </button>
         <div>${escapeHtml(t.title)}</div>
         ${(t.deadline || subTotal || t.repeat) ? `
           <div class="card-bottom">
@@ -4057,24 +3668,25 @@ function renderKanban() {
             ${t.repeat ? `<span class="repeat-icon" title="Повторяется">🔁</span>` : ""}
           </div>
         ` : ""}
+        <button class="card-move-btn" type="button" aria-label="Переместить задачу" title="Переместить">⇄</button>
       `;
 
       card.addEventListener("click", (e) => {
         if (e.target.closest(".card-move-btn")) return;
         openTaskModal(t.id);
       });
-      const moveBtn = card.querySelector(".card-move-btn");
-      moveBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        openMoveMenu(t.id);
-      });
-
       card.addEventListener("dragstart", (e) => {
         draggedTaskId = t.id;
         card.classList.add("dragging");
         e.dataTransfer.effectAllowed = "move";
       });
       card.addEventListener("dragend", () => card.classList.remove("dragging"));
+
+      card.querySelector(".card-move-btn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        openMoveTaskPopover(t, board.columns);
+      });
+
       colEl.appendChild(card);
     });
 
@@ -4084,15 +3696,28 @@ function renderKanban() {
       e.preventDefault();
       colEl.classList.remove("drag-over");
       if (!draggedTaskId) return;
+
       const task = Store.getTask(draggedTaskId);
-      if (col.type === "overdue") { draggedTaskId = null; render(); return; }
+
+      if (col.type === "overdue") {
+        draggedTaskId = null;
+        render();
+        return;
+      }
+
       if (task && task.repeat && col.type === "done") {
         Store.updateTask(task.id, { status: col.id });
+
         const newDeadline = nextDateByRepeat(task.deadline, task.repeat);
         const firstStatus = Store.getFirstStatus(task.board_id);
         const newTask = Store.createTask({
-          title: task.title, description: task.description, deadline: newDeadline,
-          priority: task.priority, status: firstStatus, repeat: task.repeat, board_id: task.board_id,
+          title: task.title,
+          description: task.description,
+          deadline: newDeadline,
+          priority: task.priority,
+          status: firstStatus,
+          repeat: task.repeat,
+          board_id: task.board_id,
         });
         newTask.subtasks = (task.subtasks || []).map((s) => ({
           id: Store.data.nextItemId++,
@@ -4106,6 +3731,7 @@ function renderKanban() {
       } else {
         Store.updateTask(draggedTaskId, { status: col.id });
       }
+
       draggedTaskId = null;
       render();
     });
@@ -4114,67 +3740,72 @@ function renderKanban() {
   });
 }
 
-/* ============================================================
-   12. MOVE MENU
-   ============================================================ */
-function openMoveMenu(taskId) {
-  const task = Store.getTask(taskId);
-  if (!task) return;
-  const board = Store.getBoard(task.board_id);
-  if (!board) return;
-  _pendingMoveTaskId = taskId;
-  $("#move-title").textContent = task.title;
-  const list = $("#move-list");
-  list.innerHTML = "";
-  board.columns.forEach((col) => {
-    if (col.type === "overdue") return;
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "move-menu-item" + (col.id === task.status ? " current" : "");
-    btn.innerHTML = `<span class="dot" style="background:${col.color}"></span>${escapeHtml(col.label)}`;
-    btn.addEventListener("click", () => { applyMove(taskId, col.id); closeMoveMenu(); });
-    list.appendChild(btn);
-  });
-  $("#move-backdrop").classList.add("open");
-  lockBody();
-}
-function closeMoveMenu() {
-  $("#move-backdrop").classList.remove("open");
-  unlockBody();
-  _pendingMoveTaskId = null;
-}
-function applyMove(taskId, colId) {
-  const task = Store.getTask(taskId);
-  if (!task) return;
-  const board = Store.getBoard(task.board_id);
-  if (!board) return;
-  const col = board.columns.find((c) => c.id === colId);
-  if (!col) return;
-  if (task.repeat && col.type === "done") {
-    Store.updateTask(task.id, { status: col.id });
-    const newDeadline = nextDateByRepeat(task.deadline, task.repeat);
-    const firstStatus = Store.getFirstStatus(task.board_id);
-    const newTask = Store.createTask({
-      title: task.title, description: task.description, deadline: newDeadline,
-      priority: task.priority, status: firstStatus, repeat: task.repeat, board_id: task.board_id,
+function openMoveTaskPopover(task, columns) {
+  const backdrop = document.createElement("div");
+  backdrop.className = "confirm-backdrop open";
+  backdrop.setAttribute("role", "dialog");
+  backdrop.setAttribute("aria-modal", "true");
+  const items = columns.map((c) => {
+    const active = c.id === task.status ? "✓ " : "";
+    return `<button class="btn" data-col="${c.id}" style="width:100%;justify-content:flex-start;margin-bottom:6px">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c.color};margin-right:8px"></span>
+      ${active}${escapeHtml(c.label)}
+    </button>`;
+  }).join("");
+  backdrop.innerHTML = `
+    <div class="confirm-modal">
+      <h3 class="confirm-title no-icon">Переместить задачу</h3>
+      <p class="confirm-text" style="margin-bottom:12px">${escapeHtml(task.title)}</p>
+      <div>${items}</div>
+      <div class="confirm-actions" style="margin-top:12px">
+        <button class="btn ghost" data-action="cancel">Отмена</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  const close = () => { backdrop.classList.remove("open"); setTimeout(() => backdrop.remove(), 200); };
+  backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
+  backdrop.querySelector('[data-action="cancel"]').addEventListener("click", close);
+  backdrop.querySelectorAll("[data-col]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const colId = b.dataset.col;
+      const board = Store.getActiveBoard();
+      const col = board.columns.find((c) => c.id === colId);
+      if (!col) { close(); return; }
+
+      if (task.repeat && col.type === "done") {
+        Store.updateTask(task.id, { status: col.id });
+        const newDeadline = nextDateByRepeat(task.deadline, task.repeat);
+        const firstStatus = Store.getFirstStatus(task.board_id);
+        const newTask = Store.createTask({
+          title: task.title,
+          description: task.description,
+          deadline: newDeadline,
+          priority: task.priority,
+          status: firstStatus,
+          repeat: task.repeat,
+          board_id: task.board_id,
+        });
+        newTask.subtasks = (task.subtasks || []).map((s) => ({
+          id: Store.data.nextItemId++,
+          title: s.title,
+          done: false,
+          deadline: s.deadline ? nextDateByRepeat(s.deadline, s.repeat || task.repeat) : null,
+          priority: s.priority || "medium",
+          repeat: s.repeat || "",
+        }));
+        Store.save();
+      } else {
+        Store.updateTask(task.id, { status: colId });
+      }
+      close();
+      render();
     });
-    newTask.subtasks = (task.subtasks || []).map((s) => ({
-      id: Store.data.nextItemId++,
-      title: s.title,
-      done: false,
-      deadline: s.deadline ? nextDateByRepeat(s.deadline, s.repeat || task.repeat) : null,
-      priority: s.priority || "medium",
-      repeat: s.repeat || "",
-    }));
-    Store.save();
-  } else {
-    Store.updateTask(taskId, { status: colId });
-  }
-  render();
+  });
 }
 
 /* ============================================================
-   13. RENDER — LIST
+   11. RENDER — LIST
    ============================================================ */
 function renderList() {
   const board = Store.getActiveBoard();
@@ -4183,23 +3814,28 @@ function renderList() {
   const tasks = Store.listTasks(getBoardFilters());
   const container = $("#task-list");
   container.innerHTML = "";
+
   if (!tasks.length) {
     container.innerHTML = `<div class="empty-state">Пока ничего не найдено.<br><small>Измените фильтр или добавьте задачу.</small></div>`;
     return;
   }
+
   tasks.forEach((t) => {
     const row = document.createElement("div");
     const done = Store.isTaskDone(t);
     const overdue = isOverdue(t.deadline, done);
     const col = board.columns.find((c) => c.id === t.status);
     row.className = `task-row p-${t.priority}` + (done ? " done" : "");
+
     const label = col ? col.label : t.status;
     const color = col ? col.color : "#94a3b8";
     const c = hexToRgb(color);
     const pillStyle = `--pill-bg: rgba(${c.r},${c.g},${c.b},0.1); --pill-fg: rgb(${c.r},${c.g},${c.b}); --pill-border: rgba(${c.r},${c.g},${c.b},0.25);`;
+
     const subDone = (t.subtasks || []).filter((s) => s.done).length;
     const subTotal = (t.subtasks || []).length;
     const subAllDone = subTotal > 0 && subDone === subTotal;
+
     row.innerHTML = `
       <span class="title">${escapeHtml(t.title)}</span>
       <span class="meta">
@@ -4217,7 +3853,7 @@ function renderList() {
 }
 
 /* ============================================================
-   14. RENDER — CALENDAR
+   12. RENDER — CALENDAR
    ============================================================ */
 const WEEKDAYS_FULL = ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"];
 
@@ -4231,12 +3867,15 @@ function renderCalendar() {
   start.setDate(start.getDate() - ((first.getDay() + 6) % 7));
   const end = new Date(start);
   end.setDate(end.getDate() + 42);
+
   const tasks = Store.listTasks({
     board_id: board.id,
     deadline_after: start.toISOString(),
     deadline_before: end.toISOString(),
   });
+
   $("#cal-title").textContent = calDate.toLocaleString("ru-RU", { month: "long", year: "numeric" });
+
   const byDay = {};
   tasks.forEach((t) => {
     if (!t.deadline) return;
@@ -4244,10 +3883,13 @@ function renderCalendar() {
     (byDay[key] = byDay[key] || []).push(t);
   });
   Object.keys(byDay).forEach((k) => byDay[k].sort((a, b) => new Date(a.deadline) - new Date(b.deadline)));
+
   const grid = $("#calendar");
   grid.innerHTML = "";
   const tKey = todayKey();
-  const MAX = 3;
+  const isMobile = window.matchMedia("(max-width: 640px)").matches;
+  const MAX = isMobile ? 2 : 3;
+
   for (let i = 0; i < 42; i++) {
     const day = new Date(start);
     day.setDate(day.getDate() + i);
@@ -4256,44 +3898,43 @@ function renderCalendar() {
     cell.className = "cal-cell";
     if (day.getMonth() !== month) cell.classList.add("other-month");
     if (key === tKey) cell.classList.add("today");
+
     const dayTasks = byDay[key] || [];
     if (dayTasks.length) cell.classList.add("has-tasks");
+
     cell.innerHTML = `<div class="cal-date">${day.getDate()}</div>`;
+
     dayTasks.slice(0, MAX).forEach((t) => {
       const el = document.createElement("div");
       el.className = `cal-task p-${t.priority}`;
       el.textContent = (t.repeat ? "🔁 " : "") + t.title;
       el.title = t.title;
-      el.addEventListener("click", (e) => { e.stopPropagation(); openTaskModal(t.id); });
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openTaskModal(t.id);
+      });
       cell.appendChild(el);
     });
+
     if (dayTasks.length > MAX) {
       const more = document.createElement("div");
       more.className = "cal-more";
       more.textContent = `+${dayTasks.length - MAX} ещё`;
       cell.appendChild(more);
     }
-    if (dayTasks.length) {
-      const dots = document.createElement("div");
-      dots.className = "cal-dots";
-      dayTasks.slice(0, 6).forEach((t) => {
-        const d = document.createElement("span");
-        d.className = `cal-dot p-${t.priority}`;
-        dots.appendChild(d);
-      });
-      cell.appendChild(dots);
-    }
+
     cell.addEventListener("click", (e) => {
       if (e.target.closest(".cal-task")) return;
       if (!dayTasks.length) return;
       openDayPopup(day, dayTasks);
     });
+
     grid.appendChild(cell);
   }
 }
 
 /* ============================================================
-   15. RENDER — ANALYTICS
+   13. RENDER — ANALYTICS
    ============================================================ */
 const AN_PRIO = {
   low:     { label: "Низкий",  color: "var(--prio-low)" },
@@ -4308,9 +3949,14 @@ function dowMon0(date) { return (date.getDay() + 6) % 7; }
 function renderAnalytics() {
   const board = Store.getActiveBoard();
   const root = $("#analytics-content");
-  if (!board) { root.innerHTML = `<div class="an2-empty">Нет активной воронки</div>`; return; }
+  if (!board) {
+    root.innerHTML = `<div class="an2-empty">Нет активной воронки</div>`;
+    return;
+  }
+
   const tasks = Store.data.tasks.filter((t) => t.board_id === board.id);
   const doneColIds = board.columns.filter((c) => c.type === "done").map((c) => c.id);
+
   const total = tasks.length;
   const done = tasks.filter((t) => doneColIds.includes(t.status)).length;
   const inProgress = total - done;
@@ -4318,10 +3964,13 @@ function renderAnalytics() {
   const overdue = tasks.filter((t) =>
     !doneColIds.includes(t.status) && t.deadline && new Date(t.deadline) < now
   ).length;
+
   const donePct = total ? Math.round((done / total) * 100) : 0;
+
   const prioCounts = { low: 0, medium: 0, high: 0, urgent: 0 };
   tasks.forEach((t) => { if (prioCounts[t.priority] != null) prioCounts[t.priority]++; });
   const prioMax = Math.max(1, ...Object.values(prioCounts));
+
   const colRows = board.columns.map((col) => {
     let count = 0;
     if (col.type === "overdue") {
@@ -4336,9 +3985,11 @@ function renderAnalytics() {
     return { col, count };
   });
   const colMax = Math.max(1, ...colRows.map((r) => r.count));
+
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const todayEnd = new Date(todayStart); todayEnd.setDate(todayEnd.getDate() + 1);
   const weekEnd = new Date(todayStart); weekEnd.setDate(weekEnd.getDate() + 7);
+
   let dlOverdue = 0, dlToday = 0, dlWeek = 0, dlNone = 0;
   tasks.forEach((t) => {
     if (!t.deadline) { dlNone++; return; }
@@ -4347,8 +3998,10 @@ function renderAnalytics() {
     if (d >= todayStart && d < todayEnd) { dlToday++; return; }
     if (d >= todayEnd && d < weekEnd) { dlWeek++; return; }
   });
+
   const monday = new Date(todayStart);
   monday.setDate(monday.getDate() - dowMon0(todayStart));
+
   const weekDays = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday);
@@ -4362,16 +4015,16 @@ function renderAnalytics() {
     weekDays.push({ date: d, count, isToday: isSameDay(d, todayStart) });
   }
   const weekMax = Math.max(1, ...weekDays.map((d) => d.count));
+
   const R = 47;
   const CIRC = 2 * Math.PI * R;
   const dashOffset = CIRC * (1 - donePct / 100);
+
   root.innerHTML = `
     <div class="an2-wrap">
       <div class="an2-kpis">
         <div class="an2-kpi k-total">
-          <div class="an2-kpi-icon">
-            <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg>
-          </div>
+          <div class="an2-kpi-icon">▦</div>
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${total}</div>
             <div class="an2-kpi-label">Всего</div>
@@ -4379,9 +4032,7 @@ function renderAnalytics() {
           </div>
         </div>
         <div class="an2-kpi k-done">
-          <div class="an2-kpi-icon">
-            <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
+          <div class="an2-kpi-icon">✓</div>
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${done}</div>
             <div class="an2-kpi-label">Выполнено</div>
@@ -4389,9 +4040,7 @@ function renderAnalytics() {
           </div>
         </div>
         <div class="an2-kpi k-progress">
-          <div class="an2-kpi-icon">
-            <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3 a9 9 0 0 1 9 9"/></svg>
-          </div>
+          <div class="an2-kpi-icon">◐</div>
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${inProgress}</div>
             <div class="an2-kpi-label">В работе</div>
@@ -4399,9 +4048,7 @@ function renderAnalytics() {
           </div>
         </div>
         <div class="an2-kpi k-overdue">
-          <div class="an2-kpi-icon">
-            <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </div>
+          <div class="an2-kpi-icon">!</div>
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${overdue}</div>
             <div class="an2-kpi-label">Просрочено</div>
@@ -4409,6 +4056,7 @@ function renderAnalytics() {
           </div>
         </div>
       </div>
+
       <div class="an2-grid">
         <div class="an2-panel">
           <div class="an2-panel-head">
@@ -4419,7 +4067,9 @@ function renderAnalytics() {
             <div class="an2-donut">
               <svg viewBox="0 0 120 120">
                 <circle class="donut-bg" cx="60" cy="60" r="${R}"></circle>
-                <circle class="donut-fg" cx="60" cy="60" r="${R}" stroke-dasharray="${CIRC}" stroke-dashoffset="${dashOffset}"></circle>
+                <circle class="donut-fg" cx="60" cy="60" r="${R}"
+                        stroke-dasharray="${CIRC}"
+                        stroke-dashoffset="${dashOffset}"></circle>
               </svg>
               <div class="an2-donut-center">
                 <div class="an2-donut-pct">${donePct}%</div>
@@ -4440,19 +4090,33 @@ function renderAnalytics() {
             </div>
           </div>
         </div>
+
         <div class="an2-panel">
           <div class="an2-panel-head">
             <h3>Дедлайны</h3>
             <span class="an2-badge">${dlOverdue + dlToday + dlWeek} активных</span>
           </div>
           <div class="an2-urgency">
-            <div class="an2-urg u-overdue"><div class="an2-urg-label">Просрочено</div><div class="an2-urg-num">${dlOverdue}</div></div>
-            <div class="an2-urg u-today"><div class="an2-urg-label">Сегодня</div><div class="an2-urg-num">${dlToday}</div></div>
-            <div class="an2-urg u-week"><div class="an2-urg-label">На неделе</div><div class="an2-urg-num">${dlWeek}</div></div>
-            <div class="an2-urg u-none"><div class="an2-urg-label">Без дедлайна</div><div class="an2-urg-num">${dlNone}</div></div>
+            <div class="an2-urg u-overdue">
+              <div class="an2-urg-label">Просрочено</div>
+              <div class="an2-urg-num">${dlOverdue}</div>
+            </div>
+            <div class="an2-urg u-today">
+              <div class="an2-urg-label">Сегодня</div>
+              <div class="an2-urg-num">${dlToday}</div>
+            </div>
+            <div class="an2-urg u-week">
+              <div class="an2-urg-label">На неделе</div>
+              <div class="an2-urg-num">${dlWeek}</div>
+            </div>
+            <div class="an2-urg u-none">
+              <div class="an2-urg-label">Без дедлайна</div>
+              <div class="an2-urg-num">${dlNone}</div>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="an2-grid">
         <div class="an2-panel">
           <div class="an2-panel-head"><h3>По приоритетам</h3></div>
@@ -4475,6 +4139,7 @@ function renderAnalytics() {
             }).join("")}
           </div>
         </div>
+
         <div class="an2-panel">
           <div class="an2-panel-head"><h3>По колонкам</h3></div>
           <div class="an2-bars">
@@ -4496,6 +4161,7 @@ function renderAnalytics() {
           </div>
         </div>
       </div>
+
       <div class="an2-grid">
         <div class="an2-panel">
           <div class="an2-panel-head">
@@ -4528,8 +4194,12 @@ function renderAnalytics() {
 function openDayPopup(day, tasks) {
   const backdrop = document.createElement("div");
   backdrop.className = "day-popup-backdrop open";
+  backdrop.setAttribute("role", "dialog");
+  backdrop.setAttribute("aria-modal", "true");
+
   const dayStr = day.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
   const weekdayStr = WEEKDAYS_FULL[day.getDay()];
+
   const tasksHTML = tasks.map((t) => {
     const time = new Date(t.deadline).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
     const done = Store.isTaskDone(t);
@@ -4540,20 +4210,20 @@ function openDayPopup(day, tasks) {
       </div>
     `;
   }).join("");
+
   backdrop.innerHTML = `
-    <div class="day-popup" role="dialog" aria-modal="true">
+    <div class="day-popup">
       <div class="day-popup-head">
         <h3>${escapeHtml(weekdayStr + ", " + dayStr)}</h3>
         <span class="count-badge">${tasks.length} ${plural(tasks.length, "задача", "задачи", "задач")}</span>
-        <button class="btn ghost small" data-action="close" aria-label="Закрыть">
-          <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
+        <button class="btn ghost small" data-action="close" aria-label="Закрыть">✕</button>
       </div>
       <div class="day-popup-body">${tasksHTML}</div>
     </div>
   `;
+
   document.body.appendChild(backdrop);
-  lockBody();
+
   let closed = false;
   const onEsc = (e) => { if (e.key === "Escape") close(); };
   function close() {
@@ -4561,7 +4231,7 @@ function openDayPopup(day, tasks) {
     closed = true;
     backdrop.classList.remove("open");
     document.removeEventListener("keydown", onEsc);
-    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
+    setTimeout(() => backdrop.remove(), 200);
   }
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="close"]').addEventListener("click", close);
@@ -4576,7 +4246,7 @@ function openDayPopup(day, tasks) {
 }
 
 /* ============================================================
-   16. DATE PICKER
+   14. DATE PICKER
    ============================================================ */
 const MONTHS_RU = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
 const WEEKDAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
@@ -4598,7 +4268,8 @@ function formatDeadlineDisplay(date) {
   if (isSameDay(date, yesterday)) return `Вчера, ${time}`;
   const weekday = WEEKDAYS_SHORT[(date.getDay() + 6) % 7];
   const month = MONTHS_RU[date.getMonth()];
-  return `${weekday}, ${date.getDate()} ${month} · ${time}`;
+  const yearPart = date.getFullYear() !== now.getFullYear() ? ` ${date.getFullYear()}` : "";
+  return `${weekday}, ${date.getDate()} ${month}${yearPart} · ${time}`;
 }
 
 function renderDateTrigger() {
@@ -4614,6 +4285,7 @@ function renderDateTrigger() {
   valEl.textContent = formatDeadlineDisplay(d);
   const overdue = d < new Date();
   valEl.className = "value" + (overdue ? " overdue" : "");
+
   if (!trigger.querySelector(".clear-inline")) {
     const clearBtn = document.createElement("span");
     clearBtn.className = "clear-inline";
@@ -4638,6 +4310,7 @@ function renderDatePopover() {
   const daysEl = $("#dp-days");
   daysEl.innerHTML = "";
   const today = new Date();
+
   for (let i = 0; i < 42; i++) {
     const day = new Date(start);
     day.setDate(start.getDate() + i);
@@ -4648,9 +4321,13 @@ function renderDatePopover() {
     if (day.getMonth() !== month) btn.classList.add("other-month");
     if (isSameDay(day, today)) btn.classList.add("today");
     if (dpSelectedDate && isSameDay(day, dpSelectedDate)) btn.classList.add("selected");
-    btn.addEventListener("click", () => { dpSelectedDate = new Date(day); renderDatePopover(); });
+    btn.addEventListener("click", () => {
+      dpSelectedDate = new Date(day);
+      renderDatePopover();
+    });
     daysEl.appendChild(btn);
   }
+
   const hourInput = $("#dp-hour");
   const minInput = $("#dp-minute");
   if (document.activeElement !== hourInput) hourInput.value = pad2(dpSelectedHour);
@@ -4713,6 +4390,7 @@ function applyDatePopover() {
 function bindDatePicker() {
   const trigger = $("#dp-trigger");
   const pop = $("#dp-popover");
+
   trigger.addEventListener("click", (e) => {
     if (e.target.closest(".clear-inline")) return;
     if (pop.classList.contains("open")) closeDatePopover();
@@ -4720,8 +4398,10 @@ function bindDatePicker() {
   });
   $("#dp-prev").addEventListener("click", () => { dpViewDate.setMonth(dpViewDate.getMonth() - 1); renderDatePopover(); });
   $("#dp-next").addEventListener("click", () => { dpViewDate.setMonth(dpViewDate.getMonth() + 1); renderDatePopover(); });
+
   const hourInput = $("#dp-hour");
   const minInput = $("#dp-minute");
+
   hourInput.addEventListener("input", () => {
     let v = hourInput.value.replace(/\D/g, "").slice(0, 2);
     hourInput.value = v;
@@ -4742,7 +4422,10 @@ function bindDatePicker() {
     hourInput.value = pad2(n);
     dpSelectedHour = n;
   });
-  hourInput.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); hourInput.blur(); } });
+  hourInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); hourInput.blur(); }
+  });
+
   minInput.addEventListener("input", () => {
     let v = minInput.value.replace(/\D/g, "").slice(0, 2);
     minInput.value = v;
@@ -4770,6 +4453,7 @@ function bindDatePicker() {
       hourInput.setSelectionRange(len, len);
     }
   });
+
   $("#dp-clear").addEventListener("click", (e) => {
     e.stopPropagation();
     currentDeadline = null;
@@ -4777,12 +4461,14 @@ function bindDatePicker() {
     renderDateTrigger();
     closeDatePopover();
   });
+
   $("#dp-apply").addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
     applyDatePopover();
   });
   $("#dp-apply").addEventListener("mousedown", (e) => e.stopPropagation());
+
   document.addEventListener("click", (e) => {
     if (!pop.classList.contains("open")) return;
     if (pop.contains(e.target) || trigger.contains(e.target)) return;
@@ -4794,13 +4480,13 @@ function bindDatePicker() {
 }
 
 /* ============================================================
-   17. MODAL TASK + SUBTASKS + SUBTASK EDITOR
+   15. MODAL TASK + SUBTASKS
    ============================================================ */
 let currentTaskId = null;
 let currentPriority = "medium";
 let currentRepeat = "";
-let currentStatus = null;
 let subtaskDragId = null;
+
 let draftSubtasks = [];
 let draftNextId = -1;
 
@@ -4810,23 +4496,6 @@ function getActiveSubtasks() {
   if (currentTaskId === null) return draftSubtasks;
   const t = Store.getTask(currentTaskId);
   return (t && Array.isArray(t.subtasks)) ? t.subtasks : [];
-}
-
-function renderStatusSelect() {
-  const sel = $("#m-status");
-  if (!sel) return;
-  const board = Store.getActiveBoard();
-  if (!board) { sel.innerHTML = ""; return; }
-  sel.innerHTML = "";
-  board.columns.forEach((col) => {
-    const opt = document.createElement("option");
-    opt.value = col.id;
-    opt.textContent = col.label;
-    sel.appendChild(opt);
-  });
-  if (currentStatus && board.columns.find((c) => c.id === currentStatus)) {
-    sel.value = currentStatus;
-  }
 }
 
 let editingSubtaskId = null;
@@ -4851,6 +4520,7 @@ function openSubtaskEditor(subtaskId) {
   const isNew = subtaskId === null || subtaskId === undefined;
   $("#subtask-modal-title").textContent = isNew ? "Новая подзадача" : "Подзадача";
   $("#sm-delete").style.display = isNew ? "none" : "";
+
   if (isNew) {
     $("#sm-title").value = "";
     $("#sm-deadline").value = "";
@@ -4867,20 +4537,20 @@ function openSubtaskEditor(subtaskId) {
     setSubtaskPriority(s.priority || "medium");
     setSubtaskRepeat(s.repeat || "");
   }
+
   $("#subtask-modal-backdrop").classList.add("open");
-  lockBody();
   setTimeout(() => $("#sm-title").focus(), 60);
 }
 
 function closeSubtaskEditor() {
   $("#subtask-modal-backdrop").classList.remove("open");
-  unlockBody();
   editingSubtaskId = null;
 }
 
 function saveSubtaskEditor() {
   const title = $("#sm-title").value.trim();
   if (!title) { $("#sm-title").focus(); return; }
+
   const patch = {
     title,
     deadline: fromDatetimeLocalValue($("#sm-deadline").value),
@@ -4888,7 +4558,9 @@ function saveSubtaskEditor() {
     done: $("#sm-done").checked,
     repeat: smRepeat,
   };
+
   const isNew = editingSubtaskId === null || editingSubtaskId === undefined;
+
   if (isNew) {
     if (currentTaskId === null) {
       draftSubtasks.push({
@@ -4910,6 +4582,7 @@ function saveSubtaskEditor() {
       Store.updateSubtask(currentTaskId, editingSubtaskId, patch);
     }
   }
+
   closeSubtaskEditor();
   renderSubtasks();
 }
@@ -4932,14 +4605,21 @@ function bindSubtaskEditor() {
   $("#sm-save").addEventListener("click", saveSubtaskEditor);
   $("#sm-delete").addEventListener("click", deleteSubtaskFromEditor);
   $("#sm-deadline-clear").addEventListener("click", () => { $("#sm-deadline").value = ""; });
-  backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeSubtaskEditor(); });
-  $("#sm-title").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); saveSubtaskEditor(); } });
+
+  backdrop.addEventListener("click", (e) => {
+    if (e.target === backdrop) closeSubtaskEditor();
+  });
+  $("#sm-title").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); saveSubtaskEditor(); }
+  });
+
   $$("#sm-priority-row .prio-seg-btn").forEach((b) => {
     b.addEventListener("click", () => setSubtaskPriority(b.dataset.prio));
   });
   $$("#sm-repeat-row .repeat-btn").forEach((b) => {
     b.addEventListener("click", () => setSubtaskRepeat(b.dataset.repeat || ""));
   });
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && backdrop.classList.contains("open")) {
       e.stopPropagation();
@@ -4966,16 +4646,18 @@ function openTaskModal(id = null) {
   const isNew = id === null;
   $("#modal-title").textContent = isNew ? "Новая задача" : `Задача #${id}`;
   $("#m-delete").style.display = isNew ? "none" : "";
+  const dupBtn = $("#m-duplicate");
+  if (dupBtn) dupBtn.style.display = isNew ? "none" : "";
   closeDatePopover();
   closeSubtaskEditor();
+
   draftSubtasks = [];
   draftNextId = -1;
-  const board = Store.getActiveBoard();
+
   if (isNew) {
     $("#m-title").value = "";
     $("#m-description").value = "";
     currentDeadline = null;
-    currentStatus = board ? Store.getFirstStatus(board.id) : null;
     renderDateTrigger();
     setPriority("medium");
     setRepeat("");
@@ -4986,22 +4668,18 @@ function openTaskModal(id = null) {
     $("#m-title").value = t.title;
     $("#m-description").value = t.description || "";
     currentDeadline = t.deadline;
-    currentStatus = t.status;
     renderDateTrigger();
     setPriority(t.priority || "medium");
     setRepeat(t.repeat || "");
     renderSubtasks();
   }
-  renderStatusSelect();
   $("#modal-backdrop").classList.add("open");
-  lockBody();
   setTimeout(() => $("#m-title").focus(), 80);
 }
 function closeTaskModal() {
   $("#modal-backdrop").classList.remove("open");
   closeDatePopover();
   closeSubtaskEditor();
-  unlockBody();
   draftSubtasks = [];
 }
 
@@ -5010,26 +4688,26 @@ function renderSubtasks() {
   if (!ul) return;
   const items = getActiveSubtasks();
   ul.innerHTML = "";
+
   items.forEach((s) => {
     const li = document.createElement("li");
     li.className = s.done ? "done" : "";
     li.dataset.id = s.id;
-    li.draggable = true;
+    li.draggable = !isTouch();
+
     const deadlineText = s.deadline ? fmtDateTime(s.deadline) : "";
     const repeatIcon = s.repeat ? `<span class="subtask-repeat" title="Повторяется">🔁</span>` : "";
+
     li.innerHTML = `
-      <div class="subtask-drag" title="Перетащить" aria-hidden="true">
-        <svg class="ico ico-14" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
-      </div>
-      <input type="checkbox" ${s.done ? "checked" : ""} />
-      <span class="subtask-prio p-${s.priority || "medium"}"></span>
+      <div class="subtask-drag" title="Перетащить" aria-hidden="true">⋮⋮</div>
+      <input type="checkbox" ${s.done ? "checked" : ""} aria-label="Отметить выполненной" />
+      <span class="subtask-prio p-${s.priority || "medium"}" title="Приоритет"></span>
       <span class="subtask-title" title="Клик — открыть редактор">${escapeHtml(s.title)}</span>
       ${repeatIcon}
       ${deadlineText ? `<span class="subtask-deadline">${escapeHtml(deadlineText)}</span>` : ""}
-      <button class="subtask-remove" type="button" title="Удалить" aria-label="Удалить">
-        <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button class="subtask-remove" type="button" title="Удалить" aria-label="Удалить">✕</button>
     `;
+
     li.querySelector('input[type="checkbox"]').addEventListener("change", (e) => {
       const checked = e.target.checked;
       if (currentTaskId !== null) {
@@ -5041,8 +4719,13 @@ function renderSubtasks() {
       li.classList.toggle("done", checked);
       updateSubtaskProgress();
     });
+
     const titleEl = li.querySelector(".subtask-title");
-    titleEl.addEventListener("click", (e) => { e.stopPropagation(); openSubtaskEditor(s.id); });
+    titleEl.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openSubtaskEditor(s.id);
+    });
+
     li.querySelector(".subtask-remove").addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
@@ -5053,6 +4736,7 @@ function renderSubtasks() {
       }
       renderSubtasks();
     });
+
     li.addEventListener("dragstart", (e) => {
       subtaskDragId = s.id;
       li.classList.add("dragging");
@@ -5087,8 +4771,10 @@ function renderSubtasks() {
       subtaskDragId = null;
       renderSubtasks();
     });
+
     ul.appendChild(li);
   });
+
   updateSubtaskProgress();
 }
 
@@ -5102,7 +4788,7 @@ function updateSubtaskProgress() {
 }
 
 /* ============================================================
-   18. TEMPLATES UI
+   16. TEMPLATES UI
    ============================================================ */
 let editingTemplateId = null;
 let tplPriority = "medium";
@@ -5112,11 +4798,9 @@ let tplSubtasks = [];
 function openTemplatesModal() {
   renderTemplatesList();
   $("#templates-backdrop").classList.add("open");
-  lockBody();
 }
 function closeTemplatesModal() {
   $("#templates-backdrop").classList.remove("open");
-  unlockBody();
 }
 
 function renderTemplatesList() {
@@ -5124,15 +4808,18 @@ function renderTemplatesList() {
   const empty = $("#templates-empty");
   if (!list) return;
   list.innerHTML = "";
+
   const templates = Store.data.templates || [];
   if (!templates.length) {
     empty.style.display = "block";
     return;
   }
   empty.style.display = "none";
+
   templates.forEach((tpl) => {
     const card = document.createElement("div");
     card.className = "tpl-card";
+
     const repeatLabel = {
       "": null,
       daily: "🔁 Ежедневно",
@@ -5140,10 +4827,18 @@ function renderTemplatesList() {
       weekly: "🔁 Еженедельно",
       monthly: "🔁 Ежемесячно",
     }[tpl.repeat || ""] || null;
-    const offsetLabel = (typeof tpl.deadlineOffsetDays === "number") ? `📅 +${tpl.deadlineOffsetDays} дн.` : null;
+
+    const offsetLabel = (typeof tpl.deadlineOffsetDays === "number")
+      ? `📅 +${tpl.deadlineOffsetDays} дн.`
+      : null;
+
     const prioLabel = {
-      low: "🔵 Низкий", medium: "🟢 Средний", high: "🟡 Высокий", urgent: "🔴 Срочный",
+      low: "🔵 Низкий",
+      medium: "🟢 Средний",
+      high: "🟡 Высокий",
+      urgent: "🔴 Срочный",
     }[tpl.priority] || null;
+
     card.innerHTML = `
       <div class="tpl-card-head">
         <div class="tpl-card-icon">${escapeHtml(tpl.icon || "📝")}</div>
@@ -5159,20 +4854,16 @@ function renderTemplatesList() {
         ${tpl.subtasks.length ? `<span class="tpl-tag">☑ ${tpl.subtasks.length}</span>` : ""}
       </div>
       <div class="tpl-card-actions">
-        <button class="btn ghost" data-action="edit">
-          <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          Изменить
-        </button>
-        <button class="btn ghost" data-action="delete">
-          <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-          Удалить
-        </button>
+        <button class="btn ghost" data-action="edit">✏ Изменить</button>
+        <button class="btn ghost" data-action="delete">🗑 Удалить</button>
       </div>
     `;
+
     card.addEventListener("click", (e) => {
       if (e.target.closest("[data-action]")) return;
       applyTemplate(tpl.id);
     });
+
     card.querySelector('[data-action="edit"]').addEventListener("click", (e) => {
       e.stopPropagation();
       openTemplateEditor(tpl.id);
@@ -5181,6 +4872,7 @@ function renderTemplatesList() {
       e.stopPropagation();
       confirmDeleteTemplate(tpl.id);
     });
+
     list.appendChild(card);
   });
 }
@@ -5188,12 +4880,16 @@ function renderTemplatesList() {
 function applyTemplate(tplId) {
   const tpl = Store.getTemplate(tplId);
   if (!tpl) return;
+
   closeTemplatesModal();
+
   openTaskModal(null);
+
   $("#m-title").value = tpl.title || tpl.name || "";
   $("#m-description").value = tpl.description || "";
   setPriority(tpl.priority || "medium");
   setRepeat(tpl.repeat || "");
+
   if (typeof tpl.deadlineOffsetDays === "number") {
     const d = new Date();
     d.setDate(d.getDate() + tpl.deadlineOffsetDays);
@@ -5203,6 +4899,7 @@ function applyTemplate(tplId) {
     currentDeadline = null;
   }
   renderDateTrigger();
+
   draftSubtasks = (tpl.subtasks || []).map((text) => ({
     id: nextDraftId(),
     title: text,
@@ -5212,6 +4909,7 @@ function applyTemplate(tplId) {
     repeat: "",
   }));
   renderSubtasks();
+
   setTimeout(() => $("#m-title").focus(), 80);
 }
 
@@ -5220,6 +4918,7 @@ function openTemplateEditor(tplId = null) {
   const isNew = tplId === null || tplId === undefined;
   $("#tpl-editor-title").textContent = isNew ? "Новый шаблон" : "Редактор шаблона";
   $("#tpl-delete").style.display = isNew ? "none" : "";
+
   if (isNew) {
     $("#tpl-icon").value = "📝";
     $("#tpl-name").value = "";
@@ -5243,13 +4942,11 @@ function openTemplateEditor(tplId = null) {
   }
   renderTplSubtasks();
   $("#tpl-editor-backdrop").classList.add("open");
-  lockBody();
   setTimeout(() => $("#tpl-name").focus(), 80);
 }
 
 function closeTemplateEditor() {
   $("#tpl-editor-backdrop").classList.remove("open");
-  unlockBody();
   editingTemplateId = null;
 }
 
@@ -5275,9 +4972,7 @@ function renderTplSubtasks() {
     li.className = "tpl-subtask-row";
     li.innerHTML = `
       <span class="tpl-subtask-text">${escapeHtml(text)}</span>
-      <button class="subtask-remove" type="button" title="Удалить" aria-label="Удалить">
-        <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button class="subtask-remove" type="button" title="Удалить" aria-label="Удалить">✕</button>
     `;
     li.querySelector(".subtask-remove").addEventListener("click", () => {
       tplSubtasks.splice(i, 1);
@@ -5294,8 +4989,10 @@ function saveTemplateEditor() {
   const title = $("#tpl-task-title").value.trim();
   if (!name) { $("#tpl-name").focus(); return; }
   if (!title) { $("#tpl-task-title").focus(); return; }
+
   const offsetVal = $("#tpl-offset").value.trim();
   const deadlineOffsetDays = offsetVal === "" ? null : Math.max(0, Math.min(365, parseInt(offsetVal, 10) || 0));
+
   const payload = {
     icon: ($("#tpl-icon").value.trim() || "📝").slice(0, 2),
     name,
@@ -5306,6 +5003,7 @@ function saveTemplateEditor() {
     deadlineOffsetDays,
     subtasks: tplSubtasks.slice(),
   };
+
   if (editingTemplateId === null || editingTemplateId === undefined) {
     Store.createTemplate(payload);
   } else {
@@ -5338,11 +5036,15 @@ function confirmDeleteTemplate(tplId) {
 function bindTemplatesEvents() {
   const tBtn = $("#side-templates");
   if (tBtn) tBtn.addEventListener("click", openTemplatesModal);
+  const tBtnMobile = $("#mobile-templates");
+  if (tBtnMobile) tBtnMobile.addEventListener("click", openTemplatesModal);
+
   $("#templates-close").addEventListener("click", closeTemplatesModal);
   $("#templates-new").addEventListener("click", () => openTemplateEditor(null));
   $("#templates-backdrop").addEventListener("click", (e) => {
     if (e.target === $("#templates-backdrop")) closeTemplatesModal();
   });
+
   $("#tpl-editor-close").addEventListener("click", closeTemplateEditor);
   $("#tpl-cancel").addEventListener("click", closeTemplateEditor);
   $("#tpl-save").addEventListener("click", saveTemplateEditor);
@@ -5350,12 +5052,14 @@ function bindTemplatesEvents() {
   $("#tpl-editor-backdrop").addEventListener("click", (e) => {
     if (e.target === $("#tpl-editor-backdrop")) closeTemplateEditor();
   });
+
   $$("#tpl-priority-row .prio-seg-btn").forEach((b) => {
     b.addEventListener("click", () => setTplPriority(b.dataset.prio));
   });
   $$("#tpl-repeat-row .repeat-btn").forEach((b) => {
     b.addEventListener("click", () => setTplRepeat(b.dataset.repeat || ""));
   });
+
   $("#tpl-subtask-add").addEventListener("click", () => {
     const text = $("#tpl-subtask-input").value.trim();
     if (!text) return;
@@ -5370,42 +5074,40 @@ function bindTemplatesEvents() {
 }
 
 /* ============================================================
-   19. BOARD MANAGEMENT
+   17. BOARD MANAGEMENT
    ============================================================ */
 function renderBoardSelector() {
   const sel = $("#board-select");
-  sel.innerHTML = "";
-  Store.data.boards.forEach((b) => {
-    const opt = document.createElement("option");
-    opt.value = b.id;
-    opt.textContent = b.name;
-    if (b.id === Store.data.activeBoardId) opt.selected = true;
-    sel.appendChild(opt);
-  });
-  const delBtn = $("#board-del");
-  delBtn.disabled = Store.data.boards.length <= 1;
   const selM = $("#board-select-mobile");
-  if (selM) {
-    selM.innerHTML = "";
-    Store.data.boards.forEach((b) => {
+  if (sel) sel.innerHTML = "";
+  if (selM) selM.innerHTML = "";
+  Store.data.boards.forEach((b) => {
+    if (sel) {
       const opt = document.createElement("option");
       opt.value = b.id;
       opt.textContent = b.name;
       if (b.id === Store.data.activeBoardId) opt.selected = true;
-      selM.appendChild(opt);
-    });
-  }
+      sel.appendChild(opt);
+    }
+    if (selM) {
+      const opt2 = document.createElement("option");
+      opt2.value = b.id;
+      opt2.textContent = b.name;
+      if (b.id === Store.data.activeBoardId) opt2.selected = true;
+      selM.appendChild(opt2);
+    }
+  });
+  const delBtn = $("#board-del");
+  if (delBtn) delBtn.disabled = Store.data.boards.length <= 1;
 }
 
 function openBoardCreateModal() {
   $("#board-create-name").value = "";
   $("#board-create-backdrop").classList.add("open");
-  lockBody();
   setTimeout(() => $("#board-create-name").focus(), 60);
 }
 function closeBoardCreateModal() {
   $("#board-create-backdrop").classList.remove("open");
-  unlockBody();
 }
 function saveBoardCreateModal() {
   const name = $("#board-create-name").value.trim();
@@ -5417,7 +5119,9 @@ function saveBoardCreateModal() {
 }
 
 function bindBoardSelector() {
-  $("#board-select").addEventListener("change", (e) => {
+  const sel = $("#board-select");
+  const selM = $("#board-select-mobile");
+  const onChange = (e) => {
     Store.setActiveBoard(e.target.value);
     const s = $("#f-search"); if (s) s.value = "";
     const p = $("#f-priority"); if (p) p.value = "";
@@ -5426,21 +5130,10 @@ function bindBoardSelector() {
     currentStatusFilter = "all";
     renderBoardSelector();
     render();
-  });
-  const selM = $("#board-select-mobile");
-  if (selM) {
-    selM.addEventListener("change", (e) => {
-      Store.setActiveBoard(e.target.value);
-      const s = $("#f-search"); if (s) s.value = "";
-      const p = $("#f-priority"); if (p) p.value = "";
-      const a = $("#f-deadline-after"); if (a) a.value = "";
-      const b = $("#f-deadline-before"); if (b) b.value = "";
-      currentStatusFilter = "all";
-      renderBoardSelector();
-      render();
-      closeMoreMenu();
-    });
-  }
+  };
+  if (sel) sel.addEventListener("change", onChange);
+  if (selM) selM.addEventListener("change", onChange);
+
   $("#board-add").addEventListener("click", openBoardCreateModal);
   $("#board-create-close").addEventListener("click", closeBoardCreateModal);
   $("#board-create-cancel").addEventListener("click", closeBoardCreateModal);
@@ -5451,24 +5144,32 @@ function bindBoardSelector() {
   $("#board-create-name").addEventListener("keydown", (e) => {
     if (e.key === "Enter") { e.preventDefault(); saveBoardCreateModal(); }
   });
+
   $("#board-edit").addEventListener("click", () => {
     const board = Store.getActiveBoard();
     if (!board) return;
     openBoardEditor(board);
   });
+
   $("#board-del").addEventListener("click", () => {
     if (Store.data.boards.length <= 1) return;
     confirmDeleteBoard(Store.data.activeBoardId);
   });
+
   const sideTaskAdd = $("#side-task-add");
   if (sideTaskAdd) sideTaskAdd.addEventListener("click", () => openTaskModal(null));
+
+  const mobileTaskAdd = $("#mobile-task-add");
+  if (mobileTaskAdd) mobileTaskAdd.addEventListener("click", () => openTaskModal(null));
 }
 
 function openBoardEditor(board) {
   const backdrop = document.createElement("div");
   backdrop.className = "confirm-backdrop open";
+  backdrop.setAttribute("role", "dialog");
+  backdrop.setAttribute("aria-modal", "true");
   backdrop.innerHTML = `
-    <div class="confirm-modal" style="max-width:560px" role="dialog" aria-modal="true">
+    <div class="confirm-modal" style="max-width:560px">
       <h3 class="confirm-title no-icon" style="color:var(--text)">Настроить воронку</h3>
       <p class="confirm-text" style="margin-bottom:12px">Воронка <strong>«${escapeHtml(board.name)}»</strong></p>
       <input id="be-name" class="board-editor-name" type="text" value="${escapeHtml(board.name)}" />
@@ -5481,8 +5182,9 @@ function openBoardEditor(board) {
     </div>
   `;
   document.body.appendChild(backdrop);
-  lockBody();
+
   const cols = backdrop.querySelector("#be-cols");
+
   function renderCols() {
     cols.innerHTML = "";
     board.columns.forEach((col) => {
@@ -5496,9 +5198,7 @@ function openBoardEditor(board) {
           <option value="done" ${col.type === "done" ? "selected" : ""}>Финальная</option>
           <option value="overdue" ${col.type === "overdue" ? "selected" : ""}>Просрочено</option>
         </select>
-        <button class="btn ghost" data-del="${col.id}" title="Удалить" aria-label="Удалить" style="padding:4px">
-          <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
+        <button class="btn ghost" data-del="${col.id}" title="Удалить" aria-label="Удалить" style="padding:4px">✕</button>
       `;
       row.querySelector("[data-label]").addEventListener("input", (e) => { col.label = e.target.value; });
       row.querySelector("[data-color]").addEventListener("input", (e) => { col.color = e.target.value; });
@@ -5525,14 +5225,13 @@ function openBoardEditor(board) {
     });
   }
   renderCols();
+
   backdrop.querySelector("#be-addcol").addEventListener("click", () => {
     board.columns.push({ id: uid("c"), label: "Новая колонка", color: "#8b5cf6", type: "normal" });
     renderCols();
   });
-  const close = () => {
-    backdrop.classList.remove("open");
-    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
-  };
+
+  const close = () => { backdrop.classList.remove("open"); setTimeout(() => backdrop.remove(), 200); };
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="cancel"]').addEventListener("click", close);
   backdrop.querySelector('[data-action="save"]').addEventListener("click", () => {
@@ -5560,17 +5259,59 @@ function confirmDeleteBoard(boardId) {
 }
 
 /* ============================================================
-   20. VIEWS
+   18. EXPORT / IMPORT
+   ============================================================ */
+function exportData() {
+  try {
+    const blob = new Blob([JSON.stringify(Store.data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `taskflow-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 100);
+  } catch (e) {
+    showAlert({ title: "Ошибка экспорта", text: escapeHtml(String(e.message || e)) });
+  }
+}
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data || !Array.isArray(data.boards)) throw new Error("Неверный формат файла");
+      Store.data = data;
+      Store._migrate();
+      Store._ensureIntegrity();
+      Store.save();
+      renderBoardSelector();
+      render();
+      showAlert({ title: "Импорт выполнен", text: `Загружено воронок: ${data.boards.length}, задач: ${data.tasks?.length || 0}.` });
+    } catch (e) {
+      showAlert({ title: "Ошибка импорта", text: escapeHtml(String(e.message || e)) });
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ============================================================
+   19. VIEWS
    ============================================================ */
 function switchView(view, btn) {
   currentView = view;
-  $$(".nav button[data-view]").forEach((b) => b.classList.remove("active"));
-  if (btn && btn.dataset.view) btn.classList.add("active");
+  $$(".nav button[data-view]").forEach((b) => {
+    b.classList.remove("active");
+    b.setAttribute("aria-selected", "false");
+  });
+  btn.classList.add("active");
+  btn.setAttribute("aria-selected", "true");
   $$(".view").forEach((v) => (v.style.display = "none"));
+
   const filtersBar = $("#filters-bar");
   const statsBar = $("#stats-bar");
   if (filtersBar) filtersBar.style.display = (view === "list") ? "grid" : "none";
   if (statsBar) statsBar.style.display = (view === "list") ? "grid" : "none";
+
   if (view === "kanban") {
     $("#view-kanban").style.display = "block";
     $("#page-title").textContent = "Канбан";
@@ -5603,63 +5344,7 @@ function setStatusFilter(status) {
 }
 
 /* ============================================================
-   21. MORE MENU
-   ============================================================ */
-function openMoreMenu() {
-  const menu = $("#more-menu");
-  const backdrop = $("#more-menu-backdrop");
-  const btn = $("#mobile-more-btn");
-  menu.classList.add("open");
-  backdrop.classList.add("open");
-  if (btn) btn.classList.add("active");
-  lockBody();
-}
-function closeMoreMenu() {
-  const menu = $("#more-menu");
-  const backdrop = $("#more-menu-backdrop");
-  const btn = $("#mobile-more-btn");
-  menu.classList.remove("open");
-  backdrop.classList.remove("open");
-  if (btn) btn.classList.remove("active");
-  unlockBody();
-}
-function bindMoreMenu() {
-  const btn = $("#mobile-more-btn");
-  const backdrop = $("#more-menu-backdrop");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      if ($("#more-menu").classList.contains("open")) closeMoreMenu();
-      else openMoreMenu();
-    });
-  }
-  if (backdrop) backdrop.addEventListener("click", closeMoreMenu);
-  const handlers = {
-    "mm-new-task": () => { closeMoreMenu(); openTaskModal(null); },
-    "mm-new-board": () => { closeMoreMenu(); openBoardCreateModal(); },
-    "mm-edit-board": () => {
-      closeMoreMenu();
-      const board = Store.getActiveBoard();
-      if (board) openBoardEditor(board);
-    },
-    "mm-templates": () => { closeMoreMenu(); openTemplatesModal(); },
-    "mm-settings": () => { closeMoreMenu(); openSettings(); },
-    "mm-delete-board": () => {
-      closeMoreMenu();
-      if (Store.data.boards.length <= 1) {
-        showAlert({ title: "Нельзя удалить последнюю воронку", text: "Создайте новую воронку, прежде чем удалять текущую." });
-        return;
-      }
-      confirmDeleteBoard(Store.data.activeBoardId);
-    },
-  };
-  Object.entries(handlers).forEach(([id, fn]) => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener("click", fn);
-  });
-}
-
-/* ============================================================
-   22. RENDER MASTER + TICK
+   20. RENDER MASTER + TICK
    ============================================================ */
 function render() {
   if (currentView === "kanban") renderKanban();
@@ -5682,10 +5367,11 @@ function tick() {
 }
 
 /* ============================================================
-   23. EVENTS
+   21. EVENTS
    ============================================================ */
 function bindDateMask(input) {
   if (!input) return;
+
   function rebuildFromDigits(digits, caretDigitPos) {
     let out = "";
     if (digits.length > 0) out += digits.slice(0, 2);
@@ -5694,6 +5380,7 @@ function bindDateMask(input) {
     if (digits.length >= 4) out += ".";
     if (digits.length > 4) out += digits.slice(4, 8);
     input.value = out;
+
     let pos = 0;
     if (caretDigitPos <= 2) pos = caretDigitPos;
     else if (caretDigitPos <= 4) pos = caretDigitPos + 1;
@@ -5701,6 +5388,7 @@ function bindDateMask(input) {
     pos = Math.min(pos, out.length);
     try { input.setSelectionRange(pos, pos); } catch (e) {}
   }
+
   input.addEventListener("input", () => {
     const raw = input.value.replace(/\D/g, "").slice(0, 8);
     const caret = input.selectionStart;
@@ -5708,10 +5396,12 @@ function bindDateMask(input) {
     rebuildFromDigits(raw, digitsBefore);
     if (currentView === "list") renderList();
   });
+
   input.addEventListener("keydown", (e) => {
     if (e.key !== "Backspace") return;
     const v = input.value;
     const pos = input.selectionStart;
+
     if (pos > 0 && v[pos - 1] === ".") {
       e.preventDefault();
       const digits = v.replace(/\D/g, "");
@@ -5729,6 +5419,7 @@ function bindDateMask(input) {
     rebuildFromDigits(newDigits, Math.max(0, digitsBefore - 1));
     if (currentView === "list") renderList();
   });
+
   input.addEventListener("keyup", () => {
     const v = input.value;
     const pos = input.selectionStart;
@@ -5744,6 +5435,7 @@ let _eventsBound = false;
 function bindEvents() {
   if (_eventsBound) return;
   _eventsBound = true;
+
   ["f-search", "f-priority"].forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -5752,9 +5444,11 @@ function bindEvents() {
   });
   bindDateMask($("#f-deadline-after"));
   bindDateMask($("#f-deadline-before"));
+
   $$("#stats-bar .stat").forEach((el) => {
     el.addEventListener("click", () => setStatusFilter(el.dataset.statusTarget || "all"));
   });
+
   $("#modal-close").addEventListener("click", closeTaskModal);
   $("#m-cancel").addEventListener("click", closeTaskModal);
   $("#modal-backdrop").addEventListener("click", (e) => {
@@ -5769,17 +5463,16 @@ function bindEvents() {
       $("#m-save").click();
     }
   });
+
   $$("#m-priority-row .prio-seg-btn").forEach((b) => {
     b.addEventListener("click", () => setPriority(b.dataset.prio));
   });
   $$("#m-repeat-row .repeat-btn").forEach((b) => {
     b.addEventListener("click", () => setRepeat(b.dataset.repeat || ""));
   });
-  const statusSel = $("#m-status");
-  if (statusSel) {
-    statusSel.addEventListener("change", (e) => { currentStatus = e.target.value; });
-  }
+
   bindDatePicker();
+
   $("#m-subtask-add").addEventListener("click", () => {
     const text = $("#m-subtask-input").value.trim();
     if (!text) return;
@@ -5802,9 +5495,11 @@ function bindEvents() {
   $("#m-subtask-input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") { e.preventDefault(); $("#m-subtask-add").click(); }
   });
+
   $("#m-save-as-tpl").addEventListener("click", () => {
     const title = $("#m-title").value.trim();
     if (!title) { $("#m-title").focus(); return; }
+
     showPrompt({
       title: "Сохранить как шаблон",
       label: "Название шаблона:",
@@ -5830,14 +5525,16 @@ function bindEvents() {
           deadlineOffsetDays: offset,
           subtasks: subs,
         });
+
         const btn = $("#m-save-as-tpl");
-        const oldText = btn.innerHTML;
-        btn.innerHTML = "✓ Сохранено";
+        const oldText = btn.textContent;
+        btn.textContent = "✓ Сохранено";
         btn.disabled = true;
-        setTimeout(() => { btn.innerHTML = oldText; btn.disabled = false; }, 1200);
+        setTimeout(() => { btn.textContent = oldText; btn.disabled = false; }, 1200);
       },
     });
   });
+
   $("#m-save").addEventListener("click", () => {
     const title = $("#m-title").value.trim();
     if (!title) { $("#m-title").focus(); return; }
@@ -5845,12 +5542,9 @@ function bindEvents() {
     const priority = currentPriority;
     const repeat = currentRepeat;
     const description = $("#m-description").value;
-    const statusFromSelect = $("#m-status") ? $("#m-status").value : null;
+
     if (currentTaskId === null) {
-      const task = Store.createTask({
-        title, description, deadline, priority, repeat,
-        status: statusFromSelect || currentStatus || undefined,
-      });
+      const task = Store.createTask({ title, description, deadline, priority, repeat });
       if (draftSubtasks.length) {
         task.subtasks = draftSubtasks.map((s) => ({
           id: Store.data.nextItemId++,
@@ -5864,13 +5558,12 @@ function bindEvents() {
       }
       draftSubtasks = [];
     } else {
-      const patch = { title, description, deadline, priority, repeat };
-      if (statusFromSelect) patch.status = statusFromSelect;
-      Store.updateTask(currentTaskId, patch);
+      Store.updateTask(currentTaskId, { title, description, deadline, priority, repeat });
     }
     closeTaskModal();
     render();
   });
+
   $("#m-delete").addEventListener("click", () => {
     if (!currentTaskId) return;
     const id = currentTaskId;
@@ -5884,26 +5577,56 @@ function bindEvents() {
       },
     });
   });
+
+  const dupBtn = $("#m-duplicate");
+  if (dupBtn) dupBtn.addEventListener("click", () => {
+    if (!currentTaskId) return;
+    const copy = Store.duplicateTask(currentTaskId);
+    closeTaskModal();
+    render();
+    if (copy) setTimeout(() => openTaskModal(copy.id), 120);
+  });
+
   $("#cal-prev").addEventListener("click", () => { calDate.setMonth(calDate.getMonth() - 1); renderCalendar(); });
   $("#cal-next").addEventListener("click", () => { calDate.setMonth(calDate.getMonth() + 1); renderCalendar(); });
+
+  const expBtn = $("#side-export");
+  if (expBtn) expBtn.addEventListener("click", exportData);
+  const impBtn = $("#side-import");
+  const impFile = $("#import-file");
+  if (impBtn && impFile) {
+    impBtn.addEventListener("click", () => impFile.click());
+    impFile.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) importData(file);
+      impFile.value = "";
+    });
+  }
+
   bindSubtaskEditor();
   bindTemplatesEvents();
-  bindMoreMenu();
-  $("#move-close").addEventListener("click", closeMoveMenu);
-  $("#move-backdrop").addEventListener("click", (e) => {
-    if (e.target === $("#move-backdrop")) closeMoveMenu();
-  });
 }
 
 /* ============================================================
-   24. DEADLINE WATCHER
+   22. DEADLINE WATCHER
    ============================================================ */
+const APPROACH_THRESHOLDS_MIN = [15, 10, 5];
+const OVERDUE_TICK_MS = 5 * 60 * 1000;
+const CHECK_INTERVAL_MS = 15000;
+
+const deadlineState = {
+  approachingPlayed: {},
+  overduePlayed: {},
+  scheduledTimers: {},
+};
+
 function clearScheduledTimers(taskId) {
   const set = deadlineState.scheduledTimers[taskId];
   if (!set) return;
   set.forEach((t) => clearTimeout(t));
   delete deadlineState.scheduledTimers[taskId];
 }
+
 function scheduleApproachSound(taskId, minutesBefore) {
   const t = Store.getTask(taskId);
   if (!t || !t.deadline) return;
@@ -5913,9 +5636,11 @@ function scheduleApproachSound(taskId, minutesBefore) {
   const fireAt = dl - minutesBefore * 60 * 1000;
   const delay = fireAt - now;
   if (delay <= 0 || delay > 24 * 60 * 60 * 1000) return;
+
   if (!deadlineState.scheduledTimers[taskId]) deadlineState.scheduledTimers[taskId] = new Set();
   if (!deadlineState.approachingPlayed[taskId]) deadlineState.approachingPlayed[taskId] = new Set();
   if (deadlineState.approachingPlayed[taskId].has(minutesBefore)) return;
+
   const timerId = setTimeout(() => {
     const t2 = Store.getTask(taskId);
     if (!t2 || Store.isTaskDone(t2)) return;
@@ -5924,25 +5649,32 @@ function scheduleApproachSound(taskId, minutesBefore) {
     if (!deadlineState.approachingPlayed[taskId]) deadlineState.approachingPlayed[taskId] = new Set();
     deadlineState.approachingPlayed[taskId].add(minutesBefore);
     Sound.playApproaching(minutesBefore);
+    notify("Скоро дедлайн", `${t2.title} — через ~${minutesBefore} мин`);
   }, delay);
+
   deadlineState.scheduledTimers[taskId].add(timerId);
 }
+
 function checkDeadlines() {
   const now = Date.now();
   const board = Store.getActiveBoard();
   if (!board) return;
   const doneCols = board.columns.filter((c) => c.type === "done").map((c) => c.id);
+
   Store.data.tasks.forEach((t) => {
     if (t.board_id !== board.id) return;
     if (doneCols.includes(t.status)) return;
     if (!t.deadline) return;
+
     const dl = new Date(t.deadline).getTime();
     const diff = dl - now;
+
     if (diff < 0) {
       const last = deadlineState.overduePlayed[t.id] || 0;
       if (now - last > OVERDUE_TICK_MS) {
         deadlineState.overduePlayed[t.id] = now;
         Sound.playOverdue();
+        notify("Дедлайн просрочен", t.title);
       }
       clearScheduledTimers(t.id);
       deadlineState.approachingPlayed[t.id] = new Set();
@@ -5953,20 +5685,23 @@ function checkDeadlines() {
       }
     }
   });
+
   updateTabBadge();
 }
 
 /* ============================================================
-   25. TAB TITLE BADGE
+   23. TAB TITLE BADGE
    ============================================================ */
 const _baseTitle = "TaskFlow — трекер задач";
 let _blinkState = false;
 let _blinkIntervalId = null;
+
 function updateTabBadge() {
   const now = Date.now();
   const board = Store.getActiveBoard();
   if (!board) { document.title = _baseTitle; return; }
   const doneCols = board.columns.filter((c) => c.type === "done").map((c) => c.id);
+
   let overdue = 0;
   let approaching = 0;
   Store.data.tasks.forEach((t) => {
@@ -5977,6 +5712,7 @@ function updateTabBadge() {
     if (diff < 0) overdue++;
     else if (diff <= 15 * 60 * 1000) approaching++;
   });
+
   let prefix = "";
   if (overdue > 0) {
     prefix = `🔴 (${overdue}) `;
@@ -5984,6 +5720,7 @@ function updateTabBadge() {
     prefix = `🟠 (${approaching}) `;
   }
   document.title = prefix + _baseTitle;
+
   if ((overdue > 0 || approaching > 0) && document.hidden) {
     if (!_blinkIntervalId) {
       _blinkIntervalId = setInterval(() => {
@@ -6002,32 +5739,7 @@ function updateTabBadge() {
 }
 
 /* ============================================================
-   26. NAV HEIGHT OBSERVER
-   ============================================================ */
-function setupNavHeightObserver() {
-  const sidebar = document.querySelector(".sidebar");
-  if (!sidebar) return;
-  const apply = () => {
-    if (window.innerWidth > 640) {
-      document.documentElement.style.setProperty("--mobile-nav-h", "62px");
-      return;
-    }
-    const h = sidebar.getBoundingClientRect().height;
-    if (h > 0) {
-      document.documentElement.style.setProperty("--mobile-nav-h", `${Math.round(h)}px`);
-    }
-  };
-  if (window.ResizeObserver) {
-    const ro = new ResizeObserver(apply);
-    ro.observe(sidebar);
-  }
-  window.addEventListener("resize", apply);
-  window.addEventListener("orientationchange", () => setTimeout(apply, 150));
-  apply();
-}
-
-/* ============================================================
-   27. INIT
+   24. INIT
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   loadAppearance();
@@ -6039,7 +5751,6 @@ document.addEventListener("DOMContentLoaded", () => {
   bindBoardSelector();
   bindEvents();
   renderBoardSelector();
-  setupNavHeightObserver();
 
   if (!Store.data.tasks.length && Store.data.nextTaskId === 1) {
     const board = Store.getActiveBoard();
@@ -6052,18 +5763,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   render();
 
-  setInterval(() => { if (!document.hidden) tick(); }, 30000);
-  setInterval(() => { if (!document.hidden) checkDeadlines(); }, CHECK_INTERVAL_MS);
+  setInterval(() => {
+    if (!document.hidden) tick();
+  }, 30000);
+
+  setInterval(() => {
+    if (!document.hidden) checkDeadlines();
+  }, CHECK_INTERVAL_MS);
+
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) { checkDeadlines(); tick(); }
-  });
-  window.addEventListener("focus", () => { checkDeadlines(); tick(); });
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 640) {
-      closeSettings();
-      closeMoreMenu();
+    if (!document.hidden) {
+      checkDeadlines();
+      tick();
     }
   });
+
+  window.addEventListener("focus", () => {
+    checkDeadlines();
+    tick();
+  });
+
+  window.addEventListener("resize", () => {
+    if (currentView === "calendar") renderCalendar();
+  });
+
   checkDeadlines();
 });
 </script>
