@@ -88,8 +88,9 @@
     --radius-lg: 18px;
     --control-h: 44px;
     --grid-gap: 12px;
-    --mobile-nav-h: 60px;
+    --mobile-nav-h: 68px;
     --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-top: env(safe-area-inset-top, 0px);
   }
 
   * { box-sizing: border-box; }
@@ -2047,7 +2048,7 @@
   .board-editor-cols {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 12px;
   }
   .board-editor-row {
@@ -2104,6 +2105,96 @@
     box-shadow: 0 0 0 3px var(--primary-glow);
   }
 
+  /* ============================================================
+     МОБИЛЬНЫЕ ЭЛЕМЕНТЫ (скрыты на десктопе)
+     ============================================================ */
+  .mobile-fab {
+    display: none;
+    position: fixed;
+    right: 16px;
+    bottom: calc(var(--mobile-nav-h) + var(--safe-bottom) + 16px);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-size: 26px;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.5);
+    z-index: 90;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-fab:active {
+    transform: scale(0.94);
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.6);
+  }
+
+  .mobile-topbar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    padding: 0 12px;
+    padding-top: var(--safe-top);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    z-index: 96;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .mobile-topbar .mobile-logo {
+    font-weight: 800;
+    font-size: 17px;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .mobile-topbar .mobile-logo span { color: var(--primary); }
+  .mobile-topbar .mobile-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .mobile-topbar .mobile-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 17px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .mobile-topbar .mobile-icon-btn:active {
+    background: var(--surface-hover);
+    transform: scale(0.95);
+  }
+  .mobile-topbar .mobile-icon-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+
+  .mobile-nav {
+    display: none;
+  }
+
+  /* ============================================================
+     АДАПТАЦИЯ
+     ============================================================ */
+
   @media (max-width: 900px) {
     .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   }
@@ -2157,86 +2248,98 @@
   }
 
   /* ============================================================
-     МОБИЛЬНАЯ АДАПТАЦИЯ ДЛЯ УЗКИХ ЭКРАНОВ (iPhone)
+     МОБИЛЬНАЯ ВЕРСИЯ (iPhone)
      ============================================================ */
   @media (max-width: 480px) {
-    .app {
-      flex-direction: column;
-    }
+    .app { display: block; }
 
-    /* Сайдбар → нижняя панель навигации */
-    .sidebar {
-      width: 100%;
-      height: calc(var(--mobile-nav-h) + var(--safe-bottom));
-      padding: 6px 10px calc(6px + var(--safe-bottom));
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      border-right: none;
-      order: 2;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      top: auto;
-      z-index: 95;
-      overflow: hidden;
-    }
+    /* Скрываем десктопный сайдбар */
+    .sidebar { display: none !important; }
 
-    .logo-row {
-      padding: 0;
-      flex-direction: row;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .logo { font-size: 14px; }
-    .logo span { color: var(--primary-2); }
-    #settings-btn { width: 30px; height: 30px; font-size: 14px; }
+    /* Верхняя тонкая шапка для телефона */
+    .mobile-topbar { display: flex; }
 
-    .side-section { flex-direction: row; gap: 4px; align-items: center; }
-    .side-section-title { display: none; }
-    .side-selector { display: none; }
+    /* FAB для создания задачи */
+    .mobile-fab { display: flex; }
 
-    .side-board-actions {
-      display: flex;
-      flex-direction: row;
-      gap: 4px;
-      margin-top: 0;
-    }
-    .side-board-actions > .tooltip-wrap:last-child { grid-column: auto; }
-    .side-mini-btn { padding: 6px 8px; font-size: 14px; }
-    .side-mini-btn span { display: none; }
-
-    .tooltip { display: none; }
-
-    .nav {
-      display: flex;
-      flex-direction: row;
-      gap: 2px;
-    }
-    .nav button {
-      font-size: 0;
-      padding: 8px 10px;
-      text-align: center;
-      justify-content: center;
-      border-radius: 8px;
-    }
-    .nav button .icon { font-size: 18px; width: auto; }
-
-    .side-bottom { display: none; }
-
+    /* Главная область */
     .main {
-      padding: 10px 12px calc(var(--mobile-nav-h) + var(--safe-bottom) + 12px) 12px;
+      padding: calc(52px + var(--safe-top) + 10px) 12px calc(var(--mobile-nav-h) + var(--safe-bottom) + 16px) 12px;
       height: 100vh;
       max-width: 100%;
     }
 
-    .top { gap: 8px; margin-bottom: 4px; }
-    .title h1 { font-size: 18px; }
-    .title p { font-size: 11px; }
+    /* Верхняя панель заголовка скрыта — она дублируется в mobile-topbar */
+    .top { display: none; }
 
+    /* Нижняя панель навигации */
+    .mobile-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--mobile-nav-h) + var(--safe-bottom));
+      padding: 6px 4px calc(6px + var(--safe-bottom));
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      z-index: 95;
+      align-items: center;
+      justify-content: space-around;
+      gap: 2px;
+      box-shadow: 0 -4px 20px rgba(35, 43, 70, 0.08);
+    }
+    [data-theme="dark"] .mobile-nav {
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .mobile-nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 6px 4px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      color: var(--text-mute);
+      font-family: inherit;
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      min-width: 0;
+    }
+    .mobile-nav-btn .mn-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+    .mobile-nav-btn .mn-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      letter-spacing: -0.01em;
+    }
+    .mobile-nav-btn.active {
+      color: var(--primary);
+      background: rgba(var(--primary-rgb), 0.08);
+    }
+    .mobile-nav-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Календарь — компактнее */
+    .calendar-header h2 { font-size: 14px; min-width: 140px; }
+    .cal-cell { min-height: 60px; padding: 4px; border-radius: 8px; }
+    .cal-date { font-size: 10px; margin-bottom: 2px; }
+    .cal-task { font-size: 9px; padding: 1px 4px; border-left-width: 2px; }
+    .cal-more { font-size: 9px; padding: 1px 3px; }
+    .calendar-weekdays { font-size: 9px; gap: 3px; }
+
+    /* Канбан — 1 колонка */
     .kanban {
       grid-template-columns: 1fr;
       gap: 10px;
@@ -2245,10 +2348,11 @@
     .kanban-col {
       padding: 12px;
       border-radius: 14px;
-      min-height: 120px;
+      min-height: 100px;
     }
     .kanban-card { padding: 10px 12px; font-size: 13px; }
 
+    /* Список — компактнее */
     .task-row {
       padding: 12px 14px;
       gap: 8px;
@@ -2256,6 +2360,7 @@
     }
     .task-row .title { font-size: 13.5px; }
 
+    /* Статистика — 2 колонки */
     .stats {
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
@@ -2266,15 +2371,10 @@
     .stat .label { font-size: 10px; }
     .stat .sub { font-size: 10px; }
 
+    /* Фильтры */
     .filters-bar { grid-template-columns: 1fr; gap: 8px; }
 
-    .calendar-header h2 { font-size: 14px; min-width: 140px; }
-    .cal-cell { min-height: 62px; padding: 4px; border-radius: 8px; }
-    .cal-date { font-size: 10px; margin-bottom: 2px; }
-    .cal-task { font-size: 9px; padding: 1px 4px; border-left-width: 2px; }
-    .cal-more { font-size: 9px; padding: 1px 3px; }
-    .calendar-weekdays { font-size: 9px; gap: 3px; }
-
+    /* Модалки — почти на весь экран */
     .modal-backdrop { padding: 8px; align-items: flex-start; padding-top: 12px; }
     .modal {
       max-width: 100%;
@@ -2300,7 +2400,7 @@
     .modal-foot .btn { flex: 1; min-width: 0; padding: 0 8px; font-size: 12px; }
 
     .field-title { font-size: 17px; }
-    .field-description { height: 120px; min-height: 120px; max-height: 120px; }
+    .field-description { height: 110px; min-height: 110px; max-height: 110px; }
 
     .meta-row { gap: 12px; padding-top: 16px; }
 
@@ -2332,18 +2432,21 @@
       transform: translateX(-50%) translateY(0) scale(1);
     }
 
+    /* Настройки — снизу как шит */
     .settings-panel {
       top: auto;
-      bottom: calc(var(--mobile-nav-h) + var(--safe-bottom) + 8px);
+      bottom: calc(var(--mobile-nav-h) + var(--safe-bottom) + 12px);
       left: 8px;
       right: 8px;
       width: auto;
-      max-height: 60vh;
+      max-height: 65vh;
+      border-radius: 16px;
     }
 
+    /* Аналитика */
     .an2-grid { grid-template-columns: 1fr; gap: 10px; }
     .an2-kpis { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .an2-kpi { padding: 12px 14px; min-height: 80px; gap: 10px; }
+    .an2-kpi { padding: 12px 14px; min-height: 76px; gap: 10px; }
     .an2-kpi-icon { width: 36px; height: 36px; font-size: 16px; border-radius: 10px; }
     .an2-kpi-num { font-size: 20px; }
     .an2-kpi-label { font-size: 10px; }
@@ -2363,6 +2466,7 @@
     .an2-week { gap: 4px; }
     .an2-week-labels span { font-size: 9px; }
 
+    /* Шаблоны */
     .tpl-list { grid-template-columns: 1fr; }
     .tpl-card { padding: 12px 14px; }
     .tpl-card-name { font-size: 12.5px; }
@@ -2371,60 +2475,86 @@
     .tpl-icon-input { width: 44px; height: 44px; font-size: 20px; }
     .tpl-editor-row .field-title { font-size: 17px; }
 
-    /* === РЕДАКТОР ВОРОНКИ — вертикально на телефоне === */
+    /* === РЕДАКТОР ВОРОНКИ — карточки === */
     .board-editor-cols {
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 14px;
     }
     .board-editor-row {
-      grid-template-columns: 1fr !important;
-      grid-template-areas:
-        "label"
-        "color"
-        "type"
-        "del";
-      gap: 6px;
-      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      position: relative;
+    }
+    /* Заголовок карточки — номер колонки */
+    .board-editor-row::before {
+      content: "Колонка";
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-mute);
+      margin-bottom: 2px;
+      display: block;
     }
     .board-editor-row input[type="text"] {
-      grid-area: label;
-      font-size: 13px;
-      padding: 9px 11px;
+      font-size: 14px;
+      padding: 11px 13px;
       width: 100%;
+      border-radius: 9px;
+      border: 1px solid var(--border);
     }
     .board-editor-row input[type="color"] {
-      grid-area: color;
       width: 100%;
-      height: 38px;
+      height: 42px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      cursor: pointer;
     }
     .board-editor-row select {
-      grid-area: type;
-      font-size: 12.5px;
-      padding: 9px 11px;
+      font-size: 14px;
+      padding: 11px 13px;
       width: 100%;
+      border-radius: 9px;
+      border: 1px solid var(--border);
     }
-    .board-editor-row .btn.ghost {
-      grid-area: del;
-      padding: 8px !important;
-      font-size: 13px;
+    .board-editor-row .btn.ghost[data-del] {
       width: 100%;
+      padding: 10px !important;
+      font-size: 13px;
+      border: 1px solid rgba(230, 83, 83, 0.2);
+      background: rgba(230, 83, 83, 0.06);
+      color: var(--danger);
+      border-radius: 9px;
+    }
+    .board-editor-row .btn.ghost[data-del]::after {
+      content: " Удалить колонку";
+      font-weight: 600;
     }
 
     .board-editor-name {
       font-size: 14px;
-      padding: 11px 13px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
     }
 
-    /* === CONFIRM MODAL — кнопки на всю ширину === */
+    /* === CONFIRM-модалка — кнопки столбиком === */
     .confirm-modal {
-      padding: 20px 16px;
+      padding: 22px 18px;
       max-width: 100%;
+      border-radius: 18px;
     }
     .confirm-modal .confirm-title {
-      font-size: 15px;
+      font-size: 16px;
     }
     .confirm-modal .confirm-text {
       font-size: 13px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     .confirm-modal .confirm-actions {
       flex-direction: column-reverse;
@@ -2433,8 +2563,9 @@
     .confirm-modal .confirm-actions .btn {
       width: 100%;
       justify-content: center;
-      height: 42px;
-      font-size: 13px;
+      height: 46px;
+      font-size: 14px;
+      border-radius: 12px;
     }
 
     .day-popup { max-width: 100%; }
@@ -2451,6 +2582,40 @@
 </style>
 </head>
 <body>
+
+<!-- ================== МОБИЛЬНАЯ ВЕРХНЯЯ ШАПКА ================== -->
+<div class="mobile-topbar">
+  <div class="mobile-logo">Task<span>Flow</span></div>
+  <div class="mobile-actions">
+    <button class="mobile-icon-btn" id="mobile-tpl-btn" type="button" title="Шаблоны" aria-label="Шаблоны">📁</button>
+    <button class="mobile-icon-btn" id="mobile-board-btn" type="button" title="Воронки" aria-label="Воронки">📋</button>
+    <button class="mobile-icon-btn" id="mobile-settings-btn" type="button" title="Настройки" aria-label="Настройки">⚙</button>
+  </div>
+</div>
+
+<!-- ================== НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ (моб.) ================== -->
+<nav class="mobile-nav">
+  <button class="mobile-nav-btn active" data-mobile-view="kanban" type="button">
+    <span class="mn-icon">▦</span>
+    <span class="mn-label">Канбан</span>
+  </button>
+  <button class="mobile-nav-btn" data-mobile-view="list" type="button">
+    <span class="mn-icon">☰</span>
+    <span class="mn-label">Список</span>
+  </button>
+  <button class="mobile-nav-btn" data-mobile-view="calendar" type="button">
+    <span class="mn-icon">▤</span>
+    <span class="mn-label">Календарь</span>
+  </button>
+  <button class="mobile-nav-btn" data-mobile-view="analytics" type="button">
+    <span class="mn-icon">◔</span>
+    <span class="mn-label">Аналитика</span>
+  </button>
+</nav>
+
+<!-- ================== FAB «+ ЗАДАЧА» ================== -->
+<button class="mobile-fab" id="mobile-fab" type="button" aria-label="Новая задача">+</button>
+
 <div class="app">
   <aside class="sidebar">
     <div class="logo-row">
@@ -2613,6 +2778,27 @@
     </div>
   </div>
   <button class="settings-reset" id="settings-reset">Сбросить к значениям по умолчанию</button>
+</div>
+
+<!-- ================== МОДАЛКА ВЫБОРА ВОРОНКИ (моб.) ================== -->
+<div class="modal-backdrop" id="mobile-board-backdrop">
+  <div class="modal" style="max-width:480px;min-height:auto">
+    <div class="modal-head">
+      <h2>Воронки</h2>
+      <button class="btn ghost" id="mobile-board-close" type="button" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="modal-body" style="gap:14px">
+      <div class="description-block">
+        <div class="description-label">Активная воронка</div>
+        <select id="mobile-board-select" class="status-select" aria-label="Активная воронка"></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn" id="mobile-board-edit" type="button">⚙ Настроить</button>
+        <button class="btn" id="mobile-board-add" type="button">+ Новая</button>
+      </div>
+      <button class="btn danger" id="mobile-board-del" type="button" style="width:100%;justify-content:center">🗑 Удалить текущую воронку</button>
+    </div>
+  </div>
 </div>
 
 <!-- ================== МОДАЛКА СОЗДАНИЯ ВОРОНКИ ================== -->
@@ -3079,13 +3265,24 @@ function bindSettingsEvents() {
     settingsBtn.classList.toggle("active", isOpen);
   });
 
+  const mobileSettingsBtn = $("#mobile-settings-btn");
+  if (mobileSettingsBtn) {
+    mobileSettingsBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = panel.classList.toggle("open");
+      mobileSettingsBtn.classList.toggle("active", isOpen);
+    });
+  }
+
   panel.addEventListener("click", (e) => e.stopPropagation());
 
   document.addEventListener("click", (e) => {
     if (panel.contains(e.target)) return;
     if (settingsBtn === e.target || settingsBtn.contains(e.target)) return;
+    if (mobileSettingsBtn === e.target || mobileSettingsBtn.contains(e.target)) return;
     panel.classList.remove("open");
     settingsBtn.classList.remove("active");
+    if (mobileSettingsBtn) mobileSettingsBtn.classList.remove("active");
   });
 
   $$("[data-theme-set]").forEach((b) => b.addEventListener("click", () => {
@@ -5039,6 +5236,9 @@ function bindTemplatesEvents() {
   const tBtn = $("#side-templates");
   if (tBtn) tBtn.addEventListener("click", openTemplatesModal);
 
+  const mobileTplBtn = $("#mobile-tpl-btn");
+  if (mobileTplBtn) mobileTplBtn.addEventListener("click", openTemplatesModal);
+
   $("#templates-close").addEventListener("click", closeTemplatesModal);
   $("#templates-new").addEventListener("click", () => openTemplateEditor(null));
   $("#templates-backdrop").addEventListener("click", (e) => {
@@ -5088,6 +5288,21 @@ function renderBoardSelector() {
   });
   const delBtn = $("#board-del");
   delBtn.disabled = Store.data.boards.length <= 1;
+
+  // Мобильный селект
+  const mSel = $("#mobile-board-select");
+  if (mSel) {
+    mSel.innerHTML = "";
+    Store.data.boards.forEach((b) => {
+      const opt = document.createElement("option");
+      opt.value = b.id;
+      opt.textContent = b.name;
+      if (b.id === Store.data.activeBoardId) opt.selected = true;
+      mSel.appendChild(opt);
+    });
+  }
+  const mDel = $("#mobile-board-del");
+  if (mDel) mDel.disabled = Store.data.boards.length <= 1;
 }
 
 function openBoardCreateModal() {
@@ -5145,6 +5360,104 @@ function bindBoardSelector() {
   if (sideTaskAdd) {
     sideTaskAdd.addEventListener("click", () => openTaskModal(null));
   }
+
+  // === Мобильная модалка воронок ===
+  const mobileBoardBtn = $("#mobile-board-btn");
+  const mobileBoardBackdrop = $("#mobile-board-backdrop");
+  const mobileBoardClose = $("#mobile-board-close");
+  const mobileBoardSelect = $("#mobile-board-select");
+  const mobileBoardEdit = $("#mobile-board-edit");
+  const mobileBoardAdd = $("#mobile-board-add");
+  const mobileBoardDel = $("#mobile-board-del");
+
+  function openMobileBoardModal() {
+    renderBoardSelector();
+    mobileBoardBackdrop.classList.add("open");
+  }
+  function closeMobileBoardModal() {
+    mobileBoardBackdrop.classList.remove("open");
+  }
+
+  if (mobileBoardBtn) mobileBoardBtn.addEventListener("click", openMobileBoardModal);
+  if (mobileBoardClose) mobileBoardClose.addEventListener("click", closeMobileBoardModal);
+  if (mobileBoardBackdrop) mobileBoardBackdrop.addEventListener("click", (e) => {
+    if (e.target === mobileBoardBackdrop) closeMobileBoardModal();
+  });
+  if (mobileBoardSelect) {
+    mobileBoardSelect.addEventListener("change", (e) => {
+      Store.setActiveBoard(e.target.value);
+      currentStatusFilter = "all";
+      renderBoardSelector();
+      render();
+    });
+  }
+  if (mobileBoardEdit) {
+    mobileBoardEdit.addEventListener("click", () => {
+      closeMobileBoardModal();
+      const board = Store.getActiveBoard();
+      if (!board) return;
+      openBoardEditor(board);
+    });
+  }
+  if (mobileBoardAdd) {
+    mobileBoardAdd.addEventListener("click", () => {
+      closeMobileBoardModal();
+      openBoardCreateModal();
+    });
+  }
+  if (mobileBoardDel) {
+    mobileBoardDel.addEventListener("click", () => {
+      if (Store.data.boards.length <= 1) return;
+      closeMobileBoardModal();
+      confirmDeleteBoard(Store.data.activeBoardId);
+    });
+  }
+
+  // === FAB для создания задачи ===
+  const fab = $("#mobile-fab");
+  if (fab) fab.addEventListener("click", () => openTaskModal(null));
+
+  // === Мобильная нижняя навигация ===
+  $$(".mobile-nav-btn").forEach((b) => {
+    b.addEventListener("click", () => {
+      const view = b.dataset.mobileView;
+      // Синхронизируем состояние с десктопным sidebar
+      $$(".nav button[data-view]").forEach((x) => x.classList.remove("active"));
+      const desktopBtn = document.querySelector(`.nav button[data-view="${view}"]`);
+      if (desktopBtn) desktopBtn.classList.add("active");
+
+      currentView = view;
+      $$(".mobile-nav-btn").forEach((x) => x.classList.remove("active"));
+      b.classList.add("active");
+
+      $$(".view").forEach((v) => (v.style.display = "none"));
+      const filtersBar = $("#filters-bar");
+      const statsBar = $("#stats-bar");
+      if (filtersBar) filtersBar.style.display = (view === "list") ? "grid" : "none";
+      if (statsBar) statsBar.style.display = (view === "list") ? "grid" : "none";
+
+      if (view === "kanban") {
+        $("#view-kanban").style.display = "block";
+        $("#page-title").textContent = "Канбан";
+        $("#page-subtitle").textContent = "Перетаскивайте карточки между колонками.";
+      } else if (view === "list") {
+        $("#view-list").style.display = "block";
+        $("#page-title").textContent = "Список";
+        $("#page-subtitle").textContent = "Все задачи в виде компактного списка.";
+      } else if (view === "calendar") {
+        $("#view-calendar").style.display = "flex";
+        $("#page-title").textContent = "Календарь";
+        $("#page-subtitle").textContent = "Задачи по дням дедлайна.";
+      } else if (view === "analytics") {
+        $("#view-analytics").style.display = "flex";
+        $("#page-title").textContent = "Аналитика";
+        $("#page-subtitle").textContent = "Статистика по активной воронке.";
+      }
+      const mainEl = document.querySelector(".main");
+      if (mainEl) mainEl.scrollTop = 0;
+      render();
+    });
+  });
 }
 
 function openBoardEditor(board) {
@@ -5173,7 +5486,7 @@ function openBoardEditor(board) {
       const row = document.createElement("div");
       row.className = "board-editor-row";
       row.innerHTML = `
-        <input type="text" value="${escapeHtml(col.label)}" data-label="${col.id}" />
+        <input type="text" value="${escapeHtml(col.label)}" data-label="${col.id}" placeholder="Название колонки" />
         <input type="color" value="${col.color}" data-color="${col.id}" />
         <select data-type="${col.id}">
           <option value="normal" ${col.type === "normal" ? "selected" : ""}>Обычная</option>
@@ -5246,8 +5559,13 @@ function confirmDeleteBoard(boardId) {
 function switchView(view, btn) {
   currentView = view;
   $$(".nav button[data-view]").forEach((b) => b.classList.remove("active"));
-  btn.classList.add("active");
+  if (btn) btn.classList.add("active");
   $$(".view").forEach((v) => (v.style.display = "none"));
+
+  // Синхронизируем с мобильной навигацией
+  $$(".mobile-nav-btn").forEach((b) => {
+    b.classList.toggle("active", b.dataset.mobileView === view);
+  });
 
   const filtersBar = $("#filters-bar");
   const statsBar = $("#stats-bar");
@@ -5281,6 +5599,9 @@ function setStatusFilter(status) {
   if (currentView !== "list") {
     const listBtn = document.querySelector('.nav button[data-view="list"]');
     if (listBtn) switchView("list", listBtn);
+    $$(".mobile-nav-btn").forEach((b) => {
+      b.classList.toggle("active", b.dataset.mobileView === "list");
+    });
   }
   render();
 }
