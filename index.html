@@ -2,7 +2,13 @@
 <html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="TaskFlow" />
+<meta name="theme-color" content="#635bff" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23635bff'/%3E%3Ctext x='90' y='120' font-family='system-ui' font-size='90' font-weight='800' fill='white' text-anchor='middle'%3ETF%3C/text%3E%3C/svg%3E" />
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22TaskFlow%22%2C%22short_name%22%3A%22TaskFlow%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230b0d17%22%2C%22theme_color%22%3A%22%23635bff%22%7D" />
 <title>TaskFlow — трекер задач</title>
 <style>
   :root,
@@ -82,6 +88,8 @@
     --radius-lg: 18px;
     --control-h: 44px;
     --grid-gap: 12px;
+    --mobile-nav-h: 60px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   * { box-sizing: border-box; }
@@ -100,6 +108,7 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     transition: background 0.3s ease, color 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -1222,6 +1231,31 @@
   .prio-seg-btn.active .prio-label { opacity: 1; }
   .prio-seg-btn[data-prio="high"].active { color: #1a1a1a; }
 
+  /* Селект статуса (для мобильных, где drag-and-drop не работает) */
+  .status-select-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .status-select {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--input-bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237b8498' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 34px;
+    transition: all 0.15s;
+    min-height: var(--control-h);
+  }
+  .status-select:hover { border-color: var(--border-strong); }
+  .status-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+  .status-select option { background: var(--surface); color: var(--text); }
+
   .day-popup-backdrop {
     position: fixed;
     inset: 0;
@@ -1827,9 +1861,6 @@
 
   .an2-empty { text-align: center; padding: 60px 20px; color: var(--text-mute); font-size: 14px; }
 
-  /* ============================================================
-     TEMPLATES — с уменьшенным шрифтом и контрастом
-     ============================================================ */
   .tpl-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -1916,7 +1947,6 @@
   }
   .tpl-card-actions .btn { flex: 1; justify-content: center; height: 32px; font-size: 11.5px; }
 
-  /* Тёмная тема — приглушённые цвета и уменьшенная жирность */
   [data-theme="dark"] .tpl-card {
     background: #1e2233;
     border-color: #2e3448;
@@ -2078,6 +2108,7 @@
   @media (max-width: 900px) {
     .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   }
+
   @media (max-width: 850px) {
     .sidebar { width: 70px; padding: 20px 10px; }
     .logo-row { justify-content: center; padding: 0 0 8px; flex-direction: column; gap: 8px; }
@@ -2097,6 +2128,7 @@
     .tooltip::after { top: 50%; left: -10px; transform: translateY(-50%); border-top-color: transparent; border-right-color: #0f1424; }
     .tooltip-wrap:hover .tooltip { transform: translateY(50%); }
   }
+
   @media (max-width: 640px) {
     .top { align-items: flex-start; flex-direction: column; }
     .task-row { flex-direction: column; align-items: flex-start; gap: 8px; }
@@ -2117,12 +2149,266 @@
     .cal-task { font-size: 10.5px; padding: 2px 5px; }
     .tpl-list { grid-template-columns: 1fr; }
   }
+
   @media (hover: none) and (pointer: coarse) {
     .subtasks li:hover .subtask-drag,
     .subtasks li:hover .subtask-remove,
     .subtasks li .subtask-drag,
     .subtasks li .subtask-remove { opacity: 1; }
   }
+
+  /* ============================================================
+     МОБИЛЬНАЯ АДАПТАЦИЯ ДЛЯ УЗКИХ ЭКРАНОВ (iPhone)
+     ============================================================ */
+  @media (max-width: 480px) {
+    .app {
+      flex-direction: column;
+    }
+
+    /* Сайдбар → нижняя панель навигации */
+    .sidebar {
+      width: 100%;
+      height: calc(var(--mobile-nav-h) + var(--safe-bottom));
+      padding: 6px 10px calc(6px + var(--safe-bottom));
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: none;
+      order: 2;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      z-index: 95;
+      overflow: hidden;
+    }
+
+    .logo-row {
+      padding: 0;
+      flex-direction: row;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .logo { font-size: 14px; }
+    .logo span { color: var(--primary-2); }
+    #settings-btn { width: 30px; height: 30px; font-size: 14px; }
+
+    .side-section { flex-direction: row; gap: 4px; align-items: center; }
+    .side-section-title { display: none; }
+    .side-selector { display: none; }
+
+    /* Кнопки воронки — компактные, только иконки */
+    .side-board-actions {
+      display: flex;
+      flex-direction: row;
+      gap: 4px;
+      margin-top: 0;
+    }
+    .side-board-actions > .tooltip-wrap:last-child { grid-column: auto; }
+    .side-mini-btn { padding: 6px 8px; font-size: 14px; }
+    .side-mini-btn span { display: none; }
+
+    .tooltip { display: none; }
+
+    /* Навигация — иконки в ряд */
+    .nav {
+      display: flex;
+      flex-direction: row;
+      gap: 2px;
+    }
+    .nav button {
+      font-size: 0;
+      padding: 8px 10px;
+      text-align: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    .nav button .icon { font-size: 18px; width: auto; }
+
+    .side-bottom { display: none; }
+
+    /* Основной контент — отступ снизу под панель */
+    .main {
+      padding: 10px 12px calc(var(--mobile-nav-h) + var(--safe-bottom) + 12px) 12px;
+      height: 100vh;
+      max-width: 100%;
+    }
+
+    /* Верхняя шапка */
+    .top { gap: 8px; margin-bottom: 4px; }
+    .title h1 { font-size: 18px; }
+    .title p { font-size: 11px; }
+
+    /* Канбан — одна колонка */
+    .kanban {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .kanban-col {
+      padding: 12px;
+      border-radius: 14px;
+      min-height: 120px;
+    }
+    .kanban-card { padding: 10px 12px; font-size: 13px; }
+
+    /* Список — компактнее */
+    .task-row {
+      padding: 12px 14px;
+      gap: 8px;
+      border-radius: 12px;
+    }
+    .task-row .title { font-size: 13.5px; }
+
+    /* Статистика — 2 колонки */
+    .stats {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 12px 0 8px;
+    }
+    .stat { padding: 12px 14px; min-height: 76px; }
+    .stat .num { font-size: 22px; }
+    .stat .label { font-size: 10px; }
+    .stat .sub { font-size: 10px; }
+
+    /* Фильтры — 1 колонка */
+    .filters-bar { grid-template-columns: 1fr; gap: 8px; }
+
+    /* Календарь — компактнее */
+    .calendar-header h2 { font-size: 14px; min-width: 140px; }
+    .cal-cell { min-height: 62px; padding: 4px; border-radius: 8px; }
+    .cal-date { font-size: 10px; margin-bottom: 2px; }
+    .cal-task { font-size: 9px; padding: 1px 4px; border-left-width: 2px; }
+    .cal-more { font-size: 9px; padding: 1px 3px; }
+    .calendar-weekdays { font-size: 9px; gap: 3px; }
+
+    /* Модалки — на весь экран */
+    .modal-backdrop { padding: 8px; align-items: flex-start; padding-top: 12px; }
+    .modal {
+      max-width: 100%;
+      min-height: auto;
+      max-height: calc(100vh - 20px);
+      border-radius: 16px;
+    }
+    .modal-head {
+      padding: 14px 18px 12px;
+      border-radius: 16px 16px 0 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .modal-head h2 { font-size: 11px; }
+    .save-as-tpl-btn { order: 3; flex-basis: 100%; padding: 6px 10px; font-size: 11px; }
+
+    .modal-body { padding: 16px 18px; gap: 18px; }
+    .modal-foot {
+      padding: 12px 18px calc(12px + var(--safe-bottom));
+      border-radius: 0 0 16px 16px;
+      flex-wrap: wrap;
+    }
+    .modal-foot .btn { flex: 1; min-width: 0; padding: 0 8px; font-size: 12px; }
+
+    .field-title { font-size: 17px; }
+    .field-description { height: 120px; min-height: 120px; max-height: 120px; }
+
+    .meta-row { gap: 12px; padding-top: 16px; }
+
+    /* Приоритеты — 4 в ряд, компактнее */
+    .priority-seg {
+      grid-template-columns: repeat(4, 1fr);
+      height: auto;
+      gap: 3px;
+      padding: 3px;
+    }
+    .prio-seg-btn { padding: 6px 2px; gap: 0; }
+    .prio-seg-btn .prio-icon { font-size: 12px; }
+    .prio-seg-btn .prio-label { font-size: 8px; }
+
+    /* Повторы — 2 в ряд */
+    .repeat-row { grid-template-columns: repeat(2, 1fr); }
+    .repeat-btn { font-size: 10.5px; padding: 7px 4px; }
+
+    /* Подзадачи — компактнее */
+    .subtasks-block { padding: 12px; }
+    .subtasks li { padding: 6px; gap: 6px; font-size: 12.5px; }
+    .subtask-deadline { font-size: 10px; }
+    .subtask-title { font-size: 12.5px; }
+
+    /* Date picker — на всю ширину */
+    .date-popover {
+      width: calc(100vw - 36px);
+      max-width: 340px;
+      left: 50%;
+      transform: translateX(-50%) translateY(6px) scale(0.98);
+    }
+    .date-popover.open {
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    /* Настройки — на всю ширину снизу */
+    .settings-panel {
+      top: auto;
+      bottom: calc(var(--mobile-nav-h) + var(--safe-bottom) + 8px);
+      left: 8px;
+      right: 8px;
+      width: auto;
+      max-height: 60vh;
+    }
+
+    /* Аналитика — 1 колонка */
+    .an2-grid { grid-template-columns: 1fr; gap: 10px; }
+    .an2-kpis { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .an2-kpi { padding: 12px 14px; min-height: 80px; gap: 10px; }
+    .an2-kpi-icon { width: 36px; height: 36px; font-size: 16px; border-radius: 10px; }
+    .an2-kpi-num { font-size: 20px; }
+    .an2-kpi-label { font-size: 10px; }
+    .an2-kpi-sub { font-size: 10px; }
+
+    .an2-panel { padding: 12px 14px; min-height: 140px; }
+    .an2-panel-head h3 { font-size: 11px; }
+    .an2-donut { width: 90px; height: 90px; }
+    .an2-donut-pct { font-size: 18px; }
+
+    .an2-urgency { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .an2-urg { padding: 10px 12px; }
+    .an2-urg-num { font-size: 18px; }
+    .an2-urg-label { font-size: 10px; }
+
+    .an2-bar { grid-template-columns: 110px 1fr 42px; font-size: 11px; gap: 8px; }
+    .an2-week { gap: 4px; }
+    .an2-week-labels span { font-size: 9px; }
+
+    /* Шаблоны — 1 колонка */
+    .tpl-list { grid-template-columns: 1fr; }
+    .tpl-card { padding: 12px 14px; }
+    .tpl-card-name { font-size: 12.5px; }
+    .tpl-card-title { font-size: 11px; }
+
+    /* Редактор шаблона */
+    .tpl-icon-input { width: 44px; height: 44px; font-size: 20px; }
+    .tpl-editor-row .field-title { font-size: 17px; }
+
+    /* Редактор воронки */
+    .board-editor-row {
+      grid-template-columns: 1fr 36px 100px 28px;
+      gap: 6px;
+      padding: 6px;
+    }
+    .board-editor-row input[type="text"] { font-size: 12px; padding: 5px 8px; }
+    .board-editor-row select { font-size: 11px; padding: 5px 6px; }
+    .board-editor-row input[type="color"] { width: 34px; height: 28px; }
+
+    /* Дневной попап */
+    .day-popup { max-width: 100%; }
+    .day-popup-head { padding: 12px 16px; }
+    .day-popup-head h3 { font-size: 13px; }
+    .day-popup-body { padding: 12px 14px 14px; }
+    .day-task { padding: 10px 12px; }
+    .day-task-title { font-size: 13px; }
+  }
+
   @media (min-width: 1900px) {
     .main { max-width: 1700px; }
   }
@@ -2425,6 +2711,12 @@
     <div class="modal-body">
       <input id="m-title" class="field-title" type="text" placeholder="Что нужно сделать?" />
 
+      <!-- Селект статуса — для смены колонки без drag-and-drop (важно для мобильных) -->
+      <div class="status-select-wrap" id="m-status-wrap">
+        <div class="meta-label">📋 Колонка</div>
+        <select id="m-status" class="status-select" aria-label="Колонка"></select>
+      </div>
+
       <div class="subtasks-block">
         <div class="section-head">
           <h3>☑ Подзадачи</h3>
@@ -2718,6 +3010,8 @@ function applyAppearance() {
   const mixTarget = appearance.theme === "dark" ? { r: 255, g: 255, b: 255 } : { r: 0, g: 0, b: 0 };
   root.style.setProperty("--primary-2", mix(appearance.accent, mixTarget, appearance.theme === "dark" ? 0.3 : 0.15));
   root.style.setProperty("--primary-glow", `rgba(${rgb}, 0.25)`);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", appearance.accent);
   syncSettingsUI();
   try { localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearance)); } catch (e) {}
 }
@@ -2725,6 +3019,10 @@ function loadAppearance() {
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(APPEARANCE_KEY)); } catch (e) {}
   if (saved) Object.assign(appearance, APPEARANCE_DEFAULTS, saved);
+  // Автовыбор тёмной темы на мобильных, если система предпочитает тёмную
+  if (!localStorage.getItem(APPEARANCE_KEY) && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    appearance.theme = "dark";
+  }
 }
 function syncSettingsUI() {
   $$("[data-theme-set]").forEach((b) => b.classList.toggle("active", b.dataset.themeSet === appearance.theme));
@@ -4135,6 +4433,7 @@ function bindDatePicker() {
 let currentTaskId = null;
 let currentPriority = "medium";
 let currentRepeat = "";
+let currentStatus = null;
 let subtaskDragId = null;
 
 let draftSubtasks = [];
@@ -4146,6 +4445,23 @@ function getActiveSubtasks() {
   if (currentTaskId === null) return draftSubtasks;
   const t = Store.getTask(currentTaskId);
   return (t && Array.isArray(t.subtasks)) ? t.subtasks : [];
+}
+
+function renderStatusSelect() {
+  const sel = $("#m-status");
+  if (!sel) return;
+  const board = Store.getActiveBoard();
+  if (!board) { sel.innerHTML = ""; return; }
+  sel.innerHTML = "";
+  board.columns.forEach((col) => {
+    const opt = document.createElement("option");
+    opt.value = col.id;
+    opt.textContent = col.label;
+    sel.appendChild(opt);
+  });
+  if (currentStatus && board.columns.find((c) => c.id === currentStatus)) {
+    sel.value = currentStatus;
+  }
 }
 
 let editingSubtaskId = null;
@@ -4302,10 +4618,12 @@ function openTaskModal(id = null) {
   draftSubtasks = [];
   draftNextId = -1;
 
+  const board = Store.getActiveBoard();
   if (isNew) {
     $("#m-title").value = "";
     $("#m-description").value = "";
     currentDeadline = null;
+    currentStatus = board ? Store.getFirstStatus(board.id) : null;
     renderDateTrigger();
     setPriority("medium");
     setRepeat("");
@@ -4316,11 +4634,13 @@ function openTaskModal(id = null) {
     $("#m-title").value = t.title;
     $("#m-description").value = t.description || "";
     currentDeadline = t.deadline;
+    currentStatus = t.status;
     renderDateTrigger();
     setPriority(t.priority || "medium");
     setRepeat(t.repeat || "");
     renderSubtasks();
   }
+  renderStatusSelect();
   $("#modal-backdrop").classList.add("open");
   setTimeout(() => $("#m-title").focus(), 80);
 }
@@ -5059,6 +5379,14 @@ function bindEvents() {
     b.addEventListener("click", () => setRepeat(b.dataset.repeat || ""));
   });
 
+  // Селект статуса — синхронизирует currentStatus
+  const statusSel = $("#m-status");
+  if (statusSel) {
+    statusSel.addEventListener("change", (e) => {
+      currentStatus = e.target.value;
+    });
+  }
+
   bindDatePicker();
 
   $("#m-subtask-add").addEventListener("click", () => {
@@ -5130,9 +5458,13 @@ function bindEvents() {
     const priority = currentPriority;
     const repeat = currentRepeat;
     const description = $("#m-description").value;
+    const statusFromSelect = $("#m-status") ? $("#m-status").value : null;
 
     if (currentTaskId === null) {
-      const task = Store.createTask({ title, description, deadline, priority, repeat });
+      const task = Store.createTask({
+        title, description, deadline, priority, repeat,
+        status: statusFromSelect || currentStatus || undefined,
+      });
       if (draftSubtasks.length) {
         task.subtasks = draftSubtasks.map((s) => ({
           id: Store.data.nextItemId++,
@@ -5146,7 +5478,9 @@ function bindEvents() {
       }
       draftSubtasks = [];
     } else {
-      Store.updateTask(currentTaskId, { title, description, deadline, priority, repeat });
+      const patch = { title, description, deadline, priority, repeat };
+      if (statusFromSelect) patch.status = statusFromSelect;
+      Store.updateTask(currentTaskId, patch);
     }
     closeTaskModal();
     render();
