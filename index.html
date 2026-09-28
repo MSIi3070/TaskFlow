@@ -102,7 +102,8 @@
   }
   body {
     margin: 0;
-    min-height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: var(--bg);
     color: var(--text);
@@ -122,11 +123,11 @@
   }
   ::-webkit-scrollbar-thumb:hover { background: rgba(var(--primary-rgb), 0.45); background-clip: content-box; }
 
+  /* ==================== APP LAYOUT ==================== */
   .app {
     display: flex;
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   /* ==================== SIDEBAR (desktop) ==================== */
@@ -139,11 +140,14 @@
     flex-direction: column;
     flex-shrink: 0;
     gap: 20px;
-    position: relative;
-    z-index: 95;
-    height: 100%;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    max-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
+    z-index: 95;
   }
   .logo-row {
     display: flex;
@@ -226,9 +230,7 @@
     gap: 6px;
     margin-top: 8px;
   }
-  .side-board-actions > .tooltip-wrap:last-child {
-    grid-column: 1 / -1;
-  }
+  .side-board-actions > .tooltip-wrap:last-child { grid-column: 1 / -1; }
   .side-board-actions .side-mini-btn {
     min-width: 0;
     padding: 10px 6px;
@@ -329,15 +331,11 @@
   /* ==================== MAIN ==================== */
   .main {
     flex: 1;
-    padding: 18px 22px;
+    padding: 18px 22px 40px;
     max-width: 1600px;
     margin: 0 auto;
     width: 100%;
     min-width: 0;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
   }
 
   .top {
@@ -666,7 +664,7 @@
     align-items: center;
     justify-content: center;
     gap: 14px;
-    margin: 2px 0 8px;
+    margin: 2px 0 10px;
     flex-shrink: 0;
   }
   .calendar-header h2 {
@@ -694,10 +692,7 @@
   .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-auto-rows: 1fr;
     gap: 5px;
-    flex: 1;
-    min-height: 0;
   }
   .cal-cell {
     background: var(--surface);
@@ -1528,16 +1523,6 @@
     width: 100%;
     min-width: 0;
   }
-  #view-calendar {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 130px);
-  }
-  #view-analytics {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 130px);
-  }
 
   /* ==================== ANALYTICS ==================== */
   .an2-wrap {
@@ -1546,7 +1531,6 @@
     gap: var(--grid-gap);
     width: 100%;
     min-width: 0;
-    flex: 1 1 auto;
   }
   .an2-kpis {
     display: grid;
@@ -2065,7 +2049,7 @@
   }
 
   /* ============================================================
-     MOBILE / PWA
+     MOBILE
      ============================================================ */
   .mobile-header { display: none; }
   .mobile-tabbar { display: none; }
@@ -2078,7 +2062,7 @@
 
   @media (max-width: 1100px) {
     .sidebar { width: 240px; padding: 20px 12px; }
-    .main { padding: 16px; }
+    .main { padding: 16px 16px 40px; }
   }
   @media (max-width: 900px) {
     .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
@@ -2086,7 +2070,7 @@
   }
 
   /* ============================================================
-     MOBILE — только узкие экраны, логика одинакова для браузера и PWA
+     MOBILE — единая логика
      ============================================================ */
   @media (max-width: 720px) {
     :root {
@@ -2099,12 +2083,13 @@
     .app {
       display: flex;
       flex-direction: column;
-      height: 100dvh;
-      overflow: hidden;
+      min-height: 100vh;
+      min-height: 100dvh;
     }
 
     .sidebar { display: none; }
 
+    /* Верхняя панель — статичная, вне скролла */
     .mobile-header {
       display: flex;
       align-items: center;
@@ -2113,14 +2098,7 @@
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
-      height: var(--mobile-header-h);
-      min-height: var(--mobile-header-h);
-      max-height: var(--mobile-header-h);
-      /* PWA: учитываем безопасную зону сверху (статус-бар) */
       padding-top: calc(8px + env(safe-area-inset-top));
-      height: calc(var(--mobile-header-h) + env(safe-area-inset-top));
-      min-height: calc(var(--mobile-header-h) + env(safe-area-inset-top));
-      max-height: calc(var(--mobile-header-h) + env(safe-area-inset-top));
     }
     .mobile-header .logo-sm {
       font-size: 15px;
@@ -2175,15 +2153,12 @@
     }
     .mobile-header .mh-btn:active { transform: scale(0.94); }
 
+    /* main — растягивается, скроллится, снизу место под таб-бар */
     .main {
-      flex: 1 1 auto;
-      min-height: 0;
+      flex: 1;
       padding: 10px 12px;
-      padding-bottom: calc(var(--mobile-tabbar-h) + 12px + env(safe-area-inset-bottom));
+      padding-bottom: calc(var(--mobile-tabbar-h) + 16px + env(safe-area-inset-bottom));
       max-width: 100%;
-      height: auto;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
     }
 
     .top { display: none; }
@@ -2202,7 +2177,6 @@
       justify-content: space-around;
       gap: 2px;
       padding: 6px 6px env(safe-area-inset-bottom);
-      height: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom));
     }
     .mobile-tabbar button {
       flex: 1;
@@ -2212,7 +2186,7 @@
       font-family: inherit;
       font-size: 10.5px;
       font-weight: 600;
-      padding: 4px;
+      padding: 6px 4px;
       border-radius: 10px;
       cursor: pointer;
       display: flex;
@@ -2235,7 +2209,7 @@
     #filters-bar #f-search { grid-column: 1 / -1; }
     #filters-bar .filter-input { font-size: 15px; }
 
-    /* KANBAN — горизонтальный свайп */
+    /* KANBAN */
     .kanban {
       display: flex;
       overflow-x: auto;
@@ -2245,12 +2219,11 @@
       margin: 0 -12px;
       padding: 4px 12px 12px;
       -webkit-overflow-scrolling: touch;
-      min-height: calc(100dvh - var(--mobile-header-h) - var(--mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px);
     }
     .kanban-col {
       flex: 0 0 86vw;
       max-width: 400px;
-      min-height: 100%;
+      min-height: calc(100dvh - var(--mobile-header-h) - var(--mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 40px);
       scroll-snap-align: start;
       padding: 14px 12px;
     }
@@ -2261,11 +2234,7 @@
       margin-bottom: 10px;
     }
     .kanban-card .deadline { font-size: 12.5px; }
-    .card-move-btn {
-      width: 32px;
-      height: 32px;
-      font-size: 15px;
-    }
+    .card-move-btn { width: 32px; height: 32px; font-size: 15px; }
 
     /* LIST */
     .task-list { gap: 8px; }
@@ -2296,9 +2265,9 @@
     /* CALENDAR */
     .calendar-header h2 { min-width: 140px; font-size: 15px; }
     .calendar-weekdays { font-size: 9px; gap: 3px; margin-bottom: 4px; }
-    .calendar { gap: 3px; grid-auto-rows: auto; }
+    .calendar { gap: 3px; }
     .cal-cell {
-      min-height: 68px;
+      min-height: 58px;
       padding: 4px;
       border-radius: 8px;
     }
@@ -3001,6 +2970,9 @@ function parseRuDate(str, endOfDay) {
 function isTouch() {
   return window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 }
+function isMobile() {
+  return window.matchMedia("(max-width: 720px)").matches;
+}
 
 /* ============================================================
    2. ПОВТОРЫ
@@ -3652,7 +3624,9 @@ function updateStats() {
   if (elTotal) elTotal.textContent = tasks.length;
   if (elTodo) elTodo.textContent = tasks.filter((t) => t.status === todoCol).length;
   if (elProg) elProg.textContent = tasks.filter((t) => progressCols.includes(t.status)).length;
-  if (elDone) elDone.textContent = tasks.filter((t) => doneCols.includes(t.status)).length;
+  if (elDone) elDone.textContent = tasks.filter((t) => colsDone(t, doneCols)).length;
+
+  function colsDone(t, doneCols) { return doneCols.includes(t.status); }
 
   $$("#stats-bar .stat").forEach((el) => {
     el.classList.toggle("active", el.dataset.statusTarget === currentStatusFilter);
@@ -3915,13 +3889,30 @@ const WEEKDAYS_FULL = ["воскресенье", "понедельник", "вт
 function renderCalendar() {
   const board = Store.getActiveBoard();
   if (!board) return;
-  const year = calDate.getFullYear();
-  const month = calDate.getMonth();
-  const first = new Date(year, month, 1);
-  const start = new Date(first);
-  start.setDate(start.getDate() - ((first.getDay() + 6) % 7));
+
+  const mobile = isMobile();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let start, daysCount;
+
+  if (mobile) {
+    // 5 недель (35 дней), начиная с понедельника текущей недели
+    const dow = (today.getDay() + 6) % 7; // Пн=0
+    start = new Date(today);
+    start.setDate(start.getDate() - dow);
+    daysCount = 35;
+  } else {
+    // Desktop: весь месяц с запасом по краям (42 дня)
+    const first = new Date(calDate.getFullYear(), calDate.getMonth(), 1);
+    const dow = (first.getDay() + 6) % 7;
+    start = new Date(first);
+    start.setDate(start.getDate() - dow);
+    daysCount = 42;
+  }
+
   const end = new Date(start);
-  end.setDate(end.getDate() + 42);
+  end.setDate(end.getDate() + daysCount);
 
   const tasks = Store.listTasks({
     board_id: board.id,
@@ -3929,7 +3920,15 @@ function renderCalendar() {
     deadline_before: end.toISOString(),
   });
 
-  $("#cal-title").textContent = calDate.toLocaleString("ru-RU", { month: "long", year: "numeric" });
+  if (mobile) {
+    const endLabel = new Date(start);
+    endLabel.setDate(endLabel.getDate() + daysCount - 1);
+    const fmtStart = start.toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
+    const fmtEnd = endLabel.toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
+    $("#cal-title").textContent = `${fmtStart} — ${fmtEnd}`;
+  } else {
+    $("#cal-title").textContent = calDate.toLocaleString("ru-RU", { month: "long", year: "numeric" });
+  }
 
   const byDay = {};
   tasks.forEach((t) => {
@@ -3942,16 +3941,17 @@ function renderCalendar() {
   const grid = $("#calendar");
   grid.innerHTML = "";
   const tKey = todayKey();
-  const isMobile = window.matchMedia("(max-width: 720px)").matches;
-  const MAX = isMobile ? 2 : 3;
+  const MAX = mobile ? 2 : 3;
 
-  for (let i = 0; i < 42; i++) {
+  for (let i = 0; i < daysCount; i++) {
     const day = new Date(start);
     day.setDate(day.getDate() + i);
     const key = dayKey(day);
     const cell = document.createElement("div");
     cell.className = "cal-cell";
-    if (day.getMonth() !== month) cell.classList.add("other-month");
+
+    // Затемняем дни вне текущего месяца — только на десктопе
+    if (!mobile && day.getMonth() !== calDate.getMonth()) cell.classList.add("other-month");
     if (key === tKey) cell.classList.add("today");
 
     const dayTasks = byDay[key] || [];
@@ -5350,11 +5350,11 @@ function switchView(view, btn) {
     $("#page-title").textContent = "Список";
     $("#page-subtitle").textContent = "Все задачи в виде компактного списка.";
   } else if (view === "calendar") {
-    $("#view-calendar").style.display = "flex";
+    $("#view-calendar").style.display = "block";
     $("#page-title").textContent = "Календарь";
     $("#page-subtitle").textContent = "Задачи по дням дедлайна.";
   } else if (view === "analytics") {
-    $("#view-analytics").style.display = "flex";
+    $("#view-analytics").style.display = "block";
     $("#page-title").textContent = "Аналитика";
     $("#page-subtitle").textContent = "Статистика по активной воронке.";
   }
