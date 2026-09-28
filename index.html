@@ -2,11 +2,13 @@
 <html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
 <meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="TaskFlow" />
 <meta name="format-detection" content="telephone=no" />
 <title>TaskFlow — трекер задач</title>
 <style>
@@ -87,19 +89,20 @@
     --radius-lg: 18px;
     --control-h: 44px;
     --grid-gap: 12px;
+    --mobile-header-h: 56px;
+    --mobile-tabbar-h: 64px;
   }
 
   * { box-sizing: border-box; }
   *::selection { background: var(--primary); color: #fff; }
 
-  html, body {
+  html {
     height: 100%;
-    height: 100dvh;
-    overflow: hidden;
     overscroll-behavior: none;
   }
   body {
     margin: 0;
+    min-height: 100%;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: var(--bg);
     color: var(--text);
@@ -138,8 +141,7 @@
     gap: 20px;
     position: relative;
     z-index: 95;
-    height: 100vh;
-    height: 100dvh;
+    height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -261,11 +263,7 @@
   }
   .side-mini-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-  .tooltip-wrap {
-    position: relative;
-    display: block;
-    min-width: 0;
-  }
+  .tooltip-wrap { position: relative; display: block; min-width: 0; }
   .tooltip-wrap > .side-mini-btn { width: 100%; }
   .tooltip {
     position: absolute;
@@ -295,10 +293,7 @@
     border: 5px solid transparent;
     border-top-color: #0f1424;
   }
-  .tooltip-wrap:hover .tooltip {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+  .tooltip-wrap:hover .tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   .nav { display: grid; gap: 4px; }
   .nav button {
@@ -339,10 +334,10 @@
     margin: 0 auto;
     width: 100%;
     min-width: 0;
-    height: 100vh;
-    height: 100dvh;
+    height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .top {
@@ -396,7 +391,6 @@
   .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .btn.small { height: 34px; padding: 0 12px; font-size: 12px; }
 
-  /* ==================== STATS ==================== */
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -438,7 +432,6 @@
   .stat .num { font-size: 28px; font-weight: 800; margin-top: 6px; letter-spacing: -0.02em; line-height: 1.1; }
   .stat .sub { font-size: 12px; color: var(--text-mute); margin-top: 3px; line-height: 1.2; }
 
-  /* ==================== FILTERS ==================== */
   .filters-bar {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -766,8 +759,6 @@
     position: fixed;
     inset: 0;
     background: rgba(12, 18, 32, 0.45);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -786,9 +777,8 @@
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - 48px);
-    max-height: calc(100dvh - 48px);
     animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: visible;
+    overflow: hidden;
     position: relative;
   }
   @keyframes modalIn {
@@ -817,7 +807,6 @@
   .modal-body {
     padding: 22px 26px;
     overflow-y: auto;
-    overflow-x: visible;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -1265,8 +1254,6 @@
     position: fixed;
     inset: 0;
     background: rgba(12, 18, 32, 0.5);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -1280,7 +1267,6 @@
     width: 100%;
     max-width: 460px;
     max-height: calc(100vh - 80px);
-    max-height: calc(100dvh - 80px);
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
@@ -1323,7 +1309,7 @@
   .day-task.p-medium::before { background: var(--prio-medium); }
   .day-task.p-high::before { background: var(--prio-high); }
   .day-task.p-urgent::before { background: var(--prio-urgent); }
-  .day-task:hover { border-color: var(--primary); background: rgba(var(--primary-rgb), 0.05); transform: translateX(2px); }
+  .day-task:hover { border-color: var(--primary); background: rgba(var(--primary-rgb), 0.05); }
   .day-task-title { flex: 1; font-size: 13.5px; font-weight: 600; word-break: break-word; }
   .day-task.done .day-task-title { text-decoration: line-through; color: var(--text-mute); }
   .day-task-time { font-size: 11.5px; color: var(--text-mute); font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0; }
@@ -1345,7 +1331,6 @@
     pointer-events: none;
     transition: opacity 0.2s, transform 0.2s;
     max-height: calc(100vh - 82px);
-    max-height: calc(100dvh - 82px);
     overflow-y: auto;
   }
   .settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
@@ -1460,8 +1445,6 @@
     position: fixed;
     inset: 0;
     background: rgba(12, 18, 32, 0.5);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -1477,7 +1460,7 @@
     box-shadow: var(--shadow-lg);
     padding: 24px;
     animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
-    max-height: calc(100dvh - 40px);
+    max-height: calc(100vh - 40px);
     overflow-y: auto;
   }
   .confirm-title {
@@ -1549,13 +1532,11 @@
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - 130px);
-    min-height: calc(100dvh - 130px);
   }
   #view-analytics {
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - 130px);
-    min-height: calc(100dvh - 130px);
   }
 
   /* ==================== ANALYTICS ==================== */
@@ -1910,7 +1891,6 @@
     font-weight: 700;
     font-size: 13px;
     color: var(--text);
-    letter-spacing: -0.005em;
     line-height: 1.25;
   }
   .tpl-card-title {
@@ -2085,7 +2065,7 @@
   }
 
   /* ============================================================
-     MOBILE — НИЖНИЙ ТАБ-БАР И ПЕРЕСТРОЙКА
+     MOBILE / PWA
      ============================================================ */
   .mobile-header { display: none; }
   .mobile-tabbar { display: none; }
@@ -2096,7 +2076,6 @@
     .subtasks li .subtask-remove { opacity: 1; }
   }
 
-  /* ------------ TABLET ------------ */
   @media (max-width: 1100px) {
     .sidebar { width: 240px; padding: 20px 12px; }
     .main { padding: 16px; }
@@ -2106,28 +2085,45 @@
     .an2-grid { grid-template-columns: 1fr; }
   }
 
-  /* ------------ MOBILE (<= 720px) ------------ */
+  /* ============================================================
+     MOBILE — только узкие экраны, логика одинакова для браузера и PWA
+     ============================================================ */
   @media (max-width: 720px) {
-    .app { flex-direction: column; }
-    .sidebar { display: none; }
+    :root {
+      --mobile-header-h: 56px;
+      --mobile-tabbar-h: 64px;
+    }
 
     body { font-size: 15px; }
 
-    /* Заголовок-шапка мобильная */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .sidebar { display: none; }
+
     .mobile-header {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 12px;
+      padding: 8px 12px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 40;
       flex-shrink: 0;
+      height: var(--mobile-header-h);
+      min-height: var(--mobile-header-h);
+      max-height: var(--mobile-header-h);
+      /* PWA: учитываем безопасную зону сверху (статус-бар) */
+      padding-top: calc(8px + env(safe-area-inset-top));
+      height: calc(var(--mobile-header-h) + env(safe-area-inset-top));
+      min-height: calc(var(--mobile-header-h) + env(safe-area-inset-top));
+      max-height: calc(var(--mobile-header-h) + env(safe-area-inset-top));
     }
     .mobile-header .logo-sm {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       letter-spacing: -0.02em;
       color: var(--text);
@@ -2138,30 +2134,31 @@
     .mobile-header #board-select-mobile {
       flex: 1;
       min-width: 0;
-      height: 38px;
-      padding: 0 30px 0 12px;
+      height: 36px;
+      padding: 0 26px 0 10px;
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 9px;
       background: var(--input-bg);
       color: var(--text);
       font-family: inherit;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       appearance: none;
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237b8498' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
       background-repeat: no-repeat;
-      background-position: right 10px center;
+      background-position: right 8px center;
+      text-overflow: ellipsis;
     }
     .mobile-header .mh-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--text-dim);
       font-family: inherit;
-      font-size: 16px;
+      font-size: 15px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -2178,32 +2175,34 @@
     }
     .mobile-header .mh-btn:active { transform: scale(0.94); }
 
-    /* Основной контейнер */
     .main {
+      flex: 1 1 auto;
+      min-height: 0;
       padding: 10px 12px;
-      padding-bottom: calc(84px + env(safe-area-inset-bottom));
+      padding-bottom: calc(var(--mobile-tabbar-h) + 12px + env(safe-area-inset-bottom));
       max-width: 100%;
-      height: calc(100dvh - 60px);
+      height: auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
-    /* Скрываем заголовок и сайдбар-фильтры, они не нужны */
     .top { display: none; }
-    .mobile-tabbar { display: flex; }
 
-    /* Нижний таб-бар */
     .mobile-tabbar {
+      display: flex;
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
       background: var(--sidebar-bg);
       color: #fff;
-      padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
       z-index: 100;
       border-top: 1px solid rgba(255, 255, 255, 0.06);
       align-items: stretch;
       justify-content: space-around;
       gap: 2px;
+      padding: 6px 6px env(safe-area-inset-bottom);
+      height: calc(var(--mobile-tabbar-h) + env(safe-area-inset-bottom));
     }
     .mobile-tabbar button {
       flex: 1;
@@ -2213,7 +2212,7 @@
       font-family: inherit;
       font-size: 10.5px;
       font-weight: 600;
-      padding: 6px 4px;
+      padding: 4px;
       border-radius: 10px;
       cursor: pointer;
       display: flex;
@@ -2221,24 +2220,17 @@
       align-items: center;
       justify-content: center;
       gap: 3px;
-      min-height: 52px;
+      min-height: 48px;
       transition: background 0.15s, color 0.15s;
     }
-    .mobile-tabbar button .tab-icon {
-      font-size: 20px;
-      line-height: 1;
-    }
-    .mobile-tabbar button .tab-label {
-      line-height: 1;
-      letter-spacing: 0.02em;
-    }
+    .mobile-tabbar button .tab-icon { font-size: 20px; line-height: 1; }
+    .mobile-tabbar button .tab-label { line-height: 1; letter-spacing: 0.02em; }
     .mobile-tabbar button.active {
       background: var(--sidebar-active);
       color: #fff;
     }
     .mobile-tabbar button:active { transform: scale(0.96); }
 
-    /* Скрытие/показ блоков фильтров — они нужны только в Списке */
     #filters-bar { grid-template-columns: 1fr 1fr; }
     #filters-bar #f-search { grid-column: 1 / -1; }
     #filters-bar .filter-input { font-size: 15px; }
@@ -2251,9 +2243,9 @@
       scroll-snap-type: x mandatory;
       gap: 12px;
       margin: 0 -12px;
-      padding: 4px 12px 16px;
+      padding: 4px 12px 12px;
       -webkit-overflow-scrolling: touch;
-      min-height: calc(100dvh - 180px);
+      min-height: calc(100dvh - var(--mobile-header-h) - var(--mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px);
     }
     .kanban-col {
       flex: 0 0 86vw;
@@ -2286,14 +2278,14 @@
     .task-row .title { font-size: 15.5px; }
     .task-row .meta { font-size: 12.5px; width: 100%; }
 
-    /* STATS — 2 колонки на мобиле */
+    /* STATS */
     .stats {
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
       margin: 12px 0;
     }
     .stat {
-      padding: 12px 12px;
+      padding: 12px;
       min-height: 80px;
       border-radius: 12px;
     }
@@ -2304,7 +2296,7 @@
     /* CALENDAR */
     .calendar-header h2 { min-width: 140px; font-size: 15px; }
     .calendar-weekdays { font-size: 9px; gap: 3px; margin-bottom: 4px; }
-    .calendar { gap: 3px; }
+    .calendar { gap: 3px; grid-auto-rows: auto; }
     .cal-cell {
       min-height: 68px;
       padding: 4px;
@@ -2359,17 +2351,14 @@
       border-radius: 18px 18px 0 0;
     }
     .modal-head h2 { font-size: 11px; }
-    .modal-body { padding: 16px 16px; gap: 18px; }
+    .modal-body { padding: 16px; gap: 18px; }
     .modal-foot {
       padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
       position: sticky;
       bottom: 0;
       z-index: 3;
     }
-    .save-as-tpl-btn {
-      padding: 5px 8px;
-      font-size: 10.5px;
-    }
+    .save-as-tpl-btn { padding: 5px 8px; font-size: 10.5px; }
     .field-title { font-size: 18px; }
     .field-description { height: 110px; min-height: 110px; max-height: 110px; font-size: 15px; }
     .meta-row { grid-template-columns: 1fr; padding-top: 16px; gap: 14px; }
@@ -2380,7 +2369,6 @@
     .prio-seg-btn .prio-label { font-size: 10px; }
     .date-picker-trigger { min-height: 46px; font-size: 15px; }
 
-    /* Date popover — фиксированный снизу, как bottom sheet */
     .date-popover {
       position: fixed;
       left: 8px;
@@ -2397,7 +2385,6 @@
     .dp-day { max-height: 38px; font-size: 14px; }
     .dp-time-input { font-size: 16px; }
 
-    /* Day popup */
     .day-popup-backdrop { padding: 0; align-items: flex-end; }
     .day-popup {
       max-width: 100%;
@@ -2406,25 +2393,21 @@
       border-radius: 18px 18px 0 0;
     }
 
-    /* Confirm */
     .confirm-backdrop { padding: 12px; align-items: flex-end; }
     .confirm-modal { max-width: 100%; width: 100%; border-radius: 18px; padding: 20px; }
 
-    /* Settings */
     .settings-panel {
       top: auto;
-      bottom: calc(70px + env(safe-area-inset-bottom));
+      bottom: calc(var(--mobile-tabbar-h) + 8px + env(safe-area-inset-bottom));
       left: 8px;
       right: 8px;
       width: auto;
       max-height: 62dvh;
     }
 
-    /* Templates */
     .tpl-list { grid-template-columns: 1fr; }
     .tpl-card-actions .btn { height: 38px; font-size: 12.5px; }
 
-    /* Board editor */
     .board-editor-row {
       grid-template-columns: 1fr 40px;
       grid-template-areas:
@@ -2507,16 +2490,15 @@
     </div>
   </aside>
 
-  <main class="main">
-    <!-- МОБИЛЬНАЯ ШАПКА -->
-    <div class="mobile-header">
-      <div class="logo-sm">Task<span>Flow</span></div>
-      <select id="board-select-mobile" aria-label="Выбор воронки"></select>
-      <button class="mh-btn primary" id="mobile-task-add" type="button" aria-label="Новая задача">+</button>
-      <button class="mh-btn" id="mobile-templates" type="button" aria-label="Шаблоны">📁</button>
-      <button class="mh-btn" id="mobile-settings" type="button" aria-label="Настройки">⚙</button>
-    </div>
+  <div class="mobile-header">
+    <div class="logo-sm">Task<span>Flow</span></div>
+    <select id="board-select-mobile" aria-label="Выбор воронки"></select>
+    <button class="mh-btn primary" id="mobile-task-add" type="button" aria-label="Новая задача">+</button>
+    <button class="mh-btn" id="mobile-templates" type="button" aria-label="Шаблоны">📁</button>
+    <button class="mh-btn" id="mobile-settings" type="button" aria-label="Настройки">⚙</button>
+  </div>
 
+  <main class="main">
     <div class="top">
       <div class="title">
         <h1 id="page-title">Канбан</h1>
@@ -2581,7 +2563,6 @@
     </section>
   </main>
 
-  <!-- НИЖНИЙ ТАБ-БАР ДЛЯ МОБИЛЬНЫХ -->
   <nav class="mobile-tabbar" aria-label="Основная навигация">
     <button data-view="kanban" class="active" type="button">
       <span class="tab-icon">▦</span>
@@ -3148,7 +3129,7 @@ function bindSettingsEvents() {
 }
 
 /* ============================================================
-   4. КАСТОМНЫЕ ДИАЛОГИ
+   4. ДИАЛОГИ
    ============================================================ */
 function showConfirm({ title, text, confirmText = "Удалить", cancelText = "Отмена", confirmClass = "danger", onConfirm }) {
   const backdrop = document.createElement("div");
@@ -5638,7 +5619,6 @@ function bindEvents() {
   $("#cal-prev").addEventListener("click", () => { calDate.setMonth(calDate.getMonth() - 1); renderCalendar(); });
   $("#cal-next").addEventListener("click", () => { calDate.setMonth(calDate.getMonth() + 1); renderCalendar(); });
 
-  // нижний таб-бар
   $$(".mobile-tabbar button[data-view]").forEach((btn) => {
     btn.addEventListener("click", () => switchView(btn.dataset.view, null));
   });
