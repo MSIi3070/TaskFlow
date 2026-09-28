@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="TaskFlow" />
@@ -32,7 +35,6 @@
     --danger: #e65353;
     --sidebar-bg: #111827;
     --sidebar-text: #c8cfdd;
-    --sidebar-text-dim: #8b93a7;
     --sidebar-active: #242b3c;
     --shadow-sm: 0 5px 20px rgba(35, 43, 70, 0.04);
     --shadow: 0 12px 35px rgba(35, 43, 70, 0.08);
@@ -67,7 +69,6 @@
     --danger: #f87171;
     --sidebar-bg: #0a0c15;
     --sidebar-text: #c8cfdd;
-    --sidebar-text-dim: #8b93a7;
     --sidebar-active: #1a1d2a;
     --shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.3);
     --shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
@@ -114,7 +115,7 @@
     transition: background 0.3s ease, color 0.3s ease;
     -webkit-tap-highlight-color: transparent;
   }
-  /* НЕ используем position:fixed на body — иначе ломается fixed-навигация на мобиле */
+  /* Блокировка скролла при открытой модалке — без position: fixed, чтобы не ломать fixed-элементы */
   body.modal-open {
     overflow: hidden;
     touch-action: none;
@@ -139,7 +140,6 @@
   .ico-20 { width: 20px; height: 20px; }
   .ico-22 { width: 22px; height: 22px; }
   .ico-24 { width: 24px; height: 24px; }
-  .ico-emoji { font-style: normal; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; line-height: 1; }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -518,10 +518,7 @@
     cursor: pointer;
   }
   .filters-bar select.filter-input option { background: var(--surface); color: var(--text); }
-  .filters-bar .date-mask {
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.02em;
-  }
+  .filters-bar .date-mask { font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
 
   .kanban {
     display: grid;
@@ -608,8 +605,8 @@
     position: absolute;
     top: 6px;
     right: 6px;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
     background: var(--surface-hover);
     border: 1px solid var(--border);
@@ -1400,6 +1397,7 @@
   .day-task-time { font-size: 11.5px; color: var(--text-mute); font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0; }
 
   /* ===== НАСТРОЙКИ ===== */
+  /* Backdrop для настроек — только для мобилы. На ПК всегда display:none. */
   .settings-backdrop {
     position: fixed;
     inset: 0;
@@ -2196,7 +2194,7 @@
     box-shadow: 0 0 0 3px var(--primary-glow);
   }
 
-  /* ===== "ЕЩЁ" МЕНЮ (мобильное) ===== */
+  /* ===== "ЕЩЁ" МЕНЮ ===== */
   .more-menu-backdrop {
     position: fixed;
     inset: 0;
@@ -2272,10 +2270,7 @@
   .more-menu-item:disabled { opacity: .4; cursor: not-allowed; }
   .more-menu-item .ico { color: var(--text-dim); }
 
-  .move-menu-list {
-    display: grid;
-    gap: 6px;
-  }
+  .move-menu-list { display: grid; gap: 6px; }
   .move-menu-item {
     display: flex;
     align-items: center;
@@ -2297,7 +2292,10 @@
   .move-menu-item.current { border-color: var(--primary); background: rgba(var(--primary-rgb), 0.06); }
   .move-menu-item.current::after { content: "✓"; margin-left: auto; color: var(--primary); font-weight: 800; }
 
-  /* ===== АДАПТАЦИЯ ===== */
+  /* Кнопка "Ещё" — по умолчанию скрыта, показывается только на мобиле через жёсткий фикс */
+  .mobile-more-btn { display: none !important; }
+
+  /* ===== СТАРЫЕ АДАПТАЦИИ ===== */
   @media (max-width: 900px) {
     .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   }
@@ -2351,228 +2349,247 @@
   }
 
   /* ============================================================
-     МОБИЛЬНАЯ АДАПТАЦИЯ (до 560px)
+     ЖЁСТКИЙ ФИКС МОБИЛЬНОЙ ВЕРСИИ — перебивает всё
      ============================================================ */
-  @media (max-width: 560px) {
-    .app {
-      flex-direction: column;
-      height: auto;
-      min-height: 100dvh;
-      overflow: visible;
+  @media (max-width: 640px) {
+
+    html, body {
+      height: auto !important;
+      min-height: 100dvh !important;
+      overflow: auto !important;
     }
-    @supports not (min-height: 100dvh) {
-      .app { min-height: 100vh; }
+    body.modal-open {
+      overflow: hidden !important;
+      position: static !important;
     }
 
-    /* Нижняя навигация — жёстко фиксируем и показываем */
+    .app {
+      display: block !important;
+      height: auto !important;
+      min-height: 100dvh !important;
+      overflow: visible !important;
+    }
+
+    /* Нижняя навигация — главное */
     .sidebar {
       display: flex !important;
-      width: 100%;
-      height: auto !important;
-      min-height: calc(var(--mobile-nav-h) + var(--safe-bottom));
-      padding: 6px 6px calc(6px + var(--safe-bottom));
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-      gap: 4px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      border-right: none;
-      order: 2;
       position: fixed !important;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      top: auto;
-      z-index: 95;
-      overflow: visible;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      top: auto !important;
+      width: 100% !important;
+      height: 62px !important;
+      min-height: 62px !important;
+      max-height: 62px !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-around !important;
+      padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px)) !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
+      border-top: 1px solid rgba(255,255,255,0.08) !important;
+      z-index: 9999 !important;
+      overflow: visible !important;
+      transform: none !important;
+      box-sizing: border-box !important;
     }
 
-    .logo-row,
-    .side-section,
-    .side-bottom { display: none !important; }
+    .sidebar .logo-row,
+    .sidebar .side-section,
+    .sidebar .side-bottom,
+    .sidebar .tooltip { display: none !important; }
 
-    /* Прячем tooltips на мобиле */
-    .tooltip { display: none !important; }
-
-    .nav {
-      display: flex;
-      flex-direction: row;
-      gap: 2px;
-      flex: 1;
-      justify-content: space-around;
+    .sidebar .nav {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 2px !important;
+      flex: 1 !important;
+      justify-content: space-around !important;
+      align-items: center !important;
     }
-    .nav button {
-      font-size: 0;
-      padding: 8px;
-      text-align: center;
-      justify-content: center;
-      border-radius: 10px;
-      min-width: 44px;
-      min-height: 44px;
-      flex: 0 0 auto;
-    }
-    .nav button .ico { width: 22px; height: 22px; }
 
-    .mobile-more-btn {
+    .sidebar .nav button {
       display: inline-flex !important;
-      align-items: center;
-      justify-content: center;
-      min-width: 44px;
-      min-height: 44px;
-      border-radius: 10px;
-      background: transparent;
-      border: none;
-      color: var(--sidebar-text);
-      cursor: pointer;
-      flex-shrink: 0;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-width: 48px !important;
+      min-height: 48px !important;
+      padding: 6px 8px !important;
+      font-size: 0 !important;
+      color: #c8cfdd !important;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 10px !important;
+      flex: 0 0 auto !important;
+      gap: 0 !important;
     }
-    .mobile-more-btn:active,
-    .mobile-more-btn.active { background: var(--sidebar-active); color: #fff; }
 
+    .sidebar .nav button .ico,
+    .sidebar .nav button svg {
+      width: 22px !important;
+      height: 22px !important;
+      color: inherit !important;
+      stroke: currentColor !important;
+    }
+
+    .sidebar .nav button.active,
+    .sidebar .nav button:active {
+      background: #242b3c !important;
+      color: #fff !important;
+    }
+
+    /* Кнопка "Ещё" — показываем только тут */
+    .sidebar .nav button.mobile-more-btn {
+      display: inline-flex !important;
+    }
+
+    /* Основной контент */
     .main {
-      padding: 10px 12px calc(var(--mobile-nav-h) + var(--safe-bottom) + 14px) 12px;
-      height: auto;
-      min-height: 100dvh;
-      max-width: 100%;
-    }
-    @supports not (min-height: 100dvh) {
-      .main { min-height: 100vh; }
+      display: block !important;
+      height: auto !important;
+      min-height: 100dvh !important;
+      padding: 10px 12px calc(62px + env(safe-area-inset-bottom, 0px) + 14px) 12px !important;
+      overflow: visible !important;
+      margin: 0 !important;
+      max-width: 100% !important;
     }
 
-    .top { gap: 8px; margin-bottom: 4px; }
     .title h1 { font-size: 18px; }
     .title p { font-size: 11px; }
 
     .kanban {
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 10px;
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+      margin-top: 10px !important;
     }
-    .kanban-col { padding: 12px; border-radius: 14px; min-height: 120px; }
-    .kanban-card { padding: 10px 42px 10px 12px; font-size: 13px; }
+    .kanban-col { padding: 12px !important; border-radius: 14px !important; min-height: 120px !important; }
+    .kanban-card { padding: 10px 42px 10px 12px !important; font-size: 13px !important; }
 
-    .task-row { padding: 12px 14px; gap: 8px; border-radius: 12px; }
-    .task-row .title { font-size: 13.5px; }
+    .task-row { padding: 12px 14px !important; gap: 8px !important; border-radius: 12px !important; }
+    .task-row .title { font-size: 13.5px !important; }
 
     .stats {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin: 12px 0 8px;
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 8px !important;
+      margin: 12px 0 8px !important;
     }
-    .stat { padding: 12px 14px; min-height: 76px; }
-    .stat .num { font-size: 22px; }
-    .stat .label { font-size: 10px; }
-    .stat .sub { font-size: 10px; }
+    .stat { padding: 12px 14px !important; min-height: 76px !important; }
+    .stat .num { font-size: 22px !important; }
+    .stat .label { font-size: 10px !important; }
+    .stat .sub { font-size: 10px !important; }
 
-    .filters-bar { grid-template-columns: 1fr; gap: 8px; }
+    .filters-bar { grid-template-columns: 1fr !important; gap: 8px !important; }
 
-    .calendar-header h2 { font-size: 14px; min-width: 140px; }
-    .cal-cell { min-height: 68px; padding: 5px; border-radius: 8px; }
-    .cal-date { font-size: 11px; margin-bottom: 0; }
-    .cal-task { display: none; }
-    .cal-more { display: none; }
-    .cal-dots { display: flex; }
-    .calendar-weekdays { font-size: 9px; gap: 3px; }
+    .calendar-header h2 { font-size: 14px !important; min-width: 140px !important; }
+    .cal-cell { min-height: 68px !important; padding: 5px !important; border-radius: 8px !important; }
+    .cal-date { font-size: 11px !important; margin-bottom: 0 !important; }
+    .cal-task { display: none !important; }
+    .cal-more { display: none !important; }
+    .cal-dots { display: flex !important; }
+    .calendar-weekdays { font-size: 9px !important; gap: 3px !important; }
 
+    /* Модалки — bottom-sheet */
     .modal-backdrop {
-      padding: 0;
-      align-items: flex-end;
-      justify-content: stretch;
+      padding: 0 !important;
+      align-items: flex-end !important;
+      justify-content: stretch !important;
     }
     .modal {
-      max-width: 100%;
-      min-height: auto;
-      max-height: 94dvh;
-      border-radius: 20px 20px 0 0;
-      animation: sheetIn 0.26s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    @supports not (max-height: 100dvh) {
-      .modal { max-height: 94vh; }
+      max-width: 100% !important;
+      min-height: auto !important;
+      max-height: 94dvh !important;
+      border-radius: 20px 20px 0 0 !important;
+      animation: sheetIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     @keyframes sheetIn {
       from { transform: translateY(100%); }
       to   { transform: translateY(0); }
     }
     .modal-head {
-      padding: 14px 18px 12px;
-      border-radius: 20px 20px 0 0;
-      flex-wrap: wrap;
-      gap: 8px;
+      padding: 14px 18px 12px !important;
+      border-radius: 20px 20px 0 0 !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
     }
-    .modal-head h2 { font-size: 11px; }
+    .modal-head h2 { font-size: 11px !important; }
     .save-as-tpl-btn {
-      order: 3;
-      flex-basis: 100%;
-      padding: 10px;
-      font-size: 12px;
-      justify-content: center;
+      order: 3 !important;
+      flex-basis: 100% !important;
+      padding: 10px !important;
+      font-size: 12px !important;
+      justify-content: center !important;
     }
 
-    .modal-body { padding: 16px 18px; gap: 18px; }
+    .modal-body { padding: 16px 18px !important; gap: 18px !important; }
     .modal-foot {
-      padding: 12px 18px calc(12px + var(--safe-bottom));
-      border-radius: 0;
-      flex-wrap: wrap;
-      gap: 8px;
+      padding: 12px 18px calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+      border-radius: 0 !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
     }
-    .modal-foot .btn { flex: 1 1 auto; min-width: 0; padding: 0 12px; font-size: 13px; height: 46px; }
-    .modal-foot .btn.danger { order: 3; flex-basis: 100%; }
-    .modal-foot .spacer { display: none; }
+    .modal-foot .btn { flex: 1 1 auto !important; min-width: 0 !important; padding: 0 12px !important; font-size: 13px !important; height: 46px !important; }
+    .modal-foot .btn.danger { order: 3 !important; flex-basis: 100% !important; }
+    .modal-foot .spacer { display: none !important; }
 
-    .field-title { font-size: 17px; }
-    .field-description { height: 120px; min-height: 120px; max-height: 120px; }
+    .field-title { font-size: 17px !important; }
+    .field-description { height: 120px !important; min-height: 120px !important; max-height: 120px !important; }
 
-    .meta-row { gap: 14px; padding-top: 16px; }
+    .meta-row { gap: 14px !important; padding-top: 16px !important; }
 
     .priority-seg {
-      grid-template-columns: repeat(4, 1fr);
-      height: auto;
-      gap: 3px;
-      padding: 3px;
+      grid-template-columns: repeat(4, 1fr) !important;
+      height: auto !important;
+      gap: 3px !important;
+      padding: 3px !important;
     }
-    .prio-seg-btn { padding: 8px 2px; gap: 2px; min-height: 44px; }
-    .prio-seg-btn .prio-icon { font-size: 13px; }
-    .prio-seg-btn .prio-label { font-size: 9px; }
+    .prio-seg-btn { padding: 8px 2px !important; gap: 2px !important; min-height: 44px !important; }
+    .prio-seg-btn .prio-icon { font-size: 13px !important; }
+    .prio-seg-btn .prio-label { font-size: 9px !important; }
 
-    .repeat-row { grid-template-columns: repeat(2, 1fr); }
-    .repeat-btn { font-size: 11px; padding: 10px 6px; min-height: 42px; }
+    .repeat-row { grid-template-columns: repeat(2, 1fr) !important; }
+    .repeat-btn { font-size: 11px !important; padding: 10px 6px !important; min-height: 42px !important; }
 
-    .subtasks-block { padding: 12px; }
-    .subtasks li { padding: 8px 6px; gap: 8px; font-size: 12.5px; min-height: 42px; }
-    .subtask-deadline { font-size: 10px; }
-    .subtask-title { font-size: 12.5px; }
+    .subtasks-block { padding: 12px !important; }
+    .subtasks li { padding: 8px 6px !important; gap: 8px !important; font-size: 12.5px !important; min-height: 42px !important; }
+    .subtask-deadline { font-size: 10px !important; }
+    .subtask-title { font-size: 12.5px !important; }
 
     .date-popover {
-      position: fixed;
-      left: 50%;
-      right: auto;
-      bottom: calc(var(--safe-bottom) + 12px);
-      top: auto;
-      transform: translateX(-50%) translateY(12px);
-      width: calc(100vw - 32px);
-      max-width: 360px;
+      position: fixed !important;
+      left: 50% !important;
+      right: auto !important;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 12px) !important;
+      top: auto !important;
+      transform: translateX(-50%) translateY(12px) !important;
+      width: calc(100vw - 32px) !important;
+      max-width: 360px !important;
     }
-    .date-popover.open { transform: translateX(-50%) translateY(0); }
+    .date-popover.open { transform: translateX(-50%) translateY(0) !important; }
 
     /* Настройки — bottom-sheet */
-    .settings-backdrop { display: block; }
+    .settings-backdrop { display: block !important; }
     .settings-panel {
-      position: fixed;
-      top: auto;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: auto;
-      max-height: 82dvh;
-      border-radius: 20px 20px 0 0;
-      padding: 14px 16px calc(20px + var(--safe-bottom));
-      transform: translateY(100%);
-      transition: transform .28s cubic-bezier(.16,1,.3,1);
-      opacity: 1;
-      pointer-events: none;
-      z-index: 89;
+      position: fixed !important;
+      top: auto !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: auto !important;
+      max-height: 82dvh !important;
+      border-radius: 20px 20px 0 0 !important;
+      padding: 14px 16px calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+      transform: translateY(100%) !important;
+      transition: transform .28s cubic-bezier(.16,1,.3,1) !important;
+      opacity: 1 !important;
+      pointer-events: none !important;
+      z-index: 89 !important;
     }
-    .settings-panel.open { transform: translateY(0); pointer-events: auto; }
+    .settings-panel.open {
+      transform: translateY(0) !important;
+      pointer-events: auto !important;
+    }
     .settings-panel::before {
       content: "";
       display: block;
@@ -2581,114 +2598,72 @@
       border-radius: 2px;
       margin: 0 auto 12px;
     }
-    .settings-close { display: inline-flex; }
-    .settings-section h4 { font-size: 11px; }
-    .density-btn { padding: 10px 4px; min-height: 42px; font-size: 12px; }
+    .settings-close { display: inline-flex !important; }
+    .settings-section h4 { font-size: 11px !important; }
+    .density-btn { padding: 10px 4px !important; min-height: 42px !important; font-size: 12px !important; }
 
-    .an2-grid { grid-template-columns: 1fr; gap: 10px; }
-    .an2-kpis { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .an2-kpi { padding: 12px 14px; min-height: 80px; gap: 10px; }
-    .an2-kpi-icon { width: 36px; height: 36px; border-radius: 10px; }
-    .an2-kpi-num { font-size: 20px; }
-    .an2-kpi-label { font-size: 10px; }
-    .an2-kpi-sub { font-size: 10px; }
+    .an2-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+    .an2-kpis { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+    .an2-kpi { padding: 12px 14px !important; min-height: 80px !important; gap: 10px !important; }
+    .an2-kpi-icon { width: 36px !important; height: 36px !important; border-radius: 10px !important; }
+    .an2-kpi-num { font-size: 20px !important; }
+    .an2-kpi-label { font-size: 10px !important; }
+    .an2-kpi-sub { font-size: 10px !important; }
 
-    .an2-panel { padding: 12px 14px; min-height: 140px; }
-    .an2-panel-head h3 { font-size: 11px; }
-    .an2-donut { width: 90px; height: 90px; }
-    .an2-donut-pct { font-size: 18px; }
+    .an2-panel { padding: 12px 14px !important; min-height: 140px !important; }
+    .an2-panel-head h3 { font-size: 11px !important; }
+    .an2-donut { width: 90px !important; height: 90px !important; }
+    .an2-donut-pct { font-size: 18px !important; }
 
-    .an2-urgency { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .an2-urg { padding: 10px 12px; }
-    .an2-urg-num { font-size: 18px; }
-    .an2-urg-label { font-size: 10px; }
+    .an2-urgency { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+    .an2-urg { padding: 10px 12px !important; }
+    .an2-urg-num { font-size: 18px !important; }
+    .an2-urg-label { font-size: 10px !important; }
 
-    .an2-bar { grid-template-columns: minmax(90px, max-content) 1fr minmax(42px, 50px); font-size: 11px; gap: 8px; }
-    .an2-week { gap: 4px; }
-    .an2-week-labels span { font-size: 9px; }
+    .an2-bar { grid-template-columns: minmax(90px, max-content) 1fr minmax(42px, 50px) !important; font-size: 11px !important; gap: 8px !important; }
+    .an2-week { gap: 4px !important; }
+    .an2-week-labels span { font-size: 9px !important; }
 
-    .tpl-list { grid-template-columns: 1fr; }
-    .tpl-card { padding: 12px 14px; }
-    .tpl-card-name { font-size: 12.5px; }
-    .tpl-card-title { font-size: 11px; }
+    .tpl-list { grid-template-columns: 1fr !important; }
+    .tpl-card { padding: 12px 14px !important; }
+    .tpl-card-name { font-size: 12.5px !important; }
+    .tpl-card-title { font-size: 11px !important; }
 
-    .tpl-icon-input { width: 46px; height: 46px; font-size: 20px; }
-    .tpl-editor-row .field-title { font-size: 17px; }
+    .tpl-icon-input { width: 46px !important; height: 46px !important; font-size: 20px !important; }
+    .tpl-editor-row .field-title { font-size: 17px !important; }
 
     .board-editor-row {
       grid-template-columns: 1fr !important;
-      grid-template-areas:
-        "label"
-        "color"
-        "type"
-        "del";
-      gap: 6px;
-      padding: 10px;
-    }
-    .board-editor-row input[type="text"] {
-      grid-area: label;
-      font-size: 13px;
-      padding: 10px 11px;
-      width: 100%;
-      min-height: 42px;
-    }
-    .board-editor-row input[type="color"] {
-      grid-area: color;
-      width: 100%;
-      height: 42px;
-    }
-    .board-editor-row select {
-      grid-area: type;
-      font-size: 12.5px;
-      padding: 10px 11px;
-      width: 100%;
-      min-height: 42px;
-    }
-    .board-editor-row .btn.ghost {
-      grid-area: del;
+      grid-template-areas: "label" "color" "type" "del" !important;
+      gap: 6px !important;
       padding: 10px !important;
-      font-size: 13px;
-      width: 100%;
-      min-height: 42px;
     }
+    .board-editor-row input[type="text"] { grid-area: label !important; font-size: 13px !important; padding: 10px 11px !important; width: 100% !important; min-height: 42px !important; }
+    .board-editor-row input[type="color"] { grid-area: color !important; width: 100% !important; height: 42px !important; }
+    .board-editor-row select { grid-area: type !important; font-size: 12.5px !important; padding: 10px 11px !important; width: 100% !important; min-height: 42px !important; }
+    .board-editor-row .btn.ghost { grid-area: del !important; padding: 10px !important; font-size: 13px !important; width: 100% !important; min-height: 42px !important; }
 
-    .board-editor-name { font-size: 14px; padding: 11px 13px; min-height: 44px; }
+    .board-editor-name { font-size: 14px !important; padding: 11px 13px !important; min-height: 44px !important; }
 
-    .confirm-modal { padding: 20px 16px; max-width: 100%; }
-    .confirm-modal .confirm-title { font-size: 15px; }
-    .confirm-modal .confirm-text { font-size: 13px; margin-bottom: 16px; }
-    .confirm-modal .confirm-actions {
-      flex-direction: column-reverse;
-      gap: 8px;
-    }
-    .confirm-modal .confirm-actions .btn {
-      width: 100%;
-      justify-content: center;
-      height: 46px;
-      font-size: 13px;
-    }
+    .confirm-modal { padding: 20px 16px !important; max-width: 100% !important; }
+    .confirm-modal .confirm-title { font-size: 15px !important; }
+    .confirm-modal .confirm-text { font-size: 13px !important; margin-bottom: 16px !important; }
+    .confirm-modal .confirm-actions { flex-direction: column-reverse !important; gap: 8px !important; }
+    .confirm-modal .confirm-actions .btn { width: 100% !important; justify-content: center !important; height: 46px !important; font-size: 13px !important; }
 
-    .day-popup {
-      max-width: 100%;
-      border-radius: 20px 20px 0 0;
-      max-height: 88dvh;
-    }
-    .day-popup-backdrop { padding: 0; align-items: flex-end; }
-    .day-popup-head { padding: 14px 18px; border-radius: 20px 20px 0 0; }
-    .day-popup-head h3 { font-size: 13px; }
-    .day-popup-body { padding: 12px 14px calc(14px + var(--safe-bottom)); }
-    .day-task { padding: 12px; min-height: 52px; }
-    .day-task-title { font-size: 13px; }
+    .day-popup { max-width: 100% !important; border-radius: 20px 20px 0 0 !important; max-height: 88dvh !important; }
+    .day-popup-backdrop { padding: 0 !important; align-items: flex-end !important; }
+    .day-popup-head { padding: 14px 18px !important; border-radius: 20px 20px 0 0 !important; }
+    .day-popup-head h3 { font-size: 13px !important; }
+    .day-popup-body { padding: 12px 14px calc(14px + env(safe-area-inset-bottom, 0px)) !important; }
+    .day-task { padding: 12px !important; min-height: 52px !important; }
+    .day-task-title { font-size: 13px !important; }
   }
 
   @media (min-width: 1900px) {
     .main { max-width: 1700px; }
   }
 
-  /* Кнопка "Ещё" — скрыта на десктопе, показывается только на мобиле */
-  .mobile-more-btn { display: none !important; }
-
-  /* Убираем фокус-ринг на тач-устройствах */
   @media (hover: none) {
     .btn:focus:not(:focus-visible),
     input:focus:not(:focus-visible),
@@ -2857,7 +2832,7 @@
   </main>
 </div>
 
-<!-- Backdrop для настроек (на мобиле) -->
+<!-- Backdrop для настроек — на ПК не активируется -->
 <div class="settings-backdrop" id="settings-backdrop"></div>
 
 <div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true" aria-label="Настройки внешнего вида">
@@ -2905,7 +2880,7 @@
   <button class="settings-reset" id="settings-reset">Сбросить к значениям по умолчанию</button>
 </div>
 
-<!-- Меню "Ещё" (мобильное) -->
+<!-- Меню "Ещё" -->
 <div class="more-menu-backdrop" id="more-menu-backdrop"></div>
 <div class="more-menu" id="more-menu" role="dialog" aria-modal="true" aria-label="Дополнительно">
   <div class="more-menu-title">Воронка</div>
@@ -3002,17 +2977,14 @@
         <input id="tpl-icon" class="tpl-icon-input" type="text" maxlength="2" placeholder="📝" aria-label="Иконка" />
         <input id="tpl-name" class="field-title" type="text" placeholder="Название шаблона" />
       </div>
-
       <div class="description-block">
         <div class="description-label">Заголовок задачи</div>
         <input id="tpl-task-title" class="tpl-text-input" type="text" placeholder="Что нужно сделать?" />
       </div>
-
       <div class="description-block">
         <div class="description-label">Описание</div>
         <textarea id="tpl-description" class="field-description" style="height:100px;min-height:100px;max-height:100px" placeholder="Детали, заметки..."></textarea>
       </div>
-
       <div class="meta-row" style="padding-top:16px">
         <div class="meta-field">
           <div class="meta-label">Дедлайн через</div>
@@ -3021,22 +2993,13 @@
         <div class="meta-field">
           <div class="meta-label">Приоритет</div>
           <div class="priority-seg" id="tpl-priority-row">
-            <button type="button" class="prio-seg-btn" data-prio="low">
-              <span class="prio-icon">🔵</span><span class="prio-label">Низ</span>
-            </button>
-            <button type="button" class="prio-seg-btn" data-prio="medium">
-              <span class="prio-icon">🟢</span><span class="prio-label">Сред</span>
-            </button>
-            <button type="button" class="prio-seg-btn" data-prio="high">
-              <span class="prio-icon">🟡</span><span class="prio-label">Выс</span>
-            </button>
-            <button type="button" class="prio-seg-btn" data-prio="urgent">
-              <span class="prio-icon">🔴</span><span class="prio-label">Сроч</span>
-            </button>
+            <button type="button" class="prio-seg-btn" data-prio="low"><span class="prio-icon">🔵</span><span class="prio-label">Низ</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="medium"><span class="prio-icon">🟢</span><span class="prio-label">Сред</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="high"><span class="prio-icon">🟡</span><span class="prio-label">Выс</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="urgent"><span class="prio-icon">🔴</span><span class="prio-label">Сроч</span></button>
           </div>
         </div>
       </div>
-
       <div class="repeat-block">
         <div class="section-head"><h3>Повтор</h3></div>
         <div class="repeat-row" id="tpl-repeat-row">
@@ -3047,7 +3010,6 @@
           <button type="button" class="repeat-btn" data-repeat="monthly">Ежемесячно</button>
         </div>
       </div>
-
       <div class="subtasks-block">
         <div class="section-head">
           <h3>Подзадачи</h3>
@@ -3147,22 +3109,10 @@
         <div class="meta-field">
           <div class="meta-label">Приоритет</div>
           <div class="priority-seg" id="m-priority-row">
-            <button type="button" class="prio-seg-btn" data-prio="low">
-              <span class="prio-icon">🔵</span>
-              <span class="prio-label">Низ</span>
-            </button>
-            <button type="button" class="prio-seg-btn" data-prio="medium">
-              <span class="prio-icon">🟢</span>
-              <span class="prio-label">Сред</span>
-            </button>
-            <button type="button" class="prio-seg-btn" data-prio="high">
-              <span class="prio-icon">🟡</span>
-              <span class="prio-label">Выс</span>
-            </button>
-            <button type="button" class="prio-seg-btn" data-prio="urgent">
-              <span class="prio-icon">🔴</span>
-              <span class="prio-label">Сроч</span>
-            </button>
+            <button type="button" class="prio-seg-btn" data-prio="low"><span class="prio-icon">🔵</span><span class="prio-label">Низ</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="medium"><span class="prio-icon">🟢</span><span class="prio-label">Сред</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="high"><span class="prio-icon">🟡</span><span class="prio-label">Выс</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="urgent"><span class="prio-icon">🔴</span><span class="prio-label">Сроч</span></button>
           </div>
         </div>
       </div>
@@ -3200,7 +3150,6 @@
     </div>
     <div class="modal-body" style="gap:18px">
       <input id="sm-title" class="field-title" type="text" placeholder="Название подзадачи" />
-
       <div class="meta-row" style="padding-top:16px">
         <div class="meta-field">
           <div class="meta-label">Дедлайн</div>
@@ -3210,26 +3159,15 @@
         <div class="meta-field">
           <div class="meta-label">Приоритет</div>
           <div class="priority-seg" id="sm-priority-row">
-            <button type="button" class="prio-seg-btn" data-prio="low">
-              <span class="prio-icon">🔵</span><span class="prio-label">Низ</span>
-            </button>
-            <button type="button" class="prio-seg-btn" data-prio="medium">
-              <span class="prio-icon">🟢</span><span class="prio-label">Сред</span>
-            </button>
-            <button type="button" class="prio-seg-btn" data-prio="high">
-              <span class="prio-icon">🟡</span><span class="prio-label">Выс</span>
-            </button>
-            <button type="button" class="prio-seg-btn" data-prio="urgent">
-              <span class="prio-icon">🔴</span><span class="prio-label">Сроч</span>
-            </button>
+            <button type="button" class="prio-seg-btn" data-prio="low"><span class="prio-icon">🔵</span><span class="prio-label">Низ</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="medium"><span class="prio-icon">🟢</span><span class="prio-label">Сред</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="high"><span class="prio-icon">🟡</span><span class="prio-label">Выс</span></button>
+            <button type="button" class="prio-seg-btn" data-prio="urgent"><span class="prio-icon">🔴</span><span class="prio-label">Сроч</span></button>
           </div>
         </div>
       </div>
-
       <div class="repeat-block">
-        <div class="section-head">
-          <h3>Повтор</h3>
-        </div>
+        <div class="section-head"><h3>Повтор</h3></div>
         <div class="repeat-row" id="sm-repeat-row">
           <button type="button" class="repeat-btn" data-repeat="">Никогда</button>
           <button type="button" class="repeat-btn" data-repeat="daily">Ежедневно</button>
@@ -3238,7 +3176,6 @@
           <button type="button" class="repeat-btn" data-repeat="monthly">Ежемесячно</button>
         </div>
       </div>
-
       <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer;min-height:44px">
         <input type="checkbox" id="sm-done" style="width:18px;height:18px;accent-color:var(--primary)" />
         Выполнено
@@ -3253,7 +3190,7 @@
   </div>
 </div>
 
-<!-- ================== МОДАЛКА ПЕРЕМЕЩЕНИЯ ЗАДАЧИ (для тач) ================== -->
+<!-- ================== МОДАЛКА ПЕРЕМЕЩЕНИЯ ================== -->
 <div class="modal-backdrop" id="move-backdrop">
   <div class="modal" style="max-width:420px;min-height:auto" role="dialog" aria-modal="true">
     <div class="modal-head">
@@ -3370,23 +3307,16 @@ function parseRuDate(str, endOfDay) {
 function nextDateByRepeat(deadlineIso, repeat) {
   if (!repeat) return null;
   const base = deadlineIso ? new Date(deadlineIso) : new Date();
-
   if (repeat === "daily") {
-    const d = new Date(base);
-    d.setDate(d.getDate() + 1);
-    return d.toISOString();
+    const d = new Date(base); d.setDate(d.getDate() + 1); return d.toISOString();
   }
   if (repeat === "weekdays") {
     const d = new Date(base);
-    do {
-      d.setDate(d.getDate() + 1);
-    } while (d.getDay() === 0 || d.getDay() === 6);
+    do { d.setDate(d.getDate() + 1); } while (d.getDay() === 0 || d.getDay() === 6);
     return d.toISOString();
   }
   if (repeat === "weekly") {
-    const d = new Date(base);
-    d.setDate(d.getDate() + 7);
-    return d.toISOString();
+    const d = new Date(base); d.setDate(d.getDate() + 7); return d.toISOString();
   }
   if (repeat === "monthly") {
     const d = new Date(base);
@@ -3399,7 +3329,7 @@ function nextDateByRepeat(deadlineIso, repeat) {
 }
 
 /* ============================================================
-   3. DEADLINE STATE (объявлено до Store)
+   3. DEADLINE STATE
    ============================================================ */
 const APPROACH_THRESHOLDS_MIN = [15, 10, 5];
 const OVERDUE_TICK_MS = 5 * 60 * 1000;
@@ -3412,7 +3342,7 @@ const deadlineState = {
 };
 
 /* ============================================================
-   4. BODY LOCK
+   4. BODY LOCK — без position:fixed, чтобы не ломать нижнюю панель
    ============================================================ */
 function lockBody() {
   if (!document.body.classList.contains("modal-open")) {
@@ -3459,18 +3389,18 @@ function syncSettingsUI() {
   $$("[data-theme-set]").forEach((b) => b.classList.toggle("active", b.dataset.themeSet === appearance.theme));
   $$("#palette .swatch").forEach((s) => s.classList.toggle("active", s.dataset.color.toLowerCase() === appearance.accent.toLowerCase()));
   const cc = $("#custom-color"); if (cc) cc.value = appearance.accent;
-
   const vol = $("#volume-slider");
   const volVal = $("#volume-value");
   if (vol) vol.value = Math.round(Sound.volume * 100);
   if (volVal) volVal.textContent = `${Math.round(Sound.volume * 100)}%`;
 }
 
+/* ==== ИСПРАВЛЕНО: openSettings/closeSettings — backdrop только на мобиле ==== */
 function openSettings() {
   const panel = $("#settings-panel");
   const backdrop = $("#settings-backdrop");
   panel.classList.add("open");
-  backdrop.classList.add("open");
+  if (window.innerWidth <= 640 && backdrop) backdrop.classList.add("open");
   $("#settings-btn")?.classList.add("active");
   lockBody();
 }
@@ -3478,7 +3408,7 @@ function closeSettings() {
   const panel = $("#settings-panel");
   const backdrop = $("#settings-backdrop");
   panel.classList.remove("open");
-  backdrop.classList.remove("open");
+  if (backdrop) backdrop.classList.remove("open");
   $("#settings-btn")?.classList.remove("active");
   unlockBody();
 }
@@ -3497,17 +3427,22 @@ function bindSettingsEvents() {
   });
 
   if (closeBtn) closeBtn.addEventListener("click", closeSettings);
-  if (backdrop) backdrop.addEventListener("click", closeSettings);
+  if (backdrop) {
+    backdrop.addEventListener("click", () => {
+      // На мобиле backdrop ловит клик и закрывает
+      if (window.innerWidth <= 640) closeSettings();
+    });
+  }
 
   panel.addEventListener("click", (e) => e.stopPropagation());
 
+  // Закрытие по клику вне панели — только на десктопе
   document.addEventListener("click", (e) => {
     if (!panel.classList.contains("open")) return;
-    if (window.innerWidth > 560) {
-      if (panel.contains(e.target)) return;
-      if (settingsBtn === e.target || settingsBtn.contains(e.target)) return;
-      closeSettings();
-    }
+    if (window.innerWidth <= 640) return; // на мобиле закрывает backdrop
+    if (panel.contains(e.target)) return;
+    if (settingsBtn === e.target || settingsBtn.contains(e.target)) return;
+    closeSettings();
   });
 
   $$("[data-theme-set]").forEach((b) => b.addEventListener("click", () => {
@@ -3621,7 +3556,6 @@ function showPrompt({ title, label, defaultValue = "", placeholder = "", confirm
   lockBody();
   const input = backdrop.querySelector(".prompt-input");
   setTimeout(() => { input.focus(); input.select(); }, 60);
-
   const close = () => {
     backdrop.classList.remove("open");
     setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
@@ -3635,9 +3569,7 @@ function showPrompt({ title, label, defaultValue = "", placeholder = "", confirm
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="cancel"]').addEventListener("click", close);
   backdrop.querySelector('[data-action="confirm"]').addEventListener("click", submit);
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); submit(); }
-  });
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } });
   const onEsc = (e) => {
     if (e.key === "Escape") { close(); document.removeEventListener("keydown", onEsc); }
   };
@@ -3716,7 +3648,7 @@ const Sound = {
 });
 
 /* ============================================================
-   8. STORE + МИГРАЦИИ
+   8. STORE
    ============================================================ */
 const STORAGE_KEY = "taskflow_v1";
 const SCHEMA_VERSION = 2;
@@ -3806,50 +3738,10 @@ const Store = {
 
   _seedTemplates() {
     this.data.templates = [
-      {
-        id: this.data.nextTemplateId++,
-        icon: "📞",
-        name: "Звонок клиенту",
-        title: "Позвонить клиенту",
-        description: "Уточнить текущие потребности и договориться о следующем шаге.",
-        priority: "medium",
-        repeat: "",
-        deadlineOffsetDays: 1,
-        subtasks: ["Подготовить список вопросов", "Уточнить дату следующего контакта", "Записать итоги в CRM"],
-      },
-      {
-        id: this.data.nextTemplateId++,
-        icon: "📧",
-        name: "Письмо с КП",
-        title: "Отправить коммерческое предложение",
-        description: "Собрать условия, приложить прайс и отправить клиенту.",
-        priority: "high",
-        repeat: "",
-        deadlineOffsetDays: 3,
-        subtasks: ["Сформировать КП", "Проверить цены и скидки", "Отправить на согласование", "Отправить клиенту"],
-      },
-      {
-        id: this.data.nextTemplateId++,
-        icon: "🎯",
-        name: "Еженедельный отчёт",
-        title: "Подготовить еженедельный отчёт",
-        description: "Собрать метрики за неделю и отправить руководителю.",
-        priority: "medium",
-        repeat: "weekly",
-        deadlineOffsetDays: 7,
-        subtasks: ["Собрать данные по продажам", "Собрать данные по звонкам", "Оформить презентацию", "Отправить руководителю"],
-      },
-      {
-        id: this.data.nextTemplateId++,
-        icon: "🧹",
-        name: "Ревью задач",
-        title: "Разобрать входящие задачи",
-        description: "Пройтись по списку, уточнить приоритеты и дедлайны.",
-        priority: "low",
-        repeat: "weekdays",
-        deadlineOffsetDays: 0,
-        subtasks: ["Просмотреть новые задачи", "Расставить приоритеты", "Обновить дедлайны"],
-      },
+      { id: this.data.nextTemplateId++, icon: "📞", name: "Звонок клиенту", title: "Позвонить клиенту", description: "Уточнить текущие потребности и договориться о следующем шаге.", priority: "medium", repeat: "", deadlineOffsetDays: 1, subtasks: ["Подготовить список вопросов", "Уточнить дату следующего контакта", "Записать итоги в CRM"] },
+      { id: this.data.nextTemplateId++, icon: "📧", name: "Письмо с КП", title: "Отправить коммерческое предложение", description: "Собрать условия, приложить прайс и отправить клиенту.", priority: "high", repeat: "", deadlineOffsetDays: 3, subtasks: ["Сформировать КП", "Проверить цены и скидки", "Отправить на согласование", "Отправить клиенту"] },
+      { id: this.data.nextTemplateId++, icon: "🎯", name: "Еженедельный отчёт", title: "Подготовить еженедельный отчёт", description: "Собрать метрики за неделю и отправить руководителю.", priority: "medium", repeat: "weekly", deadlineOffsetDays: 7, subtasks: ["Собрать данные по продажам", "Собрать данные по звонкам", "Оформить презентацию", "Отправить руководителю"] },
+      { id: this.data.nextTemplateId++, icon: "🧹", name: "Ревью задач", title: "Разобрать входящие задачи", description: "Пройтись по списку, уточнить приоритеты и дедлайны.", priority: "low", repeat: "weekdays", deadlineOffsetDays: 0, subtasks: ["Просмотреть новые задачи", "Расставить приоритеты", "Обновить дедлайны"] },
     ];
   },
 
@@ -4085,7 +3977,6 @@ function updateStats() {
   const progressCols = board.columns
     .filter((c) => c.id !== todoCol && !doneCols.includes(c.id) && c.type !== "overdue")
     .map((c) => c.id);
-
   const elTotal = $("#st-total");
   const elTodo = $("#st-todo");
   const elProg = $("#st-progress");
@@ -4094,7 +3985,6 @@ function updateStats() {
   if (elTodo) elTodo.textContent = tasks.filter((t) => t.status === todoCol).length;
   if (elProg) elProg.textContent = tasks.filter((t) => progressCols.includes(t.status)).length;
   if (elDone) elDone.textContent = tasks.filter((t) => doneCols.includes(t.status)).length;
-
   $$("#stats-bar .stat").forEach((el) => {
     el.classList.toggle("active", el.dataset.statusTarget === currentStatusFilter);
   });
@@ -4194,28 +4084,15 @@ function renderKanban() {
       e.preventDefault();
       colEl.classList.remove("drag-over");
       if (!draggedTaskId) return;
-
       const task = Store.getTask(draggedTaskId);
-
-      if (col.type === "overdue") {
-        draggedTaskId = null;
-        render();
-        return;
-      }
-
+      if (col.type === "overdue") { draggedTaskId = null; render(); return; }
       if (task && task.repeat && col.type === "done") {
         Store.updateTask(task.id, { status: col.id });
-
         const newDeadline = nextDateByRepeat(task.deadline, task.repeat);
         const firstStatus = Store.getFirstStatus(task.board_id);
         const newTask = Store.createTask({
-          title: task.title,
-          description: task.description,
-          deadline: newDeadline,
-          priority: task.priority,
-          status: firstStatus,
-          repeat: task.repeat,
-          board_id: task.board_id,
+          title: task.title, description: task.description, deadline: newDeadline,
+          priority: task.priority, status: firstStatus, repeat: task.repeat, board_id: task.board_id,
         });
         newTask.subtasks = (task.subtasks || []).map((s) => ({
           id: Store.data.nextItemId++,
@@ -4229,7 +4106,6 @@ function renderKanban() {
       } else {
         Store.updateTask(draggedTaskId, { status: col.id });
       }
-
       draggedTaskId = null;
       render();
     });
@@ -4239,33 +4115,26 @@ function renderKanban() {
 }
 
 /* ============================================================
-   12. MOVE MENU (для тач)
+   12. MOVE MENU
    ============================================================ */
 function openMoveMenu(taskId) {
   const task = Store.getTask(taskId);
   if (!task) return;
   const board = Store.getBoard(task.board_id);
   if (!board) return;
-
   _pendingMoveTaskId = taskId;
   $("#move-title").textContent = task.title;
-
   const list = $("#move-list");
   list.innerHTML = "";
-
   board.columns.forEach((col) => {
     if (col.type === "overdue") return;
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "move-menu-item" + (col.id === task.status ? " current" : "");
     btn.innerHTML = `<span class="dot" style="background:${col.color}"></span>${escapeHtml(col.label)}`;
-    btn.addEventListener("click", () => {
-      applyMove(taskId, col.id);
-      closeMoveMenu();
-    });
+    btn.addEventListener("click", () => { applyMove(taskId, col.id); closeMoveMenu(); });
     list.appendChild(btn);
   });
-
   $("#move-backdrop").classList.add("open");
   lockBody();
 }
@@ -4281,19 +4150,13 @@ function applyMove(taskId, colId) {
   if (!board) return;
   const col = board.columns.find((c) => c.id === colId);
   if (!col) return;
-
   if (task.repeat && col.type === "done") {
     Store.updateTask(task.id, { status: col.id });
     const newDeadline = nextDateByRepeat(task.deadline, task.repeat);
     const firstStatus = Store.getFirstStatus(task.board_id);
     const newTask = Store.createTask({
-      title: task.title,
-      description: task.description,
-      deadline: newDeadline,
-      priority: task.priority,
-      status: firstStatus,
-      repeat: task.repeat,
-      board_id: task.board_id,
+      title: task.title, description: task.description, deadline: newDeadline,
+      priority: task.priority, status: firstStatus, repeat: task.repeat, board_id: task.board_id,
     });
     newTask.subtasks = (task.subtasks || []).map((s) => ({
       id: Store.data.nextItemId++,
@@ -4320,28 +4183,23 @@ function renderList() {
   const tasks = Store.listTasks(getBoardFilters());
   const container = $("#task-list");
   container.innerHTML = "";
-
   if (!tasks.length) {
     container.innerHTML = `<div class="empty-state">Пока ничего не найдено.<br><small>Измените фильтр или добавьте задачу.</small></div>`;
     return;
   }
-
   tasks.forEach((t) => {
     const row = document.createElement("div");
     const done = Store.isTaskDone(t);
     const overdue = isOverdue(t.deadline, done);
     const col = board.columns.find((c) => c.id === t.status);
     row.className = `task-row p-${t.priority}` + (done ? " done" : "");
-
     const label = col ? col.label : t.status;
     const color = col ? col.color : "#94a3b8";
     const c = hexToRgb(color);
     const pillStyle = `--pill-bg: rgba(${c.r},${c.g},${c.b},0.1); --pill-fg: rgb(${c.r},${c.g},${c.b}); --pill-border: rgba(${c.r},${c.g},${c.b},0.25);`;
-
     const subDone = (t.subtasks || []).filter((s) => s.done).length;
     const subTotal = (t.subtasks || []).length;
     const subAllDone = subTotal > 0 && subDone === subTotal;
-
     row.innerHTML = `
       <span class="title">${escapeHtml(t.title)}</span>
       <span class="meta">
@@ -4373,15 +4231,12 @@ function renderCalendar() {
   start.setDate(start.getDate() - ((first.getDay() + 6) % 7));
   const end = new Date(start);
   end.setDate(end.getDate() + 42);
-
   const tasks = Store.listTasks({
     board_id: board.id,
     deadline_after: start.toISOString(),
     deadline_before: end.toISOString(),
   });
-
   $("#cal-title").textContent = calDate.toLocaleString("ru-RU", { month: "long", year: "numeric" });
-
   const byDay = {};
   tasks.forEach((t) => {
     if (!t.deadline) return;
@@ -4389,12 +4244,10 @@ function renderCalendar() {
     (byDay[key] = byDay[key] || []).push(t);
   });
   Object.keys(byDay).forEach((k) => byDay[k].sort((a, b) => new Date(a.deadline) - new Date(b.deadline)));
-
   const grid = $("#calendar");
   grid.innerHTML = "";
   const tKey = todayKey();
   const MAX = 3;
-
   for (let i = 0; i < 42; i++) {
     const day = new Date(start);
     day.setDate(day.getDate() + i);
@@ -4403,31 +4256,23 @@ function renderCalendar() {
     cell.className = "cal-cell";
     if (day.getMonth() !== month) cell.classList.add("other-month");
     if (key === tKey) cell.classList.add("today");
-
     const dayTasks = byDay[key] || [];
     if (dayTasks.length) cell.classList.add("has-tasks");
-
     cell.innerHTML = `<div class="cal-date">${day.getDate()}</div>`;
-
     dayTasks.slice(0, MAX).forEach((t) => {
       const el = document.createElement("div");
       el.className = `cal-task p-${t.priority}`;
       el.textContent = (t.repeat ? "🔁 " : "") + t.title;
       el.title = t.title;
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        openTaskModal(t.id);
-      });
+      el.addEventListener("click", (e) => { e.stopPropagation(); openTaskModal(t.id); });
       cell.appendChild(el);
     });
-
     if (dayTasks.length > MAX) {
       const more = document.createElement("div");
       more.className = "cal-more";
       more.textContent = `+${dayTasks.length - MAX} ещё`;
       cell.appendChild(more);
     }
-
     if (dayTasks.length) {
       const dots = document.createElement("div");
       dots.className = "cal-dots";
@@ -4438,13 +4283,11 @@ function renderCalendar() {
       });
       cell.appendChild(dots);
     }
-
     cell.addEventListener("click", (e) => {
       if (e.target.closest(".cal-task")) return;
       if (!dayTasks.length) return;
       openDayPopup(day, dayTasks);
     });
-
     grid.appendChild(cell);
   }
 }
@@ -4460,21 +4303,14 @@ const AN_PRIO = {
 };
 const AN_WEEK_SHORT = ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
 
-function dowMon0(date) {
-  return (date.getDay() + 6) % 7;
-}
+function dowMon0(date) { return (date.getDay() + 6) % 7; }
 
 function renderAnalytics() {
   const board = Store.getActiveBoard();
   const root = $("#analytics-content");
-  if (!board) {
-    root.innerHTML = `<div class="an2-empty">Нет активной воронки</div>`;
-    return;
-  }
-
+  if (!board) { root.innerHTML = `<div class="an2-empty">Нет активной воронки</div>`; return; }
   const tasks = Store.data.tasks.filter((t) => t.board_id === board.id);
   const doneColIds = board.columns.filter((c) => c.type === "done").map((c) => c.id);
-
   const total = tasks.length;
   const done = tasks.filter((t) => doneColIds.includes(t.status)).length;
   const inProgress = total - done;
@@ -4482,13 +4318,10 @@ function renderAnalytics() {
   const overdue = tasks.filter((t) =>
     !doneColIds.includes(t.status) && t.deadline && new Date(t.deadline) < now
   ).length;
-
   const donePct = total ? Math.round((done / total) * 100) : 0;
-
   const prioCounts = { low: 0, medium: 0, high: 0, urgent: 0 };
   tasks.forEach((t) => { if (prioCounts[t.priority] != null) prioCounts[t.priority]++; });
   const prioMax = Math.max(1, ...Object.values(prioCounts));
-
   const colRows = board.columns.map((col) => {
     let count = 0;
     if (col.type === "overdue") {
@@ -4503,11 +4336,9 @@ function renderAnalytics() {
     return { col, count };
   });
   const colMax = Math.max(1, ...colRows.map((r) => r.count));
-
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const todayEnd = new Date(todayStart); todayEnd.setDate(todayEnd.getDate() + 1);
   const weekEnd = new Date(todayStart); weekEnd.setDate(weekEnd.getDate() + 7);
-
   let dlOverdue = 0, dlToday = 0, dlWeek = 0, dlNone = 0;
   tasks.forEach((t) => {
     if (!t.deadline) { dlNone++; return; }
@@ -4516,10 +4347,8 @@ function renderAnalytics() {
     if (d >= todayStart && d < todayEnd) { dlToday++; return; }
     if (d >= todayEnd && d < weekEnd) { dlWeek++; return; }
   });
-
   const monday = new Date(todayStart);
   monday.setDate(monday.getDate() - dowMon0(todayStart));
-
   const weekDays = [];
   for (let i = 0; i < 7; i++) {
     const d = new Date(monday);
@@ -4533,11 +4362,9 @@ function renderAnalytics() {
     weekDays.push({ date: d, count, isToday: isSameDay(d, todayStart) });
   }
   const weekMax = Math.max(1, ...weekDays.map((d) => d.count));
-
   const R = 47;
   const CIRC = 2 * Math.PI * R;
   const dashOffset = CIRC * (1 - donePct / 100);
-
   root.innerHTML = `
     <div class="an2-wrap">
       <div class="an2-kpis">
@@ -4582,7 +4409,6 @@ function renderAnalytics() {
           </div>
         </div>
       </div>
-
       <div class="an2-grid">
         <div class="an2-panel">
           <div class="an2-panel-head">
@@ -4593,9 +4419,7 @@ function renderAnalytics() {
             <div class="an2-donut">
               <svg viewBox="0 0 120 120">
                 <circle class="donut-bg" cx="60" cy="60" r="${R}"></circle>
-                <circle class="donut-fg" cx="60" cy="60" r="${R}"
-                        stroke-dasharray="${CIRC}"
-                        stroke-dashoffset="${dashOffset}"></circle>
+                <circle class="donut-fg" cx="60" cy="60" r="${R}" stroke-dasharray="${CIRC}" stroke-dashoffset="${dashOffset}"></circle>
               </svg>
               <div class="an2-donut-center">
                 <div class="an2-donut-pct">${donePct}%</div>
@@ -4616,33 +4440,19 @@ function renderAnalytics() {
             </div>
           </div>
         </div>
-
         <div class="an2-panel">
           <div class="an2-panel-head">
             <h3>Дедлайны</h3>
             <span class="an2-badge">${dlOverdue + dlToday + dlWeek} активных</span>
           </div>
           <div class="an2-urgency">
-            <div class="an2-urg u-overdue">
-              <div class="an2-urg-label">Просрочено</div>
-              <div class="an2-urg-num">${dlOverdue}</div>
-            </div>
-            <div class="an2-urg u-today">
-              <div class="an2-urg-label">Сегодня</div>
-              <div class="an2-urg-num">${dlToday}</div>
-            </div>
-            <div class="an2-urg u-week">
-              <div class="an2-urg-label">На неделе</div>
-              <div class="an2-urg-num">${dlWeek}</div>
-            </div>
-            <div class="an2-urg u-none">
-              <div class="an2-urg-label">Без дедлайна</div>
-              <div class="an2-urg-num">${dlNone}</div>
-            </div>
+            <div class="an2-urg u-overdue"><div class="an2-urg-label">Просрочено</div><div class="an2-urg-num">${dlOverdue}</div></div>
+            <div class="an2-urg u-today"><div class="an2-urg-label">Сегодня</div><div class="an2-urg-num">${dlToday}</div></div>
+            <div class="an2-urg u-week"><div class="an2-urg-label">На неделе</div><div class="an2-urg-num">${dlWeek}</div></div>
+            <div class="an2-urg u-none"><div class="an2-urg-label">Без дедлайна</div><div class="an2-urg-num">${dlNone}</div></div>
           </div>
         </div>
       </div>
-
       <div class="an2-grid">
         <div class="an2-panel">
           <div class="an2-panel-head"><h3>По приоритетам</h3></div>
@@ -4665,7 +4475,6 @@ function renderAnalytics() {
             }).join("")}
           </div>
         </div>
-
         <div class="an2-panel">
           <div class="an2-panel-head"><h3>По колонкам</h3></div>
           <div class="an2-bars">
@@ -4687,7 +4496,6 @@ function renderAnalytics() {
           </div>
         </div>
       </div>
-
       <div class="an2-grid">
         <div class="an2-panel">
           <div class="an2-panel-head">
@@ -4720,10 +4528,8 @@ function renderAnalytics() {
 function openDayPopup(day, tasks) {
   const backdrop = document.createElement("div");
   backdrop.className = "day-popup-backdrop open";
-
   const dayStr = day.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
   const weekdayStr = WEEKDAYS_FULL[day.getDay()];
-
   const tasksHTML = tasks.map((t) => {
     const time = new Date(t.deadline).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
     const done = Store.isTaskDone(t);
@@ -4734,7 +4540,6 @@ function openDayPopup(day, tasks) {
       </div>
     `;
   }).join("");
-
   backdrop.innerHTML = `
     <div class="day-popup" role="dialog" aria-modal="true">
       <div class="day-popup-head">
@@ -4747,10 +4552,8 @@ function openDayPopup(day, tasks) {
       <div class="day-popup-body">${tasksHTML}</div>
     </div>
   `;
-
   document.body.appendChild(backdrop);
   lockBody();
-
   let closed = false;
   const onEsc = (e) => { if (e.key === "Escape") close(); };
   function close() {
@@ -4811,7 +4614,6 @@ function renderDateTrigger() {
   valEl.textContent = formatDeadlineDisplay(d);
   const overdue = d < new Date();
   valEl.className = "value" + (overdue ? " overdue" : "");
-
   if (!trigger.querySelector(".clear-inline")) {
     const clearBtn = document.createElement("span");
     clearBtn.className = "clear-inline";
@@ -4836,7 +4638,6 @@ function renderDatePopover() {
   const daysEl = $("#dp-days");
   daysEl.innerHTML = "";
   const today = new Date();
-
   for (let i = 0; i < 42; i++) {
     const day = new Date(start);
     day.setDate(start.getDate() + i);
@@ -4847,13 +4648,9 @@ function renderDatePopover() {
     if (day.getMonth() !== month) btn.classList.add("other-month");
     if (isSameDay(day, today)) btn.classList.add("today");
     if (dpSelectedDate && isSameDay(day, dpSelectedDate)) btn.classList.add("selected");
-    btn.addEventListener("click", () => {
-      dpSelectedDate = new Date(day);
-      renderDatePopover();
-    });
+    btn.addEventListener("click", () => { dpSelectedDate = new Date(day); renderDatePopover(); });
     daysEl.appendChild(btn);
   }
-
   const hourInput = $("#dp-hour");
   const minInput = $("#dp-minute");
   if (document.activeElement !== hourInput) hourInput.value = pad2(dpSelectedHour);
@@ -4916,7 +4713,6 @@ function applyDatePopover() {
 function bindDatePicker() {
   const trigger = $("#dp-trigger");
   const pop = $("#dp-popover");
-
   trigger.addEventListener("click", (e) => {
     if (e.target.closest(".clear-inline")) return;
     if (pop.classList.contains("open")) closeDatePopover();
@@ -4924,10 +4720,8 @@ function bindDatePicker() {
   });
   $("#dp-prev").addEventListener("click", () => { dpViewDate.setMonth(dpViewDate.getMonth() - 1); renderDatePopover(); });
   $("#dp-next").addEventListener("click", () => { dpViewDate.setMonth(dpViewDate.getMonth() + 1); renderDatePopover(); });
-
   const hourInput = $("#dp-hour");
   const minInput = $("#dp-minute");
-
   hourInput.addEventListener("input", () => {
     let v = hourInput.value.replace(/\D/g, "").slice(0, 2);
     hourInput.value = v;
@@ -4948,10 +4742,7 @@ function bindDatePicker() {
     hourInput.value = pad2(n);
     dpSelectedHour = n;
   });
-  hourInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); hourInput.blur(); }
-  });
-
+  hourInput.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); hourInput.blur(); } });
   minInput.addEventListener("input", () => {
     let v = minInput.value.replace(/\D/g, "").slice(0, 2);
     minInput.value = v;
@@ -4979,7 +4770,6 @@ function bindDatePicker() {
       hourInput.setSelectionRange(len, len);
     }
   });
-
   $("#dp-clear").addEventListener("click", (e) => {
     e.stopPropagation();
     currentDeadline = null;
@@ -4987,14 +4777,12 @@ function bindDatePicker() {
     renderDateTrigger();
     closeDatePopover();
   });
-
   $("#dp-apply").addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
     applyDatePopover();
   });
   $("#dp-apply").addEventListener("mousedown", (e) => e.stopPropagation());
-
   document.addEventListener("click", (e) => {
     if (!pop.classList.contains("open")) return;
     if (pop.contains(e.target) || trigger.contains(e.target)) return;
@@ -5013,7 +4801,6 @@ let currentPriority = "medium";
 let currentRepeat = "";
 let currentStatus = null;
 let subtaskDragId = null;
-
 let draftSubtasks = [];
 let draftNextId = -1;
 
@@ -5064,7 +4851,6 @@ function openSubtaskEditor(subtaskId) {
   const isNew = subtaskId === null || subtaskId === undefined;
   $("#subtask-modal-title").textContent = isNew ? "Новая подзадача" : "Подзадача";
   $("#sm-delete").style.display = isNew ? "none" : "";
-
   if (isNew) {
     $("#sm-title").value = "";
     $("#sm-deadline").value = "";
@@ -5081,7 +4867,6 @@ function openSubtaskEditor(subtaskId) {
     setSubtaskPriority(s.priority || "medium");
     setSubtaskRepeat(s.repeat || "");
   }
-
   $("#subtask-modal-backdrop").classList.add("open");
   lockBody();
   setTimeout(() => $("#sm-title").focus(), 60);
@@ -5096,7 +4881,6 @@ function closeSubtaskEditor() {
 function saveSubtaskEditor() {
   const title = $("#sm-title").value.trim();
   if (!title) { $("#sm-title").focus(); return; }
-
   const patch = {
     title,
     deadline: fromDatetimeLocalValue($("#sm-deadline").value),
@@ -5104,9 +4888,7 @@ function saveSubtaskEditor() {
     done: $("#sm-done").checked,
     repeat: smRepeat,
   };
-
   const isNew = editingSubtaskId === null || editingSubtaskId === undefined;
-
   if (isNew) {
     if (currentTaskId === null) {
       draftSubtasks.push({
@@ -5128,7 +4910,6 @@ function saveSubtaskEditor() {
       Store.updateSubtask(currentTaskId, editingSubtaskId, patch);
     }
   }
-
   closeSubtaskEditor();
   renderSubtasks();
 }
@@ -5151,21 +4932,14 @@ function bindSubtaskEditor() {
   $("#sm-save").addEventListener("click", saveSubtaskEditor);
   $("#sm-delete").addEventListener("click", deleteSubtaskFromEditor);
   $("#sm-deadline-clear").addEventListener("click", () => { $("#sm-deadline").value = ""; });
-
-  backdrop.addEventListener("click", (e) => {
-    if (e.target === backdrop) closeSubtaskEditor();
-  });
-  $("#sm-title").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); saveSubtaskEditor(); }
-  });
-
+  backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeSubtaskEditor(); });
+  $("#sm-title").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); saveSubtaskEditor(); } });
   $$("#sm-priority-row .prio-seg-btn").forEach((b) => {
     b.addEventListener("click", () => setSubtaskPriority(b.dataset.prio));
   });
   $$("#sm-repeat-row .repeat-btn").forEach((b) => {
     b.addEventListener("click", () => setSubtaskRepeat(b.dataset.repeat || ""));
   });
-
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && backdrop.classList.contains("open")) {
       e.stopPropagation();
@@ -5194,10 +4968,8 @@ function openTaskModal(id = null) {
   $("#m-delete").style.display = isNew ? "none" : "";
   closeDatePopover();
   closeSubtaskEditor();
-
   draftSubtasks = [];
   draftNextId = -1;
-
   const board = Store.getActiveBoard();
   if (isNew) {
     $("#m-title").value = "";
@@ -5238,16 +5010,13 @@ function renderSubtasks() {
   if (!ul) return;
   const items = getActiveSubtasks();
   ul.innerHTML = "";
-
   items.forEach((s) => {
     const li = document.createElement("li");
     li.className = s.done ? "done" : "";
     li.dataset.id = s.id;
     li.draggable = true;
-
     const deadlineText = s.deadline ? fmtDateTime(s.deadline) : "";
     const repeatIcon = s.repeat ? `<span class="subtask-repeat" title="Повторяется">🔁</span>` : "";
-
     li.innerHTML = `
       <div class="subtask-drag" title="Перетащить" aria-hidden="true">
         <svg class="ico ico-14" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
@@ -5261,7 +5030,6 @@ function renderSubtasks() {
         <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     `;
-
     li.querySelector('input[type="checkbox"]').addEventListener("change", (e) => {
       const checked = e.target.checked;
       if (currentTaskId !== null) {
@@ -5273,13 +5041,8 @@ function renderSubtasks() {
       li.classList.toggle("done", checked);
       updateSubtaskProgress();
     });
-
     const titleEl = li.querySelector(".subtask-title");
-    titleEl.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openSubtaskEditor(s.id);
-    });
-
+    titleEl.addEventListener("click", (e) => { e.stopPropagation(); openSubtaskEditor(s.id); });
     li.querySelector(".subtask-remove").addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
@@ -5290,7 +5053,6 @@ function renderSubtasks() {
       }
       renderSubtasks();
     });
-
     li.addEventListener("dragstart", (e) => {
       subtaskDragId = s.id;
       li.classList.add("dragging");
@@ -5325,10 +5087,8 @@ function renderSubtasks() {
       subtaskDragId = null;
       renderSubtasks();
     });
-
     ul.appendChild(li);
   });
-
   updateSubtaskProgress();
 }
 
@@ -5364,18 +5124,15 @@ function renderTemplatesList() {
   const empty = $("#templates-empty");
   if (!list) return;
   list.innerHTML = "";
-
   const templates = Store.data.templates || [];
   if (!templates.length) {
     empty.style.display = "block";
     return;
   }
   empty.style.display = "none";
-
   templates.forEach((tpl) => {
     const card = document.createElement("div");
     card.className = "tpl-card";
-
     const repeatLabel = {
       "": null,
       daily: "🔁 Ежедневно",
@@ -5383,18 +5140,10 @@ function renderTemplatesList() {
       weekly: "🔁 Еженедельно",
       monthly: "🔁 Ежемесячно",
     }[tpl.repeat || ""] || null;
-
-    const offsetLabel = (typeof tpl.deadlineOffsetDays === "number")
-      ? `📅 +${tpl.deadlineOffsetDays} дн.`
-      : null;
-
+    const offsetLabel = (typeof tpl.deadlineOffsetDays === "number") ? `📅 +${tpl.deadlineOffsetDays} дн.` : null;
     const prioLabel = {
-      low: "🔵 Низкий",
-      medium: "🟢 Средний",
-      high: "🟡 Высокий",
-      urgent: "🔴 Срочный",
+      low: "🔵 Низкий", medium: "🟢 Средний", high: "🟡 Высокий", urgent: "🔴 Срочный",
     }[tpl.priority] || null;
-
     card.innerHTML = `
       <div class="tpl-card-head">
         <div class="tpl-card-icon">${escapeHtml(tpl.icon || "📝")}</div>
@@ -5420,12 +5169,10 @@ function renderTemplatesList() {
         </button>
       </div>
     `;
-
     card.addEventListener("click", (e) => {
       if (e.target.closest("[data-action]")) return;
       applyTemplate(tpl.id);
     });
-
     card.querySelector('[data-action="edit"]').addEventListener("click", (e) => {
       e.stopPropagation();
       openTemplateEditor(tpl.id);
@@ -5434,7 +5181,6 @@ function renderTemplatesList() {
       e.stopPropagation();
       confirmDeleteTemplate(tpl.id);
     });
-
     list.appendChild(card);
   });
 }
@@ -5442,16 +5188,12 @@ function renderTemplatesList() {
 function applyTemplate(tplId) {
   const tpl = Store.getTemplate(tplId);
   if (!tpl) return;
-
   closeTemplatesModal();
-
   openTaskModal(null);
-
   $("#m-title").value = tpl.title || tpl.name || "";
   $("#m-description").value = tpl.description || "";
   setPriority(tpl.priority || "medium");
   setRepeat(tpl.repeat || "");
-
   if (typeof tpl.deadlineOffsetDays === "number") {
     const d = new Date();
     d.setDate(d.getDate() + tpl.deadlineOffsetDays);
@@ -5461,7 +5203,6 @@ function applyTemplate(tplId) {
     currentDeadline = null;
   }
   renderDateTrigger();
-
   draftSubtasks = (tpl.subtasks || []).map((text) => ({
     id: nextDraftId(),
     title: text,
@@ -5471,7 +5212,6 @@ function applyTemplate(tplId) {
     repeat: "",
   }));
   renderSubtasks();
-
   setTimeout(() => $("#m-title").focus(), 80);
 }
 
@@ -5480,7 +5220,6 @@ function openTemplateEditor(tplId = null) {
   const isNew = tplId === null || tplId === undefined;
   $("#tpl-editor-title").textContent = isNew ? "Новый шаблон" : "Редактор шаблона";
   $("#tpl-delete").style.display = isNew ? "none" : "";
-
   if (isNew) {
     $("#tpl-icon").value = "📝";
     $("#tpl-name").value = "";
@@ -5555,10 +5294,8 @@ function saveTemplateEditor() {
   const title = $("#tpl-task-title").value.trim();
   if (!name) { $("#tpl-name").focus(); return; }
   if (!title) { $("#tpl-task-title").focus(); return; }
-
   const offsetVal = $("#tpl-offset").value.trim();
   const deadlineOffsetDays = offsetVal === "" ? null : Math.max(0, Math.min(365, parseInt(offsetVal, 10) || 0));
-
   const payload = {
     icon: ($("#tpl-icon").value.trim() || "📝").slice(0, 2),
     name,
@@ -5569,7 +5306,6 @@ function saveTemplateEditor() {
     deadlineOffsetDays,
     subtasks: tplSubtasks.slice(),
   };
-
   if (editingTemplateId === null || editingTemplateId === undefined) {
     Store.createTemplate(payload);
   } else {
@@ -5602,13 +5338,11 @@ function confirmDeleteTemplate(tplId) {
 function bindTemplatesEvents() {
   const tBtn = $("#side-templates");
   if (tBtn) tBtn.addEventListener("click", openTemplatesModal);
-
   $("#templates-close").addEventListener("click", closeTemplatesModal);
   $("#templates-new").addEventListener("click", () => openTemplateEditor(null));
   $("#templates-backdrop").addEventListener("click", (e) => {
     if (e.target === $("#templates-backdrop")) closeTemplatesModal();
   });
-
   $("#tpl-editor-close").addEventListener("click", closeTemplateEditor);
   $("#tpl-cancel").addEventListener("click", closeTemplateEditor);
   $("#tpl-save").addEventListener("click", saveTemplateEditor);
@@ -5616,14 +5350,12 @@ function bindTemplatesEvents() {
   $("#tpl-editor-backdrop").addEventListener("click", (e) => {
     if (e.target === $("#tpl-editor-backdrop")) closeTemplateEditor();
   });
-
   $$("#tpl-priority-row .prio-seg-btn").forEach((b) => {
     b.addEventListener("click", () => setTplPriority(b.dataset.prio));
   });
   $$("#tpl-repeat-row .repeat-btn").forEach((b) => {
     b.addEventListener("click", () => setTplRepeat(b.dataset.repeat || ""));
   });
-
   $("#tpl-subtask-add").addEventListener("click", () => {
     const text = $("#tpl-subtask-input").value.trim();
     if (!text) return;
@@ -5652,7 +5384,6 @@ function renderBoardSelector() {
   });
   const delBtn = $("#board-del");
   delBtn.disabled = Store.data.boards.length <= 1;
-
   const selM = $("#board-select-mobile");
   if (selM) {
     selM.innerHTML = "";
@@ -5696,7 +5427,6 @@ function bindBoardSelector() {
     renderBoardSelector();
     render();
   });
-
   const selM = $("#board-select-mobile");
   if (selM) {
     selM.addEventListener("change", (e) => {
@@ -5711,7 +5441,6 @@ function bindBoardSelector() {
       closeMoreMenu();
     });
   }
-
   $("#board-add").addEventListener("click", openBoardCreateModal);
   $("#board-create-close").addEventListener("click", closeBoardCreateModal);
   $("#board-create-cancel").addEventListener("click", closeBoardCreateModal);
@@ -5722,22 +5451,17 @@ function bindBoardSelector() {
   $("#board-create-name").addEventListener("keydown", (e) => {
     if (e.key === "Enter") { e.preventDefault(); saveBoardCreateModal(); }
   });
-
   $("#board-edit").addEventListener("click", () => {
     const board = Store.getActiveBoard();
     if (!board) return;
     openBoardEditor(board);
   });
-
   $("#board-del").addEventListener("click", () => {
     if (Store.data.boards.length <= 1) return;
     confirmDeleteBoard(Store.data.activeBoardId);
   });
-
   const sideTaskAdd = $("#side-task-add");
-  if (sideTaskAdd) {
-    sideTaskAdd.addEventListener("click", () => openTaskModal(null));
-  }
+  if (sideTaskAdd) sideTaskAdd.addEventListener("click", () => openTaskModal(null));
 }
 
 function openBoardEditor(board) {
@@ -5758,9 +5482,7 @@ function openBoardEditor(board) {
   `;
   document.body.appendChild(backdrop);
   lockBody();
-
   const cols = backdrop.querySelector("#be-cols");
-
   function renderCols() {
     cols.innerHTML = "";
     board.columns.forEach((col) => {
@@ -5803,12 +5525,10 @@ function openBoardEditor(board) {
     });
   }
   renderCols();
-
   backdrop.querySelector("#be-addcol").addEventListener("click", () => {
     board.columns.push({ id: uid("c"), label: "Новая колонка", color: "#8b5cf6", type: "normal" });
     renderCols();
   });
-
   const close = () => {
     backdrop.classList.remove("open");
     setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
@@ -5847,12 +5567,10 @@ function switchView(view, btn) {
   $$(".nav button[data-view]").forEach((b) => b.classList.remove("active"));
   if (btn && btn.dataset.view) btn.classList.add("active");
   $$(".view").forEach((v) => (v.style.display = "none"));
-
   const filtersBar = $("#filters-bar");
   const statsBar = $("#stats-bar");
   if (filtersBar) filtersBar.style.display = (view === "list") ? "grid" : "none";
   if (statsBar) statsBar.style.display = (view === "list") ? "grid" : "none";
-
   if (view === "kanban") {
     $("#view-kanban").style.display = "block";
     $("#page-title").textContent = "Канбан";
@@ -5885,7 +5603,7 @@ function setStatusFilter(status) {
 }
 
 /* ============================================================
-   21. MORE MENU (мобильное)
+   21. MORE MENU
    ============================================================ */
 function openMoreMenu() {
   const menu = $("#more-menu");
@@ -5893,7 +5611,7 @@ function openMoreMenu() {
   const btn = $("#mobile-more-btn");
   menu.classList.add("open");
   backdrop.classList.add("open");
-  btn.classList.add("active");
+  if (btn) btn.classList.add("active");
   lockBody();
 }
 function closeMoreMenu() {
@@ -5902,7 +5620,7 @@ function closeMoreMenu() {
   const btn = $("#mobile-more-btn");
   menu.classList.remove("open");
   backdrop.classList.remove("open");
-  btn.classList.remove("active");
+  if (btn) btn.classList.remove("active");
   unlockBody();
 }
 function bindMoreMenu() {
@@ -5915,7 +5633,6 @@ function bindMoreMenu() {
     });
   }
   if (backdrop) backdrop.addEventListener("click", closeMoreMenu);
-
   const handlers = {
     "mm-new-task": () => { closeMoreMenu(); openTaskModal(null); },
     "mm-new-board": () => { closeMoreMenu(); openBoardCreateModal(); },
@@ -5969,7 +5686,6 @@ function tick() {
    ============================================================ */
 function bindDateMask(input) {
   if (!input) return;
-
   function rebuildFromDigits(digits, caretDigitPos) {
     let out = "";
     if (digits.length > 0) out += digits.slice(0, 2);
@@ -5978,7 +5694,6 @@ function bindDateMask(input) {
     if (digits.length >= 4) out += ".";
     if (digits.length > 4) out += digits.slice(4, 8);
     input.value = out;
-
     let pos = 0;
     if (caretDigitPos <= 2) pos = caretDigitPos;
     else if (caretDigitPos <= 4) pos = caretDigitPos + 1;
@@ -5986,7 +5701,6 @@ function bindDateMask(input) {
     pos = Math.min(pos, out.length);
     try { input.setSelectionRange(pos, pos); } catch (e) {}
   }
-
   input.addEventListener("input", () => {
     const raw = input.value.replace(/\D/g, "").slice(0, 8);
     const caret = input.selectionStart;
@@ -5994,12 +5708,10 @@ function bindDateMask(input) {
     rebuildFromDigits(raw, digitsBefore);
     if (currentView === "list") renderList();
   });
-
   input.addEventListener("keydown", (e) => {
     if (e.key !== "Backspace") return;
     const v = input.value;
     const pos = input.selectionStart;
-
     if (pos > 0 && v[pos - 1] === ".") {
       e.preventDefault();
       const digits = v.replace(/\D/g, "");
@@ -6017,7 +5729,6 @@ function bindDateMask(input) {
     rebuildFromDigits(newDigits, Math.max(0, digitsBefore - 1));
     if (currentView === "list") renderList();
   });
-
   input.addEventListener("keyup", () => {
     const v = input.value;
     const pos = input.selectionStart;
@@ -6033,7 +5744,6 @@ let _eventsBound = false;
 function bindEvents() {
   if (_eventsBound) return;
   _eventsBound = true;
-
   ["f-search", "f-priority"].forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -6042,11 +5752,9 @@ function bindEvents() {
   });
   bindDateMask($("#f-deadline-after"));
   bindDateMask($("#f-deadline-before"));
-
   $$("#stats-bar .stat").forEach((el) => {
     el.addEventListener("click", () => setStatusFilter(el.dataset.statusTarget || "all"));
   });
-
   $("#modal-close").addEventListener("click", closeTaskModal);
   $("#m-cancel").addEventListener("click", closeTaskModal);
   $("#modal-backdrop").addEventListener("click", (e) => {
@@ -6061,23 +5769,17 @@ function bindEvents() {
       $("#m-save").click();
     }
   });
-
   $$("#m-priority-row .prio-seg-btn").forEach((b) => {
     b.addEventListener("click", () => setPriority(b.dataset.prio));
   });
   $$("#m-repeat-row .repeat-btn").forEach((b) => {
     b.addEventListener("click", () => setRepeat(b.dataset.repeat || ""));
   });
-
   const statusSel = $("#m-status");
   if (statusSel) {
-    statusSel.addEventListener("change", (e) => {
-      currentStatus = e.target.value;
-    });
+    statusSel.addEventListener("change", (e) => { currentStatus = e.target.value; });
   }
-
   bindDatePicker();
-
   $("#m-subtask-add").addEventListener("click", () => {
     const text = $("#m-subtask-input").value.trim();
     if (!text) return;
@@ -6100,11 +5802,9 @@ function bindEvents() {
   $("#m-subtask-input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") { e.preventDefault(); $("#m-subtask-add").click(); }
   });
-
   $("#m-save-as-tpl").addEventListener("click", () => {
     const title = $("#m-title").value.trim();
     if (!title) { $("#m-title").focus(); return; }
-
     showPrompt({
       title: "Сохранить как шаблон",
       label: "Название шаблона:",
@@ -6130,7 +5830,6 @@ function bindEvents() {
           deadlineOffsetDays: offset,
           subtasks: subs,
         });
-
         const btn = $("#m-save-as-tpl");
         const oldText = btn.innerHTML;
         btn.innerHTML = "✓ Сохранено";
@@ -6139,7 +5838,6 @@ function bindEvents() {
       },
     });
   });
-
   $("#m-save").addEventListener("click", () => {
     const title = $("#m-title").value.trim();
     if (!title) { $("#m-title").focus(); return; }
@@ -6148,7 +5846,6 @@ function bindEvents() {
     const repeat = currentRepeat;
     const description = $("#m-description").value;
     const statusFromSelect = $("#m-status") ? $("#m-status").value : null;
-
     if (currentTaskId === null) {
       const task = Store.createTask({
         title, description, deadline, priority, repeat,
@@ -6174,7 +5871,6 @@ function bindEvents() {
     closeTaskModal();
     render();
   });
-
   $("#m-delete").addEventListener("click", () => {
     if (!currentTaskId) return;
     const id = currentTaskId;
@@ -6188,14 +5884,11 @@ function bindEvents() {
       },
     });
   });
-
   $("#cal-prev").addEventListener("click", () => { calDate.setMonth(calDate.getMonth() - 1); renderCalendar(); });
   $("#cal-next").addEventListener("click", () => { calDate.setMonth(calDate.getMonth() + 1); renderCalendar(); });
-
   bindSubtaskEditor();
   bindTemplatesEvents();
   bindMoreMenu();
-
   $("#move-close").addEventListener("click", closeMoveMenu);
   $("#move-backdrop").addEventListener("click", (e) => {
     if (e.target === $("#move-backdrop")) closeMoveMenu();
@@ -6211,7 +5904,6 @@ function clearScheduledTimers(taskId) {
   set.forEach((t) => clearTimeout(t));
   delete deadlineState.scheduledTimers[taskId];
 }
-
 function scheduleApproachSound(taskId, minutesBefore) {
   const t = Store.getTask(taskId);
   if (!t || !t.deadline) return;
@@ -6221,11 +5913,9 @@ function scheduleApproachSound(taskId, minutesBefore) {
   const fireAt = dl - minutesBefore * 60 * 1000;
   const delay = fireAt - now;
   if (delay <= 0 || delay > 24 * 60 * 60 * 1000) return;
-
   if (!deadlineState.scheduledTimers[taskId]) deadlineState.scheduledTimers[taskId] = new Set();
   if (!deadlineState.approachingPlayed[taskId]) deadlineState.approachingPlayed[taskId] = new Set();
   if (deadlineState.approachingPlayed[taskId].has(minutesBefore)) return;
-
   const timerId = setTimeout(() => {
     const t2 = Store.getTask(taskId);
     if (!t2 || Store.isTaskDone(t2)) return;
@@ -6235,24 +5925,19 @@ function scheduleApproachSound(taskId, minutesBefore) {
     deadlineState.approachingPlayed[taskId].add(minutesBefore);
     Sound.playApproaching(minutesBefore);
   }, delay);
-
   deadlineState.scheduledTimers[taskId].add(timerId);
 }
-
 function checkDeadlines() {
   const now = Date.now();
   const board = Store.getActiveBoard();
   if (!board) return;
   const doneCols = board.columns.filter((c) => c.type === "done").map((c) => c.id);
-
   Store.data.tasks.forEach((t) => {
     if (t.board_id !== board.id) return;
     if (doneCols.includes(t.status)) return;
     if (!t.deadline) return;
-
     const dl = new Date(t.deadline).getTime();
     const diff = dl - now;
-
     if (diff < 0) {
       const last = deadlineState.overduePlayed[t.id] || 0;
       if (now - last > OVERDUE_TICK_MS) {
@@ -6268,7 +5953,6 @@ function checkDeadlines() {
       }
     }
   });
-
   updateTabBadge();
 }
 
@@ -6278,13 +5962,11 @@ function checkDeadlines() {
 const _baseTitle = "TaskFlow — трекер задач";
 let _blinkState = false;
 let _blinkIntervalId = null;
-
 function updateTabBadge() {
   const now = Date.now();
   const board = Store.getActiveBoard();
   if (!board) { document.title = _baseTitle; return; }
   const doneCols = board.columns.filter((c) => c.type === "done").map((c) => c.id);
-
   let overdue = 0;
   let approaching = 0;
   Store.data.tasks.forEach((t) => {
@@ -6295,7 +5977,6 @@ function updateTabBadge() {
     if (diff < 0) overdue++;
     else if (diff <= 15 * 60 * 1000) approaching++;
   });
-
   let prefix = "";
   if (overdue > 0) {
     prefix = `🔴 (${overdue}) `;
@@ -6303,7 +5984,6 @@ function updateTabBadge() {
     prefix = `🟠 (${approaching}) `;
   }
   document.title = prefix + _baseTitle;
-
   if ((overdue > 0 || approaching > 0) && document.hidden) {
     if (!_blinkIntervalId) {
       _blinkIntervalId = setInterval(() => {
@@ -6327,9 +6007,8 @@ function updateTabBadge() {
 function setupNavHeightObserver() {
   const sidebar = document.querySelector(".sidebar");
   if (!sidebar) return;
-
   const apply = () => {
-    if (window.innerWidth > 560) {
+    if (window.innerWidth > 640) {
       document.documentElement.style.setProperty("--mobile-nav-h", "62px");
       return;
     }
@@ -6338,7 +6017,6 @@ function setupNavHeightObserver() {
       document.documentElement.style.setProperty("--mobile-nav-h", `${Math.round(h)}px`);
     }
   };
-
   if (window.ResizeObserver) {
     const ro = new ResizeObserver(apply);
     ro.observe(sidebar);
@@ -6374,33 +6052,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   render();
 
-  setInterval(() => {
-    if (!document.hidden) tick();
-  }, 30000);
-
-  setInterval(() => {
-    if (!document.hidden) checkDeadlines();
-  }, CHECK_INTERVAL_MS);
-
+  setInterval(() => { if (!document.hidden) tick(); }, 30000);
+  setInterval(() => { if (!document.hidden) checkDeadlines(); }, CHECK_INTERVAL_MS);
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-      checkDeadlines();
-      tick();
-    }
+    if (!document.hidden) { checkDeadlines(); tick(); }
   });
-
-  window.addEventListener("focus", () => {
-    checkDeadlines();
-    tick();
-  });
-
+  window.addEventListener("focus", () => { checkDeadlines(); tick(); });
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 560) {
+    if (window.innerWidth > 640) {
       closeSettings();
       closeMoreMenu();
     }
   });
-
   checkDeadlines();
 });
 </script>
