@@ -31,7 +31,8 @@
     --warning: #e89a28;
     --danger: #e65353;
     --sidebar-bg: #111827;
-    --sidebar-text: #aeb6c7;
+    --sidebar-text: #c8cfdd;
+    --sidebar-text-dim: #8b93a7;
     --sidebar-active: #242b3c;
     --shadow-sm: 0 5px 20px rgba(35, 43, 70, 0.04);
     --shadow: 0 12px 35px rgba(35, 43, 70, 0.08);
@@ -43,6 +44,7 @@
     --prio-high: #f5c518;
     --prio-urgent: #ef4444;
     --tpl-muted: #5a6275;
+    --icon-stroke: 2;
   }
 
   [data-theme="dark"] {
@@ -64,7 +66,8 @@
     --warning: #fbbf24;
     --danger: #f87171;
     --sidebar-bg: #0a0c15;
-    --sidebar-text: #8b92a8;
+    --sidebar-text: #c8cfdd;
+    --sidebar-text-dim: #8b93a7;
     --sidebar-active: #1a1d2a;
     --shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.3);
     --shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
@@ -88,7 +91,7 @@
     --radius-lg: 18px;
     --control-h: 44px;
     --grid-gap: 12px;
-    --mobile-nav-h: 68px;
+    --mobile-nav-h: 62px;
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-top: env(safe-area-inset-top, 0px);
   }
@@ -111,6 +114,32 @@
     transition: background 0.3s ease, color 0.3s ease;
     -webkit-tap-highlight-color: transparent;
   }
+  body.modal-open {
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* ===== ИКОНКИ ===== */
+  .ico {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    flex-shrink: 0;
+    vertical-align: middle;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--icon-stroke);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+  .ico-14 { width: 14px; height: 14px; }
+  .ico-16 { width: 16px; height: 16px; }
+  .ico-20 { width: 20px; height: 20px; }
+  .ico-22 { width: 22px; height: 22px; }
+  .ico-24 { width: 24px; height: 24px; }
+  .ico-emoji { font-style: normal; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; line-height: 1; }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -124,8 +153,11 @@
 
   .app {
     display: flex;
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
+  }
+  @supports not (height: 100dvh) {
+    .app { height: 100vh; }
   }
 
   .sidebar {
@@ -138,10 +170,13 @@
     flex-shrink: 0;
     gap: 20px;
     position: relative;
-    z-index: 95;
-    height: 100vh;
+    z-index: 90;
+    height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
+  }
+  @supports not (height: 100dvh) {
+    .sidebar { height: 100vh; }
   }
   .logo-row {
     display: flex;
@@ -157,14 +192,14 @@
     user-select: none;
   }
   .logo span { color: var(--primary-2); }
+
   .icon-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 9px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: var(--sidebar-text);
-    font-size: 15px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -184,13 +219,14 @@
     border-color: var(--primary);
     box-shadow: 0 6px 18px var(--primary-glow);
   }
+  .icon-btn .ico { opacity: 0.95; }
 
   .side-section-title {
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: #5c6479;
+    color: #6b7285;
     padding: 0 10px;
     margin-bottom: 6px;
   }
@@ -208,7 +244,7 @@
     font-weight: 600;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b92a8' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c8cfdd' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 34px;
@@ -239,7 +275,7 @@
     white-space: nowrap;
   }
   .side-mini-btn {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     color: var(--sidebar-text);
@@ -249,16 +285,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
     min-width: 0;
     max-width: 100%;
     overflow: hidden;
+    min-height: 38px;
   }
   .side-mini-btn:hover {
-    background: rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
     border-color: rgba(255, 255, 255, 0.16);
   }
+  .side-mini-btn .ico { opacity: 0.95; }
   .side-mini-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
   .tooltip-wrap {
@@ -266,9 +304,7 @@
     display: block;
     min-width: 0;
   }
-  .tooltip-wrap > .side-mini-btn {
-    width: 100%;
-  }
+  .tooltip-wrap > .side-mini-btn { width: 100%; }
   .tooltip {
     position: absolute;
     bottom: calc(100% + 8px);
@@ -318,15 +354,18 @@
     gap: 10px;
     border: none;
     cursor: pointer;
+    min-height: 44px;
   }
-  .nav button .icon { font-size: 15px; width: 18px; text-align: center; }
+  .nav button .ico { opacity: 0.9; transition: opacity .18s; }
   .nav button.active,
   .nav button:hover { background: var(--sidebar-active); color: #fff; }
   .nav button.active { font-weight: 600; }
+  .nav button.active .ico,
+  .nav button:hover .ico { opacity: 1; }
 
   .side-bottom {
     margin-top: auto;
-    color: #5c6479;
+    color: #6b7285;
     font-size: 11.5px;
     padding: 12px 10px;
     line-height: 1.5;
@@ -340,9 +379,14 @@
     margin: 0 auto;
     width: 100%;
     min-width: 0;
-    height: 100vh;
+    height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  @supports not (height: 100dvh) {
+    .main { height: 100vh; }
   }
 
   .top {
@@ -560,6 +604,25 @@
   .kanban-card.overdue .deadline { color: var(--danger); font-weight: 600; }
   .kanban-card .card-bottom { display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
   .kanban-card .deadline { font-size: 11.5px; color: var(--text-mute); display: flex; align-items: center; gap: 4px; font-weight: 500; }
+  .kanban-card .card-move-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--surface-hover);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: all .15s;
+  }
+  .kanban-card .card-move-btn:hover { color: var(--primary); border-color: var(--primary); }
+  .kanban-card .card-move-btn .ico { width: 16px; height: 16px; }
   .kanban-empty { text-align: center; padding: 30px 20px; color: var(--text-mute); font-size: 12.5px; }
 
   .task-list { display: flex; flex-direction: column; gap: 10px; }
@@ -735,6 +798,15 @@
   }
   .cal-cell:hover .cal-more { color: var(--primary); }
 
+  /* Мобильные точки в календаре */
+  .cal-dots { display: none; gap: 3px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
+  .cal-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .cal-dot.p-low { background: var(--prio-low); }
+  .cal-dot.p-medium { background: var(--prio-medium); }
+  .cal-dot.p-high { background: var(--prio-high); }
+  .cal-dot.p-urgent { background: var(--prio-urgent); }
+
+  /* ===== МОДАЛКИ ===== */
   .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -747,6 +819,7 @@
     padding: 24px 16px;
     z-index: 100;
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .modal-backdrop.open { display: flex; }
   .modal {
@@ -758,10 +831,13 @@
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
     animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
     overflow: visible;
     position: relative;
+  }
+  @supports not (max-height: 100dvh) {
+    .modal { max-height: calc(100vh - 48px); }
   }
   @keyframes modalIn {
     from { opacity: 0; transform: translateY(16px) scale(0.98); }
@@ -794,6 +870,8 @@
     flex-direction: column;
     gap: 24px;
     flex: 1;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
   .modal-foot {
     padding: 16px 26px;
@@ -891,9 +969,6 @@
     color: #fff;
     border-color: var(--primary);
     box-shadow: 0 3px 10px var(--primary-glow);
-  }
-  @media (max-width: 640px) {
-    .repeat-row { grid-template-columns: repeat(2, 1fr); }
   }
 
   .subtasks-block {
@@ -1000,7 +1075,7 @@
     flex-shrink: 0;
   }
   .subtask-remove {
-    width: 20px; height: 20px;
+    width: 22px; height: 22px;
     border-radius: 6px;
     background: transparent;
     border: none;
@@ -1029,6 +1104,7 @@
     color: var(--text);
     font-family: inherit;
     transition: all 0.15s;
+    min-height: 40px;
   }
   .inline-add input::placeholder { color: var(--text-mute); }
   .inline-add input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
@@ -1059,12 +1135,12 @@
     border-color: var(--primary);
     box-shadow: 0 0 0 3px var(--primary-glow);
   }
-  .date-picker-trigger .icon { font-size: 15px; flex-shrink: 0; }
+  .date-picker-trigger .icon { font-size: 15px; flex-shrink: 0; display: inline-flex; color: var(--text-mute); }
   .date-picker-trigger .value { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
   .date-picker-trigger .value.placeholder { color: var(--text-mute); font-weight: 500; }
   .date-picker-trigger .value.overdue { color: var(--danger); }
   .date-picker-trigger .clear-inline {
-    width: 18px; height: 18px;
+    width: 20px; height: 20px;
     border-radius: 5px;
     border: none;
     background: transparent;
@@ -1100,7 +1176,7 @@
   .dp-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
   .dp-month { font-size: 13px; font-weight: 700; text-transform: capitalize; }
   .dp-nav {
-    width: 26px; height: 26px;
+    width: 28px; height: 28px;
     border-radius: 7px;
     background: var(--surface-hover);
     border: 1px solid var(--border);
@@ -1109,7 +1185,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
     font-family: inherit;
     transition: all 0.15s;
   }
@@ -1274,12 +1349,15 @@
     border-radius: var(--radius-lg);
     width: 100%;
     max-width: 460px;
-    max-height: calc(100vh - 80px);
+    max-height: calc(100dvh - 80px);
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
     animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
     overflow: hidden;
+  }
+  @supports not (max-height: 100dvh) {
+    .day-popup { max-height: calc(100vh - 80px); }
   }
   .day-popup-head {
     padding: 16px 22px;
@@ -1298,7 +1376,7 @@
     border: 1px solid var(--border);
     font-weight: 700;
   }
-  .day-popup-body { padding: 14px 18px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  .day-popup-body { padding: 14px 18px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; overscroll-behavior: contain; }
   .day-task {
     display: flex;
     align-items: center;
@@ -1322,6 +1400,20 @@
   .day-task.done .day-task-title { text-decoration: line-through; color: var(--text-mute); }
   .day-task-time { font-size: 11.5px; color: var(--text-mute); font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0; }
 
+  /* ===== НАСТРОЙКИ ===== */
+  .settings-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 18, 32, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+    z-index: 88;
+  }
+  .settings-backdrop.open { opacity: 1; pointer-events: auto; }
+
   .settings-panel {
     position: fixed;
     top: 66px;
@@ -1332,13 +1424,17 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
     padding: 14px;
-    z-index: 200;
+    z-index: 89;
     opacity: 0;
     transform: translateY(-6px) scale(0.98);
     pointer-events: none;
     transition: opacity 0.2s, transform 0.2s;
-    max-height: calc(100vh - 82px);
+    max-height: calc(100dvh - 82px);
     overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  @supports not (max-height: 100dvh) {
+    .settings-panel { max-height: calc(100vh - 82px); }
   }
   .settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
   .settings-section { margin-bottom: 12px; }
@@ -1351,6 +1447,22 @@
     letter-spacing: 0.08em;
     color: var(--text-mute);
   }
+  .settings-close {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-dim);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+  .settings-close:hover { color: var(--text); }
   .palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .swatch {
     aspect-ratio: 1;
@@ -1399,17 +1511,18 @@
     min-width: 0;
     background: transparent;
     border: none;
-    padding: 6px 2px;
+    padding: 8px 4px;
     border-radius: 6px;
     cursor: pointer;
     color: var(--text-dim);
-    font-size: 10px;
+    font-size: 11px;
     font-family: inherit;
     font-weight: 600;
     transition: all 0.15s;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-height: 34px;
   }
   .density-btn:hover { color: var(--text); }
   .density-btn.active { background: var(--primary); color: #fff; box-shadow: 0 3px 10px var(--primary-glow); }
@@ -1422,7 +1535,7 @@
     border-radius: var(--radius-sm);
     padding: 5px 9px;
   }
-  .volume-row .vol-icon { font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
+  .volume-row .vol-icon { color: var(--text-dim); flex-shrink: 0; display: inline-flex; }
   .volume-row .vol-value {
     font-size: 10.5px;
     font-weight: 700;
@@ -1435,7 +1548,7 @@
   .settings-reset {
     width: 100%;
     margin-top: 6px;
-    padding: 7px;
+    padding: 9px;
     border-radius: var(--radius-sm);
     border: 1px dashed var(--border-strong);
     background: transparent;
@@ -1444,6 +1557,7 @@
     font-size: 11px;
     font-weight: 600;
     cursor: pointer;
+    min-height: 40px;
   }
   .settings-reset:hover { color: var(--danger); border-color: var(--danger); }
 
@@ -1477,7 +1591,6 @@
     align-items: center;
     gap: 10px;
   }
-  .confirm-title::before { content: "⚠"; font-size: 20px; color: var(--danger); }
   .confirm-title.no-icon::before { display: none; }
   .confirm-text { font-size: 13.5px; color: var(--text-dim); line-height: 1.55; margin-bottom: 20px; }
   .confirm-text strong { color: var(--text); font-weight: 700; }
@@ -1494,6 +1607,7 @@
     background: var(--input-bg);
     color: var(--text);
     transition: border-color 0.15s, box-shadow 0.15s;
+    min-height: 42px;
   }
   .prompt-input:focus {
     outline: none;
@@ -1537,12 +1651,18 @@
   #view-calendar {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 130px);
+    min-height: calc(100dvh - 130px);
+  }
+  @supports not (min-height: 100dvh) {
+    #view-calendar { min-height: calc(100vh - 130px); }
   }
   #view-analytics {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 130px);
+    min-height: calc(100dvh - 130px);
+  }
+  @supports not (min-height: 100dvh) {
+    #view-analytics { min-height: calc(100vh - 130px); }
   }
 
   .an2-wrap {
@@ -1580,7 +1700,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 19px;
     flex-shrink: 0;
     background: rgba(var(--primary-rgb), 0.1);
   }
@@ -1897,8 +2016,6 @@
     color: var(--text);
     letter-spacing: -0.005em;
     line-height: 1.25;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
   .tpl-card-title {
     font-size: 11.5px;
@@ -1906,14 +2023,11 @@
     font-weight: 500;
     margin-top: 3px;
     line-height: 1.4;
-    letter-spacing: 0.005em;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
   .tpl-card-meta {
     display: flex;
@@ -1921,7 +2035,6 @@
     gap: 5px;
     font-size: 10.5px;
     color: var(--tpl-muted);
-    letter-spacing: 0.01em;
   }
   .tpl-card-meta .tpl-tag {
     display: inline-flex;
@@ -1934,9 +2047,6 @@
     font-weight: 600;
     font-size: 10.5px;
     color: var(--text-dim);
-    letter-spacing: 0.01em;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
   .tpl-card-actions {
     display: flex;
@@ -1947,37 +2057,13 @@
   }
   .tpl-card-actions .btn { flex: 1; justify-content: center; height: 32px; font-size: 11.5px; }
 
-  [data-theme="dark"] .tpl-card {
-    background: #1e2233;
-    border-color: #2e3448;
-  }
-  [data-theme="dark"] .tpl-card:hover {
-    background: #232842;
-    border-color: var(--primary);
-  }
-  [data-theme="dark"] .tpl-card-name {
-    color: #e6e9f2;
-    font-weight: 600;
-    letter-spacing: 0.005em;
-  }
-  [data-theme="dark"] .tpl-card-title {
-    color: #a8b0c9;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-  }
-  [data-theme="dark"] .tpl-card-icon {
-    background: #232842;
-    border-color: #2e3448;
-  }
-  [data-theme="dark"] .tpl-card-meta .tpl-tag {
-    background: #232842;
-    border-color: #2e3448;
-    color: #b8c0d9;
-    font-weight: 600;
-  }
-  [data-theme="dark"] .tpl-card-actions {
-    border-top-color: #2e3448;
-  }
+  [data-theme="dark"] .tpl-card { background: #1e2233; border-color: #2e3448; }
+  [data-theme="dark"] .tpl-card:hover { background: #232842; border-color: var(--primary); }
+  [data-theme="dark"] .tpl-card-name { color: #e6e9f2; }
+  [data-theme="dark"] .tpl-card-title { color: #a8b0c9; }
+  [data-theme="dark"] .tpl-card-icon { background: #232842; border-color: #2e3448; }
+  [data-theme="dark"] .tpl-card-meta .tpl-tag { background: #232842; border-color: #2e3448; color: #b8c0d9; }
+  [data-theme="dark"] .tpl-card-actions { border-top-color: #2e3448; }
 
   .tpl-editor-row { display: flex; gap: 12px; align-items: center; }
   .tpl-icon-input {
@@ -2007,6 +2093,7 @@
     font-family: inherit;
     font-size: 13px;
     transition: border-color 0.18s, box-shadow 0.18s;
+    min-height: var(--control-h);
   }
   .tpl-text-input::placeholder { color: var(--text-mute); }
   .tpl-text-input:hover { border-color: var(--border-strong); }
@@ -2028,7 +2115,7 @@
   .tpl-subtask-row .subtask-remove { opacity: 1; }
 
   .save-as-tpl-btn {
-    padding: 6px 12px;
+    padding: 8px 12px;
     font-size: 11.5px;
     font-weight: 700;
     border-radius: 8px;
@@ -2038,6 +2125,10 @@
     cursor: pointer;
     font-family: inherit;
     transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
   }
   .save-as-tpl-btn:hover {
     color: var(--primary);
@@ -2048,7 +2139,7 @@
   .board-editor-cols {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 12px;
   }
   .board-editor-row {
@@ -2105,102 +2196,114 @@
     box-shadow: 0 0 0 3px var(--primary-glow);
   }
 
-  /* ============================================================
-     МОБИЛЬНЫЕ ЭЛЕМЕНТЫ (скрыты на десктопе)
-     ============================================================ */
-  .mobile-fab {
-    display: none;
+  /* ===== "ЕЩЁ" МЕНЮ (мобильное) ===== */
+  .more-menu-backdrop {
     position: fixed;
-    right: 16px;
-    bottom: calc(var(--mobile-nav-h) + var(--safe-bottom) + 16px);
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    font-size: 26px;
-    font-weight: 300;
-    line-height: 1;
-    cursor: pointer;
-    box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.5);
-    z-index: 90;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.15s, box-shadow 0.15s;
-    -webkit-tap-highlight-color: transparent;
+    inset: 0;
+    background: rgba(12, 18, 32, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+    z-index: 96;
+    display: none;
   }
-  .mobile-fab:active {
-    transform: scale(0.94);
-    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.6);
-  }
+  .more-menu-backdrop.open { opacity: 1; pointer-events: auto; display: block; }
 
-  .mobile-topbar {
-    display: none;
+  .more-menu {
     position: fixed;
-    top: 0;
     left: 0;
     right: 0;
-    height: 52px;
-    padding: 0 12px;
-    padding-top: var(--safe-top);
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    z-index: 96;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    bottom: 0;
+    background: var(--modal-bg);
+    border-radius: 20px 20px 0 0;
+    box-shadow: var(--shadow-lg);
+    padding: 10px 16px calc(20px + var(--safe-bottom));
+    transform: translateY(100%);
+    transition: transform .28s cubic-bezier(.16,1,.3,1);
+    z-index: 97;
+    display: none;
+    max-height: 80dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
-  .mobile-topbar .mobile-logo {
-    font-weight: 800;
-    font-size: 17px;
-    color: var(--text);
-    letter-spacing: -0.02em;
+  .more-menu.open { transform: translateY(0); display: block; }
+  .more-menu::before {
+    content: "";
+    display: block;
+    width: 40px; height: 4px;
+    background: var(--border-strong);
+    border-radius: 2px;
+    margin: 0 auto 12px;
   }
-  .mobile-topbar .mobile-logo span { color: var(--primary); }
-  .mobile-topbar .mobile-actions {
+  .more-menu-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-mute);
+    font-weight: 700;
+    margin: 6px 4px;
+  }
+  .more-menu-list {
     display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+  .more-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 12px;
+    border-radius: 12px;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    min-height: 48px;
+    transition: background .15s;
+  }
+  .more-menu-item:hover { background: var(--surface-hover); }
+  .more-menu-item:disabled { opacity: .4; cursor: not-allowed; }
+  .more-menu-item .ico { color: var(--text-dim); }
+
+  .move-menu-list {
+    display: grid;
     gap: 6px;
   }
-  .mobile-topbar .mobile-icon-btn {
-    width: 38px;
-    height: 38px;
+  .move-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
     border-radius: 10px;
     background: var(--surface-2);
     border: 1px solid var(--border);
-    color: var(--text-dim);
-    font-size: 17px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
+    color: var(--text);
     font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    min-height: 48px;
   }
-  .mobile-topbar .mobile-icon-btn:active {
-    background: var(--surface-hover);
-    transform: scale(0.95);
-  }
-  .mobile-topbar .mobile-icon-btn.active {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-  }
+  .move-menu-item:hover { border-color: var(--primary); background: var(--surface-hover); }
+  .move-menu-item .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .move-menu-item.current { border-color: var(--primary); background: rgba(var(--primary-rgb), 0.06); }
+  .move-menu-item.current::after { content: "✓"; margin-left: auto; color: var(--primary); font-weight: 800; }
 
-  .mobile-nav {
-    display: none;
-  }
-
-  /* ============================================================
-     АДАПТАЦИЯ
-     ============================================================ */
-
+  /* ===== АДАПТАЦИЯ ===== */
   @media (max-width: 900px) {
     .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   }
 
   @media (max-width: 850px) {
-    .sidebar { width: 70px; padding: 20px 10px; }
+    .sidebar { width: 74px; padding: 20px 10px; }
     .logo-row { justify-content: center; padding: 0 0 8px; flex-direction: column; gap: 8px; }
     .logo { font-size: 0; }
     .logo::after { content: "TF"; font-size: 20px; }
@@ -2208,12 +2311,12 @@
     .side-selector { display: none; }
     .side-board-actions { grid-template-columns: 1fr; }
     .side-board-actions > .tooltip-wrap:last-child { grid-column: auto; }
-    .side-mini-btn { padding: 8px 4px; font-size: 14px; }
+    .side-mini-btn { padding: 8px 4px; font-size: 14px; min-height: 40px; }
     .side-mini-btn span { display: none; }
     .nav button { font-size: 0; padding: 12px 0; text-align: center; justify-content: center; }
-    .nav button .icon { font-size: 18px; }
+    .nav button .ico { width: 20px; height: 20px; }
     .side-bottom { display: none; }
-    .settings-panel { top: 96px; left: 78px; width: 240px; }
+    .settings-panel { top: 96px; left: 82px; width: 240px; }
     .tooltip { left: calc(100% + 8px); bottom: 50%; transform: translateY(50%); }
     .tooltip::after { top: 50%; left: -10px; transform: translateY(-50%); border-top-color: transparent; border-right-color: #0f1424; }
     .tooltip-wrap:hover .tooltip { transform: translateY(50%); }
@@ -2228,7 +2331,6 @@
     .modal { min-height: auto; }
     .field-description { height: 130px; min-height: 130px; max-height: 130px; }
     .date-popover { width: 290px; bottom: auto; top: calc(100% + 8px); }
-    .settings-panel { top: 66px; left: 16px; right: 16px; width: auto; }
     .an2-donut-wrap { flex-direction: column; align-items: flex-start; }
     .an2-donut { width: 100px; height: 100px; align-self: center; }
     .an2-bar { grid-template-columns: 120px 1fr 46px; }
@@ -2238,129 +2340,109 @@
     .cal-date { font-size: 11px; margin-bottom: 4px; }
     .cal-task { font-size: 10.5px; padding: 2px 5px; }
     .tpl-list { grid-template-columns: 1fr; }
+    .repeat-row { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (hover: none) and (pointer: coarse) {
-    .subtasks li:hover .subtask-drag,
-    .subtasks li:hover .subtask-remove,
     .subtasks li .subtask-drag,
     .subtasks li .subtask-remove { opacity: 1; }
+    .kanban-card { cursor: default; }
+    .kanban-card .card-move-btn { display: inline-flex; }
   }
 
   /* ============================================================
-     МОБИЛЬНАЯ ВЕРСИЯ (iPhone)
+     МОБИЛЬНАЯ АДАПТАЦИЯ (до 560px)
      ============================================================ */
-  @media (max-width: 480px) {
-    .app { display: block; }
-
-    /* Скрываем десктопный сайдбар */
-    .sidebar { display: none !important; }
-
-    /* Верхняя тонкая шапка для телефона */
-    .mobile-topbar { display: flex; }
-
-    /* FAB для создания задачи */
-    .mobile-fab { display: flex; }
-
-    /* Главная область */
-    .main {
-      padding: calc(52px + var(--safe-top) + 10px) 12px calc(var(--mobile-nav-h) + var(--safe-bottom) + 16px) 12px;
-      height: 100vh;
-      max-width: 100%;
+  @media (max-width: 560px) {
+    .app {
+      flex-direction: column;
     }
 
-    /* Верхняя панель заголовка скрыта — она дублируется в mobile-topbar */
-    .top { display: none; }
-
-    /* Нижняя панель навигации */
-    .mobile-nav {
-      display: flex;
+    /* Нижняя навигация */
+    .sidebar {
+      width: 100%;
+      height: calc(var(--mobile-nav-h) + var(--safe-bottom));
+      padding: 6px 6px calc(6px + var(--safe-bottom));
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      gap: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: none;
+      order: 2;
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: calc(var(--mobile-nav-h) + var(--safe-bottom));
-      padding: 6px 4px calc(6px + var(--safe-bottom));
-      background: var(--surface);
-      border-top: 1px solid var(--border);
+      top: auto;
       z-index: 95;
-      align-items: center;
-      justify-content: space-around;
-      gap: 2px;
-      box-shadow: 0 -4px 20px rgba(35, 43, 70, 0.08);
+      overflow: visible;
     }
-    [data-theme="dark"] .mobile-nav {
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
-    }
-    .mobile-nav-btn {
-      flex: 1;
+
+    .logo-row,
+    .side-section,
+    .side-bottom { display: none; }
+
+    .nav {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      gap: 2px;
+      flex: 1;
+      justify-content: space-around;
+    }
+    .nav button {
+      font-size: 0;
+      padding: 8px;
+      text-align: center;
+      justify-content: center;
+      border-radius: 10px;
+      min-width: 44px;
+      min-height: 44px;
+      flex: 0 0 auto;
+    }
+    .nav button .ico { width: 22px; height: 22px; }
+
+    /* Кнопка "Ещё" */
+    .mobile-more-btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 3px;
-      padding: 6px 4px;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 10px;
       background: transparent;
       border: none;
-      border-radius: 10px;
-      color: var(--text-mute);
-      font-family: inherit;
-      font-size: 10.5px;
-      font-weight: 600;
+      color: var(--sidebar-text);
       cursor: pointer;
-      transition: all 0.15s;
-      -webkit-tap-highlight-color: transparent;
-      min-width: 0;
+      flex-shrink: 0;
     }
-    .mobile-nav-btn .mn-icon {
-      font-size: 20px;
-      line-height: 1;
-    }
-    .mobile-nav-btn .mn-label {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .mobile-more-btn:active,
+    .mobile-more-btn.active { background: var(--sidebar-active); color: #fff; }
+
+    .main {
+      padding: 10px 12px calc(var(--mobile-nav-h) + var(--safe-bottom) + 14px) 12px;
+      height: 100dvh;
       max-width: 100%;
-      letter-spacing: -0.01em;
     }
-    .mobile-nav-btn.active {
-      color: var(--primary);
-      background: rgba(var(--primary-rgb), 0.08);
-    }
-    .mobile-nav-btn:active {
-      transform: scale(0.95);
+    @supports not (height: 100dvh) {
+      .main { height: 100vh; }
     }
 
-    /* Календарь — компактнее */
-    .calendar-header h2 { font-size: 14px; min-width: 140px; }
-    .cal-cell { min-height: 60px; padding: 4px; border-radius: 8px; }
-    .cal-date { font-size: 10px; margin-bottom: 2px; }
-    .cal-task { font-size: 9px; padding: 1px 4px; border-left-width: 2px; }
-    .cal-more { font-size: 9px; padding: 1px 3px; }
-    .calendar-weekdays { font-size: 9px; gap: 3px; }
+    .top { gap: 8px; margin-bottom: 4px; }
+    .title h1 { font-size: 18px; }
+    .title p { font-size: 11px; }
 
-    /* Канбан — 1 колонка */
     .kanban {
       grid-template-columns: 1fr;
       gap: 10px;
       margin-top: 10px;
     }
-    .kanban-col {
-      padding: 12px;
-      border-radius: 14px;
-      min-height: 100px;
-    }
-    .kanban-card { padding: 10px 12px; font-size: 13px; }
+    .kanban-col { padding: 12px; border-radius: 14px; min-height: 120px; }
+    .kanban-card { padding: 10px 12px 10px 12px; font-size: 13px; padding-right: 42px; }
 
-    /* Список — компактнее */
-    .task-row {
-      padding: 12px 14px;
-      gap: 8px;
-      border-radius: 12px;
-    }
+    .task-row { padding: 12px 14px; gap: 8px; border-radius: 12px; }
     .task-row .title { font-size: 13.5px; }
 
-    /* Статистика — 2 колонки */
     .stats {
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
@@ -2371,38 +2453,65 @@
     .stat .label { font-size: 10px; }
     .stat .sub { font-size: 10px; }
 
-    /* Фильтры */
     .filters-bar { grid-template-columns: 1fr; gap: 8px; }
 
-    /* Модалки — почти на весь экран */
-    .modal-backdrop { padding: 8px; align-items: flex-start; padding-top: 12px; }
+    .calendar-header h2 { font-size: 14px; min-width: 140px; }
+    .cal-cell { min-height: 68px; padding: 5px; border-radius: 8px; }
+    .cal-date { font-size: 11px; margin-bottom: 0; }
+    .cal-task { display: none; }
+    .cal-more { display: none; }
+    .cal-dots { display: flex; }
+    .calendar-weekdays { font-size: 9px; gap: 3px; }
+
+    .modal-backdrop {
+      padding: 0;
+      align-items: flex-end;
+      justify-content: stretch;
+    }
     .modal {
       max-width: 100%;
       min-height: auto;
-      max-height: calc(100vh - 20px);
-      border-radius: 16px;
+      max-height: 94dvh;
+      border-radius: 20px 20px 0 0;
+      animation: sheetIn 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @supports not (max-height: 100dvh) {
+      .modal { max-height: 94vh; }
+    }
+    @keyframes sheetIn {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
     }
     .modal-head {
       padding: 14px 18px 12px;
-      border-radius: 16px 16px 0 0;
+      border-radius: 20px 20px 0 0;
       flex-wrap: wrap;
       gap: 8px;
     }
     .modal-head h2 { font-size: 11px; }
-    .save-as-tpl-btn { order: 3; flex-basis: 100%; padding: 6px 10px; font-size: 11px; }
+    .save-as-tpl-btn {
+      order: 3;
+      flex-basis: 100%;
+      padding: 10px;
+      font-size: 12px;
+      justify-content: center;
+    }
 
     .modal-body { padding: 16px 18px; gap: 18px; }
     .modal-foot {
       padding: 12px 18px calc(12px + var(--safe-bottom));
-      border-radius: 0 0 16px 16px;
+      border-radius: 0;
       flex-wrap: wrap;
+      gap: 8px;
     }
-    .modal-foot .btn { flex: 1; min-width: 0; padding: 0 8px; font-size: 12px; }
+    .modal-foot .btn { flex: 1 1 auto; min-width: 0; padding: 0 12px; font-size: 13px; height: 46px; }
+    .modal-foot .btn.danger { order: 3; flex-basis: 100%; }
+    .modal-foot .spacer { display: none; }
 
     .field-title { font-size: 17px; }
-    .field-description { height: 110px; min-height: 110px; max-height: 110px; }
+    .field-description { height: 120px; min-height: 120px; max-height: 120px; }
 
-    .meta-row { gap: 12px; padding-top: 16px; }
+    .meta-row { gap: 14px; padding-top: 16px; }
 
     .priority-seg {
       grid-template-columns: repeat(4, 1fr);
@@ -2410,44 +2519,66 @@
       gap: 3px;
       padding: 3px;
     }
-    .prio-seg-btn { padding: 6px 2px; gap: 0; }
-    .prio-seg-btn .prio-icon { font-size: 12px; }
-    .prio-seg-btn .prio-label { font-size: 8px; }
+    .prio-seg-btn { padding: 8px 2px; gap: 2px; min-height: 44px; }
+    .prio-seg-btn .prio-icon { font-size: 13px; }
+    .prio-seg-btn .prio-label { font-size: 9px; }
 
     .repeat-row { grid-template-columns: repeat(2, 1fr); }
-    .repeat-btn { font-size: 10.5px; padding: 7px 4px; }
+    .repeat-btn { font-size: 11px; padding: 10px 6px; min-height: 42px; }
 
     .subtasks-block { padding: 12px; }
-    .subtasks li { padding: 6px; gap: 6px; font-size: 12.5px; }
+    .subtasks li { padding: 8px 6px; gap: 8px; font-size: 12.5px; min-height: 42px; }
     .subtask-deadline { font-size: 10px; }
     .subtask-title { font-size: 12.5px; }
 
     .date-popover {
-      width: calc(100vw - 36px);
-      max-width: 340px;
+      position: fixed;
       left: 50%;
-      transform: translateX(-50%) translateY(6px) scale(0.98);
-    }
-    .date-popover.open {
-      transform: translateX(-50%) translateY(0) scale(1);
-    }
-
-    /* Настройки — снизу как шит */
-    .settings-panel {
+      right: auto;
+      bottom: calc(var(--safe-bottom) + 12px);
       top: auto;
-      bottom: calc(var(--mobile-nav-h) + var(--safe-bottom) + 12px);
-      left: 8px;
-      right: 8px;
-      width: auto;
-      max-height: 65vh;
-      border-radius: 16px;
+      transform: translateX(-50%) translateY(12px);
+      width: calc(100vw - 32px);
+      max-width: 360px;
     }
+    .date-popover.open { transform: translateX(-50%) translateY(0); }
+
+    /* Настройки — bottom-sheet */
+    .settings-backdrop { display: block; }
+    .settings-panel {
+      position: fixed;
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: auto;
+      max-height: 82dvh;
+      border-radius: 20px 20px 0 0;
+      padding: 14px 16px calc(20px + var(--safe-bottom));
+      transform: translateY(100%);
+      transition: transform .28s cubic-bezier(.16,1,.3,1);
+      opacity: 1;
+      pointer-events: none;
+      z-index: 89;
+    }
+    .settings-panel.open { transform: translateY(0); pointer-events: auto; }
+    .settings-panel::before {
+      content: "";
+      display: block;
+      width: 40px; height: 4px;
+      background: var(--border-strong);
+      border-radius: 2px;
+      margin: 0 auto 12px;
+    }
+    .settings-close { display: inline-flex; }
+    .settings-section h4 { font-size: 11px; }
+    .density-btn { padding: 10px 4px; min-height: 42px; font-size: 12px; }
 
     /* Аналитика */
     .an2-grid { grid-template-columns: 1fr; gap: 10px; }
     .an2-kpis { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .an2-kpi { padding: 12px 14px; min-height: 76px; gap: 10px; }
-    .an2-kpi-icon { width: 36px; height: 36px; font-size: 16px; border-radius: 10px; }
+    .an2-kpi { padding: 12px 14px; min-height: 80px; gap: 10px; }
+    .an2-kpi-icon { width: 36px; height: 36px; border-radius: 10px; }
     .an2-kpi-num { font-size: 20px; }
     .an2-kpi-label { font-size: 10px; }
     .an2-kpi-sub { font-size: 10px; }
@@ -2462,100 +2593,62 @@
     .an2-urg-num { font-size: 18px; }
     .an2-urg-label { font-size: 10px; }
 
-    .an2-bar { grid-template-columns: 110px 1fr 42px; font-size: 11px; gap: 8px; }
+    .an2-bar { grid-template-columns: minmax(90px, max-content) 1fr minmax(42px, 50px); font-size: 11px; gap: 8px; }
     .an2-week { gap: 4px; }
     .an2-week-labels span { font-size: 9px; }
 
-    /* Шаблоны */
     .tpl-list { grid-template-columns: 1fr; }
     .tpl-card { padding: 12px 14px; }
     .tpl-card-name { font-size: 12.5px; }
     .tpl-card-title { font-size: 11px; }
 
-    .tpl-icon-input { width: 44px; height: 44px; font-size: 20px; }
+    .tpl-icon-input { width: 46px; height: 46px; font-size: 20px; }
     .tpl-editor-row .field-title { font-size: 17px; }
 
-    /* === РЕДАКТОР ВОРОНКИ — карточки === */
-    .board-editor-cols {
-      gap: 12px;
-      margin-bottom: 14px;
-    }
+    /* Редактор воронки */
     .board-editor-row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      position: relative;
-    }
-    /* Заголовок карточки — номер колонки */
-    .board-editor-row::before {
-      content: "Колонка";
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-mute);
-      margin-bottom: 2px;
-      display: block;
+      grid-template-columns: 1fr !important;
+      grid-template-areas:
+        "label"
+        "color"
+        "type"
+        "del";
+      gap: 6px;
+      padding: 10px;
     }
     .board-editor-row input[type="text"] {
-      font-size: 14px;
-      padding: 11px 13px;
+      grid-area: label;
+      font-size: 13px;
+      padding: 10px 11px;
       width: 100%;
-      border-radius: 9px;
-      border: 1px solid var(--border);
+      min-height: 42px;
     }
     .board-editor-row input[type="color"] {
+      grid-area: color;
       width: 100%;
       height: 42px;
-      border-radius: 9px;
-      border: 1px solid var(--border);
-      cursor: pointer;
     }
     .board-editor-row select {
-      font-size: 14px;
-      padding: 11px 13px;
+      grid-area: type;
+      font-size: 12.5px;
+      padding: 10px 11px;
       width: 100%;
-      border-radius: 9px;
-      border: 1px solid var(--border);
+      min-height: 42px;
     }
-    .board-editor-row .btn.ghost[data-del] {
-      width: 100%;
+    .board-editor-row .btn.ghost {
+      grid-area: del;
       padding: 10px !important;
       font-size: 13px;
-      border: 1px solid rgba(230, 83, 83, 0.2);
-      background: rgba(230, 83, 83, 0.06);
-      color: var(--danger);
-      border-radius: 9px;
-    }
-    .board-editor-row .btn.ghost[data-del]::after {
-      content: " Удалить колонку";
-      font-weight: 600;
+      width: 100%;
+      min-height: 42px;
     }
 
-    .board-editor-name {
-      font-size: 14px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      margin-bottom: 14px;
-    }
+    .board-editor-name { font-size: 14px; padding: 11px 13px; min-height: 44px; }
 
-    /* === CONFIRM-модалка — кнопки столбиком === */
-    .confirm-modal {
-      padding: 22px 18px;
-      max-width: 100%;
-      border-radius: 18px;
-    }
-    .confirm-modal .confirm-title {
-      font-size: 16px;
-    }
-    .confirm-modal .confirm-text {
-      font-size: 13px;
-      margin-bottom: 18px;
-    }
+    /* Confirm modal */
+    .confirm-modal { padding: 20px 16px; max-width: 100%; }
+    .confirm-modal .confirm-title { font-size: 15px; }
+    .confirm-modal .confirm-text { font-size: 13px; margin-bottom: 16px; }
     .confirm-modal .confirm-actions {
       flex-direction: column-reverse;
       gap: 8px;
@@ -2564,63 +2657,56 @@
       width: 100%;
       justify-content: center;
       height: 46px;
-      font-size: 14px;
-      border-radius: 12px;
+      font-size: 13px;
     }
 
-    .day-popup { max-width: 100%; }
-    .day-popup-head { padding: 12px 16px; }
+    .day-popup {
+      max-width: 100%;
+      border-radius: 20px 20px 0 0;
+      max-height: 88dvh;
+    }
+    .day-popup-backdrop { padding: 0; align-items: flex-end; }
+    .day-popup-head { padding: 14px 18px; border-radius: 20px 20px 0 0; }
     .day-popup-head h3 { font-size: 13px; }
-    .day-popup-body { padding: 12px 14px 14px; }
-    .day-task { padding: 10px 12px; }
+    .day-popup-body { padding: 12px 14px calc(14px + var(--safe-bottom)); }
+    .day-task { padding: 12px; min-height: 52px; }
     .day-task-title { font-size: 13px; }
   }
 
   @media (min-width: 1900px) {
     .main { max-width: 1700px; }
   }
+
+  /* Скрываем кнопку "Ещё" на десктопе */
+  .mobile-more-btn { display: none; }
+  @media (max-width: 560px) {
+    .mobile-more-btn { display: inline-flex; }
+  }
+
+  /* Убираем фокус-ринг на тач-устройствах */
+  @media (hover: none) {
+    .btn:focus:not(:focus-visible),
+    input:focus:not(:focus-visible),
+    select:focus:not(:focus-visible),
+    textarea:focus:not(:focus-visible),
+    button:focus:not(:focus-visible) {
+      outline: none;
+      box-shadow: none;
+    }
+  }
 </style>
 </head>
 <body>
-
-<!-- ================== МОБИЛЬНАЯ ВЕРХНЯЯ ШАПКА ================== -->
-<div class="mobile-topbar">
-  <div class="mobile-logo">Task<span>Flow</span></div>
-  <div class="mobile-actions">
-    <button class="mobile-icon-btn" id="mobile-tpl-btn" type="button" title="Шаблоны" aria-label="Шаблоны">📁</button>
-    <button class="mobile-icon-btn" id="mobile-board-btn" type="button" title="Воронки" aria-label="Воронки">📋</button>
-    <button class="mobile-icon-btn" id="mobile-settings-btn" type="button" title="Настройки" aria-label="Настройки">⚙</button>
-  </div>
-</div>
-
-<!-- ================== НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ (моб.) ================== -->
-<nav class="mobile-nav">
-  <button class="mobile-nav-btn active" data-mobile-view="kanban" type="button">
-    <span class="mn-icon">▦</span>
-    <span class="mn-label">Канбан</span>
-  </button>
-  <button class="mobile-nav-btn" data-mobile-view="list" type="button">
-    <span class="mn-icon">☰</span>
-    <span class="mn-label">Список</span>
-  </button>
-  <button class="mobile-nav-btn" data-mobile-view="calendar" type="button">
-    <span class="mn-icon">▤</span>
-    <span class="mn-label">Календарь</span>
-  </button>
-  <button class="mobile-nav-btn" data-mobile-view="analytics" type="button">
-    <span class="mn-icon">◔</span>
-    <span class="mn-label">Аналитика</span>
-  </button>
-</nav>
-
-<!-- ================== FAB «+ ЗАДАЧА» ================== -->
-<button class="mobile-fab" id="mobile-fab" type="button" aria-label="Новая задача">+</button>
-
 <div class="app">
   <aside class="sidebar">
     <div class="logo-row">
       <div class="logo">Task<span>Flow</span></div>
-      <button type="button" class="icon-btn" id="settings-btn" title="Настройки внешнего вида" aria-label="Настройки">⚙</button>
+      <button type="button" class="icon-btn" id="settings-btn" title="Настройки внешнего вида" aria-label="Настройки">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
     </div>
 
     <div class="side-section">
@@ -2628,23 +2714,38 @@
       <select class="side-selector" id="board-select" title="Активная воронка" aria-label="Выбор воронки"></select>
       <div class="side-board-actions">
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="board-add" aria-label="Новая воронка">+ <span>Новая</span></button>
+          <button class="side-mini-btn" id="board-add" aria-label="Новая воронка">
+            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Новая</span>
+          </button>
           <span class="tooltip">Создать воронку</span>
         </span>
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="board-edit" aria-label="Настроить воронку">⚙ <span>Настроить</span></button>
+          <button class="side-mini-btn" id="board-edit" aria-label="Настроить воронку">
+            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span>Настроить</span>
+          </button>
           <span class="tooltip">Настроить воронку</span>
         </span>
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="board-del" aria-label="Удалить воронку">🗑 <span>Удалить</span></button>
+          <button class="side-mini-btn" id="board-del" aria-label="Удалить воронку">
+            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            <span>Удалить</span>
+          </button>
           <span class="tooltip">Удалить воронку</span>
         </span>
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="side-task-add" aria-label="Новая задача">➕ <span>Задача</span></button>
+          <button class="side-mini-btn" id="side-task-add" aria-label="Новая задача">
+            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Задача</span>
+          </button>
           <span class="tooltip">Новая задача</span>
         </span>
         <span class="tooltip-wrap">
-          <button class="side-mini-btn" id="side-templates" aria-label="Шаблоны">📁 <span>Шаблоны</span></button>
+          <button class="side-mini-btn" id="side-templates" aria-label="Шаблоны">
+            <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>Шаблоны</span>
+          </button>
           <span class="tooltip">Шаблоны задач</span>
         </span>
       </div>
@@ -2654,16 +2755,23 @@
       <div class="side-section-title">Вид</div>
       <div class="nav">
         <button class="active" data-view="kanban" onclick="switchView('kanban', this)">
-          <span class="icon">▦</span>Канбан
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg>
+          Канбан
         </button>
         <button data-view="list" onclick="switchView('list', this)">
-          <span class="icon">☰</span>Список
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+          Список
         </button>
         <button data-view="calendar" onclick="switchView('calendar', this)">
-          <span class="icon">▤</span>Календарь
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Календарь
         </button>
         <button data-view="analytics" onclick="switchView('analytics', this)">
-          <span class="icon">◔</span>Аналитика
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="21" x2="21" y2="21"/><rect x="5" y="12" width="3" height="7"/><rect x="10.5" y="8" width="3" height="11"/><rect x="16" y="4" width="3" height="15"/></svg>
+          Аналитика
+        </button>
+        <button class="mobile-more-btn" id="mobile-more-btn" aria-label="Ещё">
+          <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
         </button>
       </div>
     </div>
@@ -2710,10 +2818,10 @@
       <input type="text" id="f-search" class="filter-input" placeholder="Поиск задач..." aria-label="Поиск задач" />
       <select id="f-priority" class="filter-input" aria-label="Фильтр по приоритету">
         <option value="">Все приоритеты</option>
-        <option value="low">🔵 Низкий</option>
-        <option value="medium">🟢 Средний</option>
-        <option value="high">🟡 Высокий</option>
-        <option value="urgent">🔴 Срочный</option>
+        <option value="low">Низкий</option>
+        <option value="medium">Средний</option>
+        <option value="high">Высокий</option>
+        <option value="urgent">Срочный</option>
       </select>
       <input type="text" id="f-deadline-after" class="filter-input date-mask" placeholder="дд.мм.гггг" inputmode="numeric" maxlength="10" aria-label="Дедлайн после" />
       <input type="text" id="f-deadline-before" class="filter-input date-mask" placeholder="дд.мм.гггг" inputmode="numeric" maxlength="10" aria-label="Дедлайн до" />
@@ -2725,9 +2833,13 @@
     </section>
     <section id="view-calendar" class="view" style="display:none">
       <div class="calendar-header">
-        <button id="cal-prev" class="btn ghost small" aria-label="Предыдущий месяц">‹</button>
+        <button id="cal-prev" class="btn ghost small" aria-label="Предыдущий месяц">
+          <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
         <h2 id="cal-title"></h2>
-        <button id="cal-next" class="btn ghost small" aria-label="Следующий месяц">›</button>
+        <button id="cal-next" class="btn ghost small" aria-label="Следующий месяц">
+          <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
       </div>
       <div class="calendar-weekdays">
         <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
@@ -2740,7 +2852,13 @@
   </main>
 </div>
 
-<div class="settings-panel" id="settings-panel">
+<!-- Backdrop для настроек (на мобиле) -->
+<div class="settings-backdrop" id="settings-backdrop"></div>
+
+<div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true" aria-label="Настройки внешнего вида">
+  <button class="settings-close" id="settings-close" aria-label="Закрыть настройки">
+    <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
   <div class="settings-section">
     <h4>Тема</h4>
     <div class="density-row">
@@ -2772,7 +2890,9 @@
   <div class="settings-section">
     <h4>Громкость</h4>
     <div class="volume-row">
-      <span class="vol-icon">🔊</span>
+      <span class="vol-icon">
+        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+      </span>
       <input type="range" id="volume-slider" min="0" max="100" value="100" aria-label="Громкость">
       <span class="vol-value" id="volume-value">100%</span>
     </div>
@@ -2780,33 +2900,48 @@
   <button class="settings-reset" id="settings-reset">Сбросить к значениям по умолчанию</button>
 </div>
 
-<!-- ================== МОДАЛКА ВЫБОРА ВОРОНКИ (моб.) ================== -->
-<div class="modal-backdrop" id="mobile-board-backdrop">
-  <div class="modal" style="max-width:480px;min-height:auto">
-    <div class="modal-head">
-      <h2>Воронки</h2>
-      <button class="btn ghost" id="mobile-board-close" type="button" aria-label="Закрыть">✕</button>
-    </div>
-    <div class="modal-body" style="gap:14px">
-      <div class="description-block">
-        <div class="description-label">Активная воронка</div>
-        <select id="mobile-board-select" class="status-select" aria-label="Активная воронка"></select>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <button class="btn" id="mobile-board-edit" type="button">⚙ Настроить</button>
-        <button class="btn" id="mobile-board-add" type="button">+ Новая</button>
-      </div>
-      <button class="btn danger" id="mobile-board-del" type="button" style="width:100%;justify-content:center">🗑 Удалить текущую воронку</button>
-    </div>
+<!-- Меню "Ещё" (мобильное) -->
+<div class="more-menu-backdrop" id="more-menu-backdrop"></div>
+<div class="more-menu" id="more-menu" role="dialog" aria-modal="true" aria-label="Дополнительно">
+  <div class="more-menu-title">Воронка</div>
+  <div class="more-menu-list">
+    <button class="more-menu-item" id="mm-new-task">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Новая задача
+    </button>
+    <button class="more-menu-item" id="mm-new-board">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Новая воронка
+    </button>
+    <button class="more-menu-item" id="mm-edit-board">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Настроить воронку
+    </button>
+    <button class="more-menu-item" id="mm-templates">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Шаблоны задач
+    </button>
+    <button class="more-menu-item" id="mm-settings">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Настройки
+    </button>
+    <button class="more-menu-item" id="mm-delete-board">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      Удалить воронку
+    </button>
   </div>
+  <div class="more-menu-title">Активная воронка</div>
+  <select class="side-selector" id="board-select-mobile" aria-label="Выбор воронки"></select>
 </div>
 
 <!-- ================== МОДАЛКА СОЗДАНИЯ ВОРОНКИ ================== -->
 <div class="modal-backdrop" id="board-create-backdrop">
-  <div class="modal" style="max-width:480px;min-height:auto">
+  <div class="modal" style="max-width:480px;min-height:auto" role="dialog" aria-modal="true">
     <div class="modal-head">
       <h2>Новая воронка</h2>
-      <button class="btn ghost" id="board-create-close" type="button" aria-label="Закрыть">✕</button>
+      <button class="btn ghost" id="board-create-close" type="button" aria-label="Закрыть">
+        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="modal-body" style="gap:14px">
       <div class="description-block">
@@ -2824,10 +2959,12 @@
 
 <!-- ================== МОДАЛКА ШАБЛОНОВ ================== -->
 <div class="modal-backdrop" id="templates-backdrop">
-  <div class="modal" style="max-width:760px;min-height:auto">
+  <div class="modal" style="max-width:760px;min-height:auto" role="dialog" aria-modal="true">
     <div class="modal-head">
       <h2>Шаблоны задач</h2>
-      <button class="btn ghost" id="templates-close" aria-label="Закрыть">✕</button>
+      <button class="btn ghost" id="templates-close" aria-label="Закрыть">
+        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="modal-body" style="gap:14px">
       <div id="templates-list" class="tpl-list"></div>
@@ -2838,17 +2975,22 @@
     </div>
     <div class="modal-foot">
       <div class="spacer"></div>
-      <button class="btn primary" id="templates-new">+ Новый шаблон</button>
+      <button class="btn primary" id="templates-new">
+        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Новый шаблон
+      </button>
     </div>
   </div>
 </div>
 
 <!-- ================== МОДАЛКА РЕДАКТОРА ШАБЛОНА ================== -->
 <div class="modal-backdrop" id="tpl-editor-backdrop">
-  <div class="modal" style="max-width:600px;min-height:auto">
+  <div class="modal" style="max-width:600px;min-height:auto" role="dialog" aria-modal="true">
     <div class="modal-head">
       <h2 id="tpl-editor-title">Новый шаблон</h2>
-      <button class="btn ghost" id="tpl-editor-close" aria-label="Закрыть">✕</button>
+      <button class="btn ghost" id="tpl-editor-close" aria-label="Закрыть">
+        <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="modal-body" style="gap:18px">
       <div class="tpl-editor-row">
@@ -2868,11 +3010,11 @@
 
       <div class="meta-row" style="padding-top:16px">
         <div class="meta-field">
-          <div class="meta-label">📅 Дедлайн через</div>
+          <div class="meta-label">Дедлайн через</div>
           <input id="tpl-offset" class="tpl-text-input" type="number" min="0" max="365" placeholder="дней" />
         </div>
         <div class="meta-field">
-          <div class="meta-label">🏷 Приоритет</div>
+          <div class="meta-label">Приоритет</div>
           <div class="priority-seg" id="tpl-priority-row">
             <button type="button" class="prio-seg-btn" data-prio="low">
               <span class="prio-icon">🔵</span><span class="prio-label">Низ</span>
@@ -2891,7 +3033,7 @@
       </div>
 
       <div class="repeat-block">
-        <div class="section-head"><h3>🔁 Повтор</h3></div>
+        <div class="section-head"><h3>Повтор</h3></div>
         <div class="repeat-row" id="tpl-repeat-row">
           <button type="button" class="repeat-btn" data-repeat="">Никогда</button>
           <button type="button" class="repeat-btn" data-repeat="daily">Ежедневно</button>
@@ -2903,7 +3045,7 @@
 
       <div class="subtasks-block">
         <div class="section-head">
-          <h3>☑ Подзадачи</h3>
+          <h3>Подзадачи</h3>
           <span class="checklist-progress" id="tpl-subtask-progress">0</span>
         </div>
         <ul id="tpl-subtasks" class="subtasks"></ul>
@@ -2924,23 +3066,28 @@
 
 <!-- ================== МОДАЛКА ЗАДАЧИ ================== -->
 <div class="modal-backdrop" id="modal-backdrop">
-  <div class="modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-head">
       <h2 id="modal-title">Новая задача</h2>
-      <button type="button" class="save-as-tpl-btn" id="m-save-as-tpl">📁 Сохранить как шаблон</button>
-      <button id="modal-close" class="btn ghost" aria-label="Закрыть">✕</button>
+      <button type="button" class="save-as-tpl-btn" id="m-save-as-tpl">
+        <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Сохранить как шаблон
+      </button>
+      <button id="modal-close" class="btn ghost" aria-label="Закрыть">
+        <svg class="ico ico-18" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="modal-body">
       <input id="m-title" class="field-title" type="text" placeholder="Что нужно сделать?" />
 
       <div class="status-select-wrap" id="m-status-wrap">
-        <div class="meta-label">📋 Колонка</div>
+        <div class="meta-label">Колонка</div>
         <select id="m-status" class="status-select" aria-label="Колонка"></select>
       </div>
 
       <div class="subtasks-block">
         <div class="section-head">
-          <h3>☑ Подзадачи</h3>
+          <h3>Подзадачи</h3>
           <span class="checklist-progress" id="m-subtask-progress">0/0</span>
         </div>
         <ul id="m-subtasks" class="subtasks"></ul>
@@ -2957,17 +3104,23 @@
 
       <div class="meta-row">
         <div class="meta-field">
-          <div class="meta-label">📅 Дедлайн</div>
+          <div class="meta-label">Дедлайн</div>
           <div class="date-picker">
             <button type="button" class="date-picker-trigger" id="dp-trigger">
-              <span class="icon">📅</span>
+              <span class="icon">
+                <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </span>
               <span class="value placeholder" id="dp-value">Не задан</span>
             </button>
             <div class="date-popover" id="dp-popover">
               <div class="dp-header">
-                <button type="button" class="dp-nav" id="dp-prev" aria-label="Предыдущий месяц">‹</button>
+                <button type="button" class="dp-nav" id="dp-prev" aria-label="Предыдущий месяц">
+                  <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
                 <div class="dp-month" id="dp-month"></div>
-                <button type="button" class="dp-nav" id="dp-next" aria-label="Следующий месяц">›</button>
+                <button type="button" class="dp-nav" id="dp-next" aria-label="Следующий месяц">
+                  <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
               </div>
               <div class="dp-weekdays">
                 <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
@@ -2975,9 +3128,9 @@
               <div class="dp-days" id="dp-days"></div>
               <div class="dp-time">
                 <div class="dp-time-label">Время</div>
-                <input type="text" class="dp-time-input" id="dp-hour" maxlength="2" inputmode="numeric" placeholder="00" />
+                <input type="text" class="dp-time-input" id="dp-hour" maxlength="2" inputmode="numeric" pattern="[0-9]*" placeholder="00" />
                 <div class="dp-time-sep">:</div>
-                <input type="text" class="dp-time-input" id="dp-minute" maxlength="2" inputmode="numeric" placeholder="00" />
+                <input type="text" class="dp-time-input" id="dp-minute" maxlength="2" inputmode="numeric" pattern="[0-9]*" placeholder="00" />
               </div>
               <div class="dp-actions">
                 <button type="button" class="btn ghost" id="dp-clear">Очистить</button>
@@ -2987,7 +3140,7 @@
           </div>
         </div>
         <div class="meta-field">
-          <div class="meta-label">🏷 Приоритет</div>
+          <div class="meta-label">Приоритет</div>
           <div class="priority-seg" id="m-priority-row">
             <button type="button" class="prio-seg-btn" data-prio="low">
               <span class="prio-icon">🔵</span>
@@ -3011,7 +3164,7 @@
 
       <div class="repeat-block">
         <div class="section-head">
-          <h3>🔁 Повтор</h3>
+          <h3>Повтор</h3>
         </div>
         <div class="repeat-row" id="m-repeat-row">
           <button type="button" class="repeat-btn" data-repeat="">Никогда</button>
@@ -3033,22 +3186,24 @@
 
 <!-- ================== МОДАЛКА ПОДЗАДАЧИ ================== -->
 <div class="modal-backdrop" id="subtask-modal-backdrop">
-  <div class="modal" style="max-width:520px;min-height:auto">
+  <div class="modal" style="max-width:520px;min-height:auto" role="dialog" aria-modal="true">
     <div class="modal-head">
       <h2 id="subtask-modal-title">Подзадача</h2>
-      <button id="subtask-modal-close" class="btn ghost" type="button" aria-label="Закрыть">✕</button>
+      <button id="subtask-modal-close" class="btn ghost" type="button" aria-label="Закрыть">
+        <svg class="ico ico-18" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="modal-body" style="gap:18px">
       <input id="sm-title" class="field-title" type="text" placeholder="Название подзадачи" />
 
       <div class="meta-row" style="padding-top:16px">
         <div class="meta-field">
-          <div class="meta-label">📅 Дедлайн</div>
+          <div class="meta-label">Дедлайн</div>
           <input id="sm-deadline" class="field-datetime" type="datetime-local" />
           <button type="button" class="btn ghost small" id="sm-deadline-clear" style="align-self:flex-start">Очистить</button>
         </div>
         <div class="meta-field">
-          <div class="meta-label">🏷 Приоритет</div>
+          <div class="meta-label">Приоритет</div>
           <div class="priority-seg" id="sm-priority-row">
             <button type="button" class="prio-seg-btn" data-prio="low">
               <span class="prio-icon">🔵</span><span class="prio-label">Низ</span>
@@ -3068,7 +3223,7 @@
 
       <div class="repeat-block">
         <div class="section-head">
-          <h3>🔁 Повтор</h3>
+          <h3>Повтор</h3>
         </div>
         <div class="repeat-row" id="sm-repeat-row">
           <button type="button" class="repeat-btn" data-repeat="">Никогда</button>
@@ -3079,8 +3234,8 @@
         </div>
       </div>
 
-      <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer">
-        <input type="checkbox" id="sm-done" style="width:16px;height:16px;accent-color:var(--primary)" />
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-dim);cursor:pointer;min-height:44px">
+        <input type="checkbox" id="sm-done" style="width:18px;height:18px;accent-color:var(--primary)" />
         Выполнено
       </label>
     </div>
@@ -3089,6 +3244,22 @@
       <div class="spacer"></div>
       <button id="sm-cancel" class="btn ghost" type="button">Отмена</button>
       <button id="sm-save" class="btn primary" type="button">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================== МОДАЛКА ПЕРЕМЕЩЕНИЯ ЗАДАЧИ (для тач) ================== -->
+<div class="modal-backdrop" id="move-backdrop">
+  <div class="modal" style="max-width:420px;min-height:auto" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h2>Переместить в…</h2>
+      <button id="move-close" class="btn ghost" type="button" aria-label="Закрыть">
+        <svg class="ico ico-18" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="gap:14px">
+      <div id="move-title" style="font-size:13px;color:var(--text-mute);font-weight:600"></div>
+      <div class="move-menu-list" id="move-list"></div>
     </div>
   </div>
 </div>
@@ -3160,25 +3331,33 @@ function fromDatetimeLocalValue(v) {
   return d.toISOString();
 }
 
+/* Ограниченный кеш парсинга дат */
 const _ruDateCache = new Map();
+const _ruDateCacheMax = 200;
 function parseRuDate(str, endOfDay) {
   const cacheKey = str + "|" + (endOfDay ? 1 : 0);
   if (_ruDateCache.has(cacheKey)) return _ruDateCache.get(cacheKey);
   const m = String(str || "").trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-  if (!m) { _ruDateCache.set(cacheKey, null); return null; }
-  const day = parseInt(m[1], 10);
-  const month = parseInt(m[2], 10) - 1;
-  const year = parseInt(m[3], 10);
-  if (day < 1 || day > 31 || month < 0 || month > 11) { _ruDateCache.set(cacheKey, null); return null; }
-  const d = new Date(year, month, day);
-  if (d.getFullYear() !== year || d.getMonth() !== month || d.getDate() !== day) {
-    _ruDateCache.set(cacheKey, null); return null;
+  let result = null;
+  if (m) {
+    const day = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10) - 1;
+    const year = parseInt(m[3], 10);
+    if (day >= 1 && day <= 31 && month >= 0 && month <= 11) {
+      const d = new Date(year, month, day);
+      if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
+        if (endOfDay) d.setHours(23, 59, 59, 999);
+        else d.setHours(0, 0, 0, 0);
+        result = d.toISOString();
+      }
+    }
   }
-  if (endOfDay) d.setHours(23, 59, 59, 999);
-  else d.setHours(0, 0, 0, 0);
-  const iso = d.toISOString();
-  _ruDateCache.set(cacheKey, iso);
-  return iso;
+  if (_ruDateCache.size >= _ruDateCacheMax) {
+    const firstKey = _ruDateCache.keys().next().value;
+    _ruDateCache.delete(firstKey);
+  }
+  _ruDateCache.set(cacheKey, result);
+  return result;
 }
 
 /* ============================================================
@@ -3216,7 +3395,35 @@ function nextDateByRepeat(deadlineIso, repeat) {
 }
 
 /* ============================================================
-   3. APPEARANCE
+   3. DEADLINE STATE (объявлено до Store, т.к. используется в deleteTask)
+   ============================================================ */
+const APPROACH_THRESHOLDS_MIN = [15, 10, 5];
+const OVERDUE_TICK_MS = 5 * 60 * 1000;
+const CHECK_INTERVAL_MS = 15000;
+
+const deadlineState = {
+  approachingPlayed: {},
+  overduePlayed: {},
+  scheduledTimers: {},
+};
+
+/* ============================================================
+   4. BODY LOCK
+   ============================================================ */
+function lockBody() {
+  if (!document.body.classList.contains("modal-open")) {
+    document.body.classList.add("modal-open");
+  }
+}
+function unlockBody() {
+  const anyOpen = document.querySelector(
+    ".modal-backdrop.open, .day-popup-backdrop.open, .confirm-backdrop.open, .more-menu.open"
+  );
+  if (!anyOpen) document.body.classList.remove("modal-open");
+}
+
+/* ============================================================
+   5. APPEARANCE
    ============================================================ */
 const APPEARANCE_KEY = "taskflow_appearance_v1";
 const APPEARANCE_DEFAULTS = { theme: "light", accent: "#635bff" };
@@ -3254,35 +3461,50 @@ function syncSettingsUI() {
   if (vol) vol.value = Math.round(Sound.volume * 100);
   if (volVal) volVal.textContent = `${Math.round(Sound.volume * 100)}%`;
 }
+
+function openSettings() {
+  const panel = $("#settings-panel");
+  const backdrop = $("#settings-backdrop");
+  panel.classList.add("open");
+  backdrop.classList.add("open");
+  $("#settings-btn")?.classList.add("active");
+  lockBody();
+}
+function closeSettings() {
+  const panel = $("#settings-panel");
+  const backdrop = $("#settings-backdrop");
+  panel.classList.remove("open");
+  backdrop.classList.remove("open");
+  $("#settings-btn")?.classList.remove("active");
+  unlockBody();
+}
+
 function bindSettingsEvents() {
   const settingsBtn = $("#settings-btn");
   const panel = $("#settings-panel");
+  const backdrop = $("#settings-backdrop");
+  const closeBtn = $("#settings-close");
 
   settingsBtn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const isOpen = panel.classList.toggle("open");
-    settingsBtn.classList.toggle("active", isOpen);
+    if (panel.classList.contains("open")) closeSettings();
+    else openSettings();
   });
 
-  const mobileSettingsBtn = $("#mobile-settings-btn");
-  if (mobileSettingsBtn) {
-    mobileSettingsBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isOpen = panel.classList.toggle("open");
-      mobileSettingsBtn.classList.toggle("active", isOpen);
-    });
-  }
+  if (closeBtn) closeBtn.addEventListener("click", closeSettings);
+  if (backdrop) backdrop.addEventListener("click", closeSettings);
 
   panel.addEventListener("click", (e) => e.stopPropagation());
 
   document.addEventListener("click", (e) => {
-    if (panel.contains(e.target)) return;
-    if (settingsBtn === e.target || settingsBtn.contains(e.target)) return;
-    if (mobileSettingsBtn === e.target || mobileSettingsBtn.contains(e.target)) return;
-    panel.classList.remove("open");
-    settingsBtn.classList.remove("active");
-    if (mobileSettingsBtn) mobileSettingsBtn.classList.remove("active");
+    if (!panel.classList.contains("open")) return;
+    // На десктопе закрываем по клику вне панели (без backdrop)
+    if (window.innerWidth > 560) {
+      if (panel.contains(e.target)) return;
+      if (settingsBtn === e.target || settingsBtn.contains(e.target)) return;
+      closeSettings();
+    }
   });
 
   $$("[data-theme-set]").forEach((b) => b.addEventListener("click", () => {
@@ -3323,13 +3545,13 @@ function bindSettingsEvents() {
 }
 
 /* ============================================================
-   4. КАСТОМНЫЕ ДИАЛОГИ
+   6. КАСТОМНЫЕ ДИАЛОГИ
    ============================================================ */
 function showConfirm({ title, text, confirmText = "Удалить", cancelText = "Отмена", confirmClass = "danger", onConfirm }) {
   const backdrop = document.createElement("div");
   backdrop.className = "confirm-backdrop open";
   backdrop.innerHTML = `
-    <div class="confirm-modal">
+    <div class="confirm-modal" role="dialog" aria-modal="true">
       <h3 class="confirm-title">${escapeHtml(title)}</h3>
       <p class="confirm-text">${text}</p>
       <div class="confirm-actions">
@@ -3339,7 +3561,11 @@ function showConfirm({ title, text, confirmText = "Удалить", cancelText =
     </div>
   `;
   document.body.appendChild(backdrop);
-  const close = () => { backdrop.classList.remove("open"); setTimeout(() => backdrop.remove(), 200); };
+  lockBody();
+  const close = () => {
+    backdrop.classList.remove("open");
+    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
+  };
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="cancel"]').addEventListener("click", close);
   backdrop.querySelector('[data-action="confirm"]').addEventListener("click", () => {
@@ -3356,7 +3582,7 @@ function showAlert({ title, text, okText = "Понятно" }) {
   const backdrop = document.createElement("div");
   backdrop.className = "confirm-backdrop open";
   backdrop.innerHTML = `
-    <div class="confirm-modal">
+    <div class="confirm-modal" role="dialog" aria-modal="true">
       <h3 class="confirm-title">${escapeHtml(title)}</h3>
       <p class="confirm-text">${text}</p>
       <div class="confirm-actions">
@@ -3365,7 +3591,11 @@ function showAlert({ title, text, okText = "Понятно" }) {
     </div>
   `;
   document.body.appendChild(backdrop);
-  const close = () => { backdrop.classList.remove("open"); setTimeout(() => backdrop.remove(), 200); };
+  lockBody();
+  const close = () => {
+    backdrop.classList.remove("open");
+    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
+  };
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="ok"]').addEventListener("click", close);
 }
@@ -3374,7 +3604,7 @@ function showPrompt({ title, label, defaultValue = "", placeholder = "", confirm
   const backdrop = document.createElement("div");
   backdrop.className = "confirm-backdrop open";
   backdrop.innerHTML = `
-    <div class="confirm-modal">
+    <div class="confirm-modal" role="dialog" aria-modal="true">
       <h3 class="confirm-title no-icon">${escapeHtml(title)}</h3>
       ${label ? `<p class="confirm-text" style="margin-bottom:8px">${escapeHtml(label)}</p>` : ""}
       <input class="prompt-input" type="text" value="${escapeHtml(defaultValue)}" placeholder="${escapeHtml(placeholder)}" />
@@ -3385,10 +3615,14 @@ function showPrompt({ title, label, defaultValue = "", placeholder = "", confirm
     </div>
   `;
   document.body.appendChild(backdrop);
+  lockBody();
   const input = backdrop.querySelector(".prompt-input");
   setTimeout(() => { input.focus(); input.select(); }, 60);
 
-  const close = () => { backdrop.classList.remove("open"); setTimeout(() => backdrop.remove(), 200); };
+  const close = () => {
+    backdrop.classList.remove("open");
+    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
+  };
   const submit = () => {
     const v = input.value.trim();
     if (!v) { input.focus(); return; }
@@ -3408,7 +3642,7 @@ function showPrompt({ title, label, defaultValue = "", placeholder = "", confirm
 }
 
 /* ============================================================
-   5. SOUND
+   7. SOUND
    ============================================================ */
 const SOUND_KEY = "taskflow_sound_v1";
 const Sound = {
@@ -3479,7 +3713,7 @@ const Sound = {
 });
 
 /* ============================================================
-   6. STORE + МИГРАЦИИ
+   8. STORE + МИГРАЦИИ
    ============================================================ */
 const STORAGE_KEY = "taskflow_v1";
 const SCHEMA_VERSION = 2;
@@ -3688,7 +3922,10 @@ const Store = {
     this.data.tasks = this.data.tasks.filter((t) => t.id !== id);
     delete deadlineState.approachingPlayed[id];
     delete deadlineState.overduePlayed[id];
-    delete deadlineState.scheduledTimers[id];
+    if (deadlineState.scheduledTimers[id]) {
+      deadlineState.scheduledTimers[id].forEach((tid) => clearTimeout(tid));
+      delete deadlineState.scheduledTimers[id];
+    }
     this.save();
   },
 
@@ -3802,14 +4039,15 @@ const Store = {
 };
 
 /* ============================================================
-   7. UI STATE
+   9. UI STATE
    ============================================================ */
 let currentView = "kanban";
 let currentStatusFilter = "all";
 let calDate = new Date();
+let _pendingMoveTaskId = null;
 
 /* ============================================================
-   8. HELPERS
+   10. HELPERS
    ============================================================ */
 function getBoardFilters() {
   const f = {
@@ -3860,7 +4098,7 @@ function updateStats() {
 }
 
 /* ============================================================
-   9. RENDER — KANBAN
+   11. RENDER — KANBAN
    ============================================================ */
 let draggedTaskId = null;
 
@@ -3915,6 +4153,9 @@ function renderKanban() {
       const subAllDone = subTotal > 0 && subDone === subTotal;
 
       card.innerHTML = `
+        <button class="card-move-btn" type="button" aria-label="Переместить задачу" title="Переместить">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+        </button>
         <div>${escapeHtml(t.title)}</div>
         ${(t.deadline || subTotal || t.repeat) ? `
           <div class="card-bottom">
@@ -3925,7 +4166,16 @@ function renderKanban() {
         ` : ""}
       `;
 
-      card.addEventListener("click", () => openTaskModal(t.id));
+      card.addEventListener("click", (e) => {
+        if (e.target.closest(".card-move-btn")) return;
+        openTaskModal(t.id);
+      });
+      const moveBtn = card.querySelector(".card-move-btn");
+      moveBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openMoveMenu(t.id);
+      });
+
       card.addEventListener("dragstart", (e) => {
         draggedTaskId = t.id;
         card.classList.add("dragging");
@@ -3986,7 +4236,79 @@ function renderKanban() {
 }
 
 /* ============================================================
-   10. RENDER — LIST
+   12. MOVE MENU (для тач)
+   ============================================================ */
+function openMoveMenu(taskId) {
+  const task = Store.getTask(taskId);
+  if (!task) return;
+  const board = Store.getBoard(task.board_id);
+  if (!board) return;
+
+  _pendingMoveTaskId = taskId;
+  $("#move-title").textContent = task.title;
+
+  const list = $("#move-list");
+  list.innerHTML = "";
+
+  board.columns.forEach((col) => {
+    if (col.type === "overdue") return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "move-menu-item" + (col.id === task.status ? " current" : "");
+    btn.innerHTML = `<span class="dot" style="background:${col.color}"></span>${escapeHtml(col.label)}`;
+    btn.addEventListener("click", () => {
+      applyMove(taskId, col.id);
+      closeMoveMenu();
+    });
+    list.appendChild(btn);
+  });
+
+  $("#move-backdrop").classList.add("open");
+  lockBody();
+}
+function closeMoveMenu() {
+  $("#move-backdrop").classList.remove("open");
+  unlockBody();
+  _pendingMoveTaskId = null;
+}
+function applyMove(taskId, colId) {
+  const task = Store.getTask(taskId);
+  if (!task) return;
+  const board = Store.getBoard(task.board_id);
+  if (!board) return;
+  const col = board.columns.find((c) => c.id === colId);
+  if (!col) return;
+
+  if (task.repeat && col.type === "done") {
+    Store.updateTask(task.id, { status: col.id });
+    const newDeadline = nextDateByRepeat(task.deadline, task.repeat);
+    const firstStatus = Store.getFirstStatus(task.board_id);
+    const newTask = Store.createTask({
+      title: task.title,
+      description: task.description,
+      deadline: newDeadline,
+      priority: task.priority,
+      status: firstStatus,
+      repeat: task.repeat,
+      board_id: task.board_id,
+    });
+    newTask.subtasks = (task.subtasks || []).map((s) => ({
+      id: Store.data.nextItemId++,
+      title: s.title,
+      done: false,
+      deadline: s.deadline ? nextDateByRepeat(s.deadline, s.repeat || task.repeat) : null,
+      priority: s.priority || "medium",
+      repeat: s.repeat || "",
+    }));
+    Store.save();
+  } else {
+    Store.updateTask(taskId, { status: colId });
+  }
+  render();
+}
+
+/* ============================================================
+   13. RENDER — LIST
    ============================================================ */
 function renderList() {
   const board = Store.getActiveBoard();
@@ -4034,7 +4356,7 @@ function renderList() {
 }
 
 /* ============================================================
-   11. RENDER — CALENDAR
+   14. RENDER — CALENDAR
    ============================================================ */
 const WEEKDAYS_FULL = ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"];
 
@@ -4103,6 +4425,18 @@ function renderCalendar() {
       cell.appendChild(more);
     }
 
+    // Мобильные точки
+    if (dayTasks.length) {
+      const dots = document.createElement("div");
+      dots.className = "cal-dots";
+      dayTasks.slice(0, 6).forEach((t) => {
+        const d = document.createElement("span");
+        d.className = `cal-dot p-${t.priority}`;
+        dots.appendChild(d);
+      });
+      cell.appendChild(dots);
+    }
+
     cell.addEventListener("click", (e) => {
       if (e.target.closest(".cal-task")) return;
       if (!dayTasks.length) return;
@@ -4114,7 +4448,7 @@ function renderCalendar() {
 }
 
 /* ============================================================
-   12. RENDER — ANALYTICS
+   15. RENDER — ANALYTICS
    ============================================================ */
 const AN_PRIO = {
   low:     { label: "Низкий",  color: "var(--prio-low)" },
@@ -4206,7 +4540,9 @@ function renderAnalytics() {
     <div class="an2-wrap">
       <div class="an2-kpis">
         <div class="an2-kpi k-total">
-          <div class="an2-kpi-icon">▦</div>
+          <div class="an2-kpi-icon">
+            <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg>
+          </div>
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${total}</div>
             <div class="an2-kpi-label">Всего</div>
@@ -4214,7 +4550,9 @@ function renderAnalytics() {
           </div>
         </div>
         <div class="an2-kpi k-done">
-          <div class="an2-kpi-icon">✓</div>
+          <div class="an2-kpi-icon">
+            <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${done}</div>
             <div class="an2-kpi-label">Выполнено</div>
@@ -4222,7 +4560,9 @@ function renderAnalytics() {
           </div>
         </div>
         <div class="an2-kpi k-progress">
-          <div class="an2-kpi-icon">◐</div>
+          <div class="an2-kpi-icon">
+            <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3 a9 9 0 0 1 9 9"/></svg>
+          </div>
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${inProgress}</div>
             <div class="an2-kpi-label">В работе</div>
@@ -4230,7 +4570,9 @@ function renderAnalytics() {
           </div>
         </div>
         <div class="an2-kpi k-overdue">
-          <div class="an2-kpi-icon">!</div>
+          <div class="an2-kpi-icon">
+            <svg class="ico ico-22" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
           <div class="an2-kpi-body">
             <div class="an2-kpi-num">${overdue}</div>
             <div class="an2-kpi-label">Просрочено</div>
@@ -4392,17 +4734,20 @@ function openDayPopup(day, tasks) {
   }).join("");
 
   backdrop.innerHTML = `
-    <div class="day-popup">
+    <div class="day-popup" role="dialog" aria-modal="true">
       <div class="day-popup-head">
         <h3>${escapeHtml(weekdayStr + ", " + dayStr)}</h3>
         <span class="count-badge">${tasks.length} ${plural(tasks.length, "задача", "задачи", "задач")}</span>
-        <button class="btn ghost small" data-action="close" aria-label="Закрыть">✕</button>
+        <button class="btn ghost small" data-action="close" aria-label="Закрыть">
+          <svg class="ico ico-16" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
       <div class="day-popup-body">${tasksHTML}</div>
     </div>
   `;
 
   document.body.appendChild(backdrop);
+  lockBody();
 
   let closed = false;
   const onEsc = (e) => { if (e.key === "Escape") close(); };
@@ -4411,7 +4756,7 @@ function openDayPopup(day, tasks) {
     closed = true;
     backdrop.classList.remove("open");
     document.removeEventListener("keydown", onEsc);
-    setTimeout(() => backdrop.remove(), 200);
+    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
   }
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="close"]').addEventListener("click", close);
@@ -4426,7 +4771,7 @@ function openDayPopup(day, tasks) {
 }
 
 /* ============================================================
-   13. DATE PICKER
+   16. DATE PICKER
    ============================================================ */
 const MONTHS_RU = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
 const WEEKDAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
@@ -4659,7 +5004,7 @@ function bindDatePicker() {
 }
 
 /* ============================================================
-   14. MODAL TASK + SUBTASKS + SUBTASK EDITOR
+   17. MODAL TASK + SUBTASKS + SUBTASK EDITOR
    ============================================================ */
 let currentTaskId = null;
 let currentPriority = "medium";
@@ -4736,11 +5081,13 @@ function openSubtaskEditor(subtaskId) {
   }
 
   $("#subtask-modal-backdrop").classList.add("open");
+  lockBody();
   setTimeout(() => $("#sm-title").focus(), 60);
 }
 
 function closeSubtaskEditor() {
   $("#subtask-modal-backdrop").classList.remove("open");
+  unlockBody();
   editingSubtaskId = null;
 }
 
@@ -4873,12 +5220,14 @@ function openTaskModal(id = null) {
   }
   renderStatusSelect();
   $("#modal-backdrop").classList.add("open");
+  lockBody();
   setTimeout(() => $("#m-title").focus(), 80);
 }
 function closeTaskModal() {
   $("#modal-backdrop").classList.remove("open");
   closeDatePopover();
   closeSubtaskEditor();
+  unlockBody();
   draftSubtasks = [];
 }
 
@@ -4898,13 +5247,17 @@ function renderSubtasks() {
     const repeatIcon = s.repeat ? `<span class="subtask-repeat" title="Повторяется">🔁</span>` : "";
 
     li.innerHTML = `
-      <div class="subtask-drag" title="Перетащить">⋮⋮</div>
+      <div class="subtask-drag" title="Перетащить" aria-hidden="true">
+        <svg class="ico ico-14" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+      </div>
       <input type="checkbox" ${s.done ? "checked" : ""} />
       <span class="subtask-prio p-${s.priority || "medium"}"></span>
       <span class="subtask-title" title="Клик — открыть редактор">${escapeHtml(s.title)}</span>
       ${repeatIcon}
       ${deadlineText ? `<span class="subtask-deadline">${escapeHtml(deadlineText)}</span>` : ""}
-      <button class="subtask-remove" type="button" title="Удалить" aria-label="Удалить">✕</button>
+      <button class="subtask-remove" type="button" title="Удалить" aria-label="Удалить">
+        <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     `;
 
     li.querySelector('input[type="checkbox"]').addEventListener("change", (e) => {
@@ -4987,7 +5340,7 @@ function updateSubtaskProgress() {
 }
 
 /* ============================================================
-   15. TEMPLATES UI
+   18. TEMPLATES UI
    ============================================================ */
 let editingTemplateId = null;
 let tplPriority = "medium";
@@ -4997,9 +5350,11 @@ let tplSubtasks = [];
 function openTemplatesModal() {
   renderTemplatesList();
   $("#templates-backdrop").classList.add("open");
+  lockBody();
 }
 function closeTemplatesModal() {
   $("#templates-backdrop").classList.remove("open");
+  unlockBody();
 }
 
 function renderTemplatesList() {
@@ -5053,8 +5408,14 @@ function renderTemplatesList() {
         ${tpl.subtasks.length ? `<span class="tpl-tag">☑ ${tpl.subtasks.length}</span>` : ""}
       </div>
       <div class="tpl-card-actions">
-        <button class="btn ghost" data-action="edit">✏ Изменить</button>
-        <button class="btn ghost" data-action="delete">🗑 Удалить</button>
+        <button class="btn ghost" data-action="edit">
+          <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Изменить
+        </button>
+        <button class="btn ghost" data-action="delete">
+          <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          Удалить
+        </button>
       </div>
     `;
 
@@ -5141,11 +5502,13 @@ function openTemplateEditor(tplId = null) {
   }
   renderTplSubtasks();
   $("#tpl-editor-backdrop").classList.add("open");
+  lockBody();
   setTimeout(() => $("#tpl-name").focus(), 80);
 }
 
 function closeTemplateEditor() {
   $("#tpl-editor-backdrop").classList.remove("open");
+  unlockBody();
   editingTemplateId = null;
 }
 
@@ -5171,7 +5534,9 @@ function renderTplSubtasks() {
     li.className = "tpl-subtask-row";
     li.innerHTML = `
       <span class="tpl-subtask-text">${escapeHtml(text)}</span>
-      <button class="subtask-remove" type="button" title="Удалить" aria-label="Удалить">✕</button>
+      <button class="subtask-remove" type="button" title="Удалить" aria-label="Удалить">
+        <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     `;
     li.querySelector(".subtask-remove").addEventListener("click", () => {
       tplSubtasks.splice(i, 1);
@@ -5236,9 +5601,6 @@ function bindTemplatesEvents() {
   const tBtn = $("#side-templates");
   if (tBtn) tBtn.addEventListener("click", openTemplatesModal);
 
-  const mobileTplBtn = $("#mobile-tpl-btn");
-  if (mobileTplBtn) mobileTplBtn.addEventListener("click", openTemplatesModal);
-
   $("#templates-close").addEventListener("click", closeTemplatesModal);
   $("#templates-new").addEventListener("click", () => openTemplateEditor(null));
   $("#templates-backdrop").addEventListener("click", (e) => {
@@ -5274,7 +5636,7 @@ function bindTemplatesEvents() {
 }
 
 /* ============================================================
-   16. BOARD MANAGEMENT
+   19. BOARD MANAGEMENT
    ============================================================ */
 function renderBoardSelector() {
   const sel = $("#board-select");
@@ -5289,29 +5651,28 @@ function renderBoardSelector() {
   const delBtn = $("#board-del");
   delBtn.disabled = Store.data.boards.length <= 1;
 
-  // Мобильный селект
-  const mSel = $("#mobile-board-select");
-  if (mSel) {
-    mSel.innerHTML = "";
+  const selM = $("#board-select-mobile");
+  if (selM) {
+    selM.innerHTML = "";
     Store.data.boards.forEach((b) => {
       const opt = document.createElement("option");
       opt.value = b.id;
       opt.textContent = b.name;
       if (b.id === Store.data.activeBoardId) opt.selected = true;
-      mSel.appendChild(opt);
+      selM.appendChild(opt);
     });
   }
-  const mDel = $("#mobile-board-del");
-  if (mDel) mDel.disabled = Store.data.boards.length <= 1;
 }
 
 function openBoardCreateModal() {
   $("#board-create-name").value = "";
   $("#board-create-backdrop").classList.add("open");
+  lockBody();
   setTimeout(() => $("#board-create-name").focus(), 60);
 }
 function closeBoardCreateModal() {
   $("#board-create-backdrop").classList.remove("open");
+  unlockBody();
 }
 function saveBoardCreateModal() {
   const name = $("#board-create-name").value.trim();
@@ -5333,6 +5694,21 @@ function bindBoardSelector() {
     renderBoardSelector();
     render();
   });
+
+  const selM = $("#board-select-mobile");
+  if (selM) {
+    selM.addEventListener("change", (e) => {
+      Store.setActiveBoard(e.target.value);
+      const s = $("#f-search"); if (s) s.value = "";
+      const p = $("#f-priority"); if (p) p.value = "";
+      const a = $("#f-deadline-after"); if (a) a.value = "";
+      const b = $("#f-deadline-before"); if (b) b.value = "";
+      currentStatusFilter = "all";
+      renderBoardSelector();
+      render();
+      closeMoreMenu();
+    });
+  }
 
   $("#board-add").addEventListener("click", openBoardCreateModal);
   $("#board-create-close").addEventListener("click", closeBoardCreateModal);
@@ -5360,111 +5736,13 @@ function bindBoardSelector() {
   if (sideTaskAdd) {
     sideTaskAdd.addEventListener("click", () => openTaskModal(null));
   }
-
-  // === Мобильная модалка воронок ===
-  const mobileBoardBtn = $("#mobile-board-btn");
-  const mobileBoardBackdrop = $("#mobile-board-backdrop");
-  const mobileBoardClose = $("#mobile-board-close");
-  const mobileBoardSelect = $("#mobile-board-select");
-  const mobileBoardEdit = $("#mobile-board-edit");
-  const mobileBoardAdd = $("#mobile-board-add");
-  const mobileBoardDel = $("#mobile-board-del");
-
-  function openMobileBoardModal() {
-    renderBoardSelector();
-    mobileBoardBackdrop.classList.add("open");
-  }
-  function closeMobileBoardModal() {
-    mobileBoardBackdrop.classList.remove("open");
-  }
-
-  if (mobileBoardBtn) mobileBoardBtn.addEventListener("click", openMobileBoardModal);
-  if (mobileBoardClose) mobileBoardClose.addEventListener("click", closeMobileBoardModal);
-  if (mobileBoardBackdrop) mobileBoardBackdrop.addEventListener("click", (e) => {
-    if (e.target === mobileBoardBackdrop) closeMobileBoardModal();
-  });
-  if (mobileBoardSelect) {
-    mobileBoardSelect.addEventListener("change", (e) => {
-      Store.setActiveBoard(e.target.value);
-      currentStatusFilter = "all";
-      renderBoardSelector();
-      render();
-    });
-  }
-  if (mobileBoardEdit) {
-    mobileBoardEdit.addEventListener("click", () => {
-      closeMobileBoardModal();
-      const board = Store.getActiveBoard();
-      if (!board) return;
-      openBoardEditor(board);
-    });
-  }
-  if (mobileBoardAdd) {
-    mobileBoardAdd.addEventListener("click", () => {
-      closeMobileBoardModal();
-      openBoardCreateModal();
-    });
-  }
-  if (mobileBoardDel) {
-    mobileBoardDel.addEventListener("click", () => {
-      if (Store.data.boards.length <= 1) return;
-      closeMobileBoardModal();
-      confirmDeleteBoard(Store.data.activeBoardId);
-    });
-  }
-
-  // === FAB для создания задачи ===
-  const fab = $("#mobile-fab");
-  if (fab) fab.addEventListener("click", () => openTaskModal(null));
-
-  // === Мобильная нижняя навигация ===
-  $$(".mobile-nav-btn").forEach((b) => {
-    b.addEventListener("click", () => {
-      const view = b.dataset.mobileView;
-      // Синхронизируем состояние с десктопным sidebar
-      $$(".nav button[data-view]").forEach((x) => x.classList.remove("active"));
-      const desktopBtn = document.querySelector(`.nav button[data-view="${view}"]`);
-      if (desktopBtn) desktopBtn.classList.add("active");
-
-      currentView = view;
-      $$(".mobile-nav-btn").forEach((x) => x.classList.remove("active"));
-      b.classList.add("active");
-
-      $$(".view").forEach((v) => (v.style.display = "none"));
-      const filtersBar = $("#filters-bar");
-      const statsBar = $("#stats-bar");
-      if (filtersBar) filtersBar.style.display = (view === "list") ? "grid" : "none";
-      if (statsBar) statsBar.style.display = (view === "list") ? "grid" : "none";
-
-      if (view === "kanban") {
-        $("#view-kanban").style.display = "block";
-        $("#page-title").textContent = "Канбан";
-        $("#page-subtitle").textContent = "Перетаскивайте карточки между колонками.";
-      } else if (view === "list") {
-        $("#view-list").style.display = "block";
-        $("#page-title").textContent = "Список";
-        $("#page-subtitle").textContent = "Все задачи в виде компактного списка.";
-      } else if (view === "calendar") {
-        $("#view-calendar").style.display = "flex";
-        $("#page-title").textContent = "Календарь";
-        $("#page-subtitle").textContent = "Задачи по дням дедлайна.";
-      } else if (view === "analytics") {
-        $("#view-analytics").style.display = "flex";
-        $("#page-title").textContent = "Аналитика";
-        $("#page-subtitle").textContent = "Статистика по активной воронке.";
-      }
-      const mainEl = document.querySelector(".main");
-      if (mainEl) mainEl.scrollTop = 0;
-      render();
-    });
-  });
 }
 
 function openBoardEditor(board) {
   const backdrop = document.createElement("div");
   backdrop.className = "confirm-backdrop open";
   backdrop.innerHTML = `
-    <div class="confirm-modal" style="max-width:560px">
+    <div class="confirm-modal" style="max-width:560px" role="dialog" aria-modal="true">
       <h3 class="confirm-title no-icon" style="color:var(--text)">Настроить воронку</h3>
       <p class="confirm-text" style="margin-bottom:12px">Воронка <strong>«${escapeHtml(board.name)}»</strong></p>
       <input id="be-name" class="board-editor-name" type="text" value="${escapeHtml(board.name)}" />
@@ -5477,6 +5755,7 @@ function openBoardEditor(board) {
     </div>
   `;
   document.body.appendChild(backdrop);
+  lockBody();
 
   const cols = backdrop.querySelector("#be-cols");
 
@@ -5486,14 +5765,16 @@ function openBoardEditor(board) {
       const row = document.createElement("div");
       row.className = "board-editor-row";
       row.innerHTML = `
-        <input type="text" value="${escapeHtml(col.label)}" data-label="${col.id}" placeholder="Название колонки" />
+        <input type="text" value="${escapeHtml(col.label)}" data-label="${col.id}" />
         <input type="color" value="${col.color}" data-color="${col.id}" />
         <select data-type="${col.id}">
           <option value="normal" ${col.type === "normal" ? "selected" : ""}>Обычная</option>
           <option value="done" ${col.type === "done" ? "selected" : ""}>Финальная</option>
           <option value="overdue" ${col.type === "overdue" ? "selected" : ""}>Просрочено</option>
         </select>
-        <button class="btn ghost" data-del="${col.id}" title="Удалить" aria-label="Удалить" style="padding:4px">✕</button>
+        <button class="btn ghost" data-del="${col.id}" title="Удалить" aria-label="Удалить" style="padding:4px">
+          <svg class="ico ico-14" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       `;
       row.querySelector("[data-label]").addEventListener("input", (e) => { col.label = e.target.value; });
       row.querySelector("[data-color]").addEventListener("input", (e) => { col.color = e.target.value; });
@@ -5526,7 +5807,10 @@ function openBoardEditor(board) {
     renderCols();
   });
 
-  const close = () => { backdrop.classList.remove("open"); setTimeout(() => backdrop.remove(), 200); };
+  const close = () => {
+    backdrop.classList.remove("open");
+    setTimeout(() => { backdrop.remove(); unlockBody(); }, 200);
+  };
   backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
   backdrop.querySelector('[data-action="cancel"]').addEventListener("click", close);
   backdrop.querySelector('[data-action="save"]').addEventListener("click", () => {
@@ -5554,18 +5838,13 @@ function confirmDeleteBoard(boardId) {
 }
 
 /* ============================================================
-   17. VIEWS
+   20. VIEWS
    ============================================================ */
 function switchView(view, btn) {
   currentView = view;
   $$(".nav button[data-view]").forEach((b) => b.classList.remove("active"));
-  if (btn) btn.classList.add("active");
+  if (btn && btn.dataset.view) btn.classList.add("active");
   $$(".view").forEach((v) => (v.style.display = "none"));
-
-  // Синхронизируем с мобильной навигацией
-  $$(".mobile-nav-btn").forEach((b) => {
-    b.classList.toggle("active", b.dataset.mobileView === view);
-  });
 
   const filtersBar = $("#filters-bar");
   const statsBar = $("#stats-bar");
@@ -5599,15 +5878,69 @@ function setStatusFilter(status) {
   if (currentView !== "list") {
     const listBtn = document.querySelector('.nav button[data-view="list"]');
     if (listBtn) switchView("list", listBtn);
-    $$(".mobile-nav-btn").forEach((b) => {
-      b.classList.toggle("active", b.dataset.mobileView === "list");
-    });
   }
   render();
 }
 
 /* ============================================================
-   18. RENDER MASTER + TICK
+   21. MORE MENU (мобильное)
+   ============================================================ */
+function openMoreMenu() {
+  const menu = $("#more-menu");
+  const backdrop = $("#more-menu-backdrop");
+  const btn = $("#mobile-more-btn");
+  menu.classList.add("open");
+  backdrop.classList.add("open");
+  btn.classList.add("active");
+  lockBody();
+}
+function closeMoreMenu() {
+  const menu = $("#more-menu");
+  const backdrop = $("#more-menu-backdrop");
+  const btn = $("#mobile-more-btn");
+  menu.classList.remove("open");
+  backdrop.classList.remove("open");
+  btn.classList.remove("active");
+  unlockBody();
+}
+function bindMoreMenu() {
+  const btn = $("#mobile-more-btn");
+  const backdrop = $("#more-menu-backdrop");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      if ($("#more-menu").classList.contains("open")) closeMoreMenu();
+      else openMoreMenu();
+    });
+  }
+  if (backdrop) backdrop.addEventListener("click", closeMoreMenu);
+
+  const handlers = {
+    "mm-new-task": () => { closeMoreMenu(); openTaskModal(null); },
+    "mm-new-board": () => { closeMoreMenu(); openBoardCreateModal(); },
+    "mm-edit-board": () => {
+      closeMoreMenu();
+      const board = Store.getActiveBoard();
+      if (board) openBoardEditor(board);
+    },
+    "mm-templates": () => { closeMoreMenu(); openTemplatesModal(); },
+    "mm-settings": () => { closeMoreMenu(); openSettings(); },
+    "mm-delete-board": () => {
+      closeMoreMenu();
+      if (Store.data.boards.length <= 1) {
+        showAlert({ title: "Нельзя удалить последнюю воронку", text: "Создайте новую воронку, прежде чем удалять текущую." });
+        return;
+      }
+      confirmDeleteBoard(Store.data.activeBoardId);
+    },
+  };
+  Object.entries(handlers).forEach(([id, fn]) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("click", fn);
+  });
+}
+
+/* ============================================================
+   22. RENDER MASTER + TICK
    ============================================================ */
 function render() {
   if (currentView === "kanban") renderKanban();
@@ -5630,7 +5963,7 @@ function tick() {
 }
 
 /* ============================================================
-   19. EVENTS
+   23. EVENTS
    ============================================================ */
 function bindDateMask(input) {
   if (!input) return;
@@ -5797,10 +6130,10 @@ function bindEvents() {
         });
 
         const btn = $("#m-save-as-tpl");
-        const oldText = btn.textContent;
-        btn.textContent = "✓ Сохранено";
+        const oldText = btn.innerHTML;
+        btn.innerHTML = "✓ Сохранено";
         btn.disabled = true;
-        setTimeout(() => { btn.textContent = oldText; btn.disabled = false; }, 1200);
+        setTimeout(() => { btn.innerHTML = oldText; btn.disabled = false; }, 1200);
       },
     });
   });
@@ -5859,21 +6192,18 @@ function bindEvents() {
 
   bindSubtaskEditor();
   bindTemplatesEvents();
+  bindMoreMenu();
+
+  // Move menu
+  $("#move-close").addEventListener("click", closeMoveMenu);
+  $("#move-backdrop").addEventListener("click", (e) => {
+    if (e.target === $("#move-backdrop")) closeMoveMenu();
+  });
 }
 
 /* ============================================================
-   20. DEADLINE WATCHER
+   24. DEADLINE WATCHER
    ============================================================ */
-const APPROACH_THRESHOLDS_MIN = [15, 10, 5];
-const OVERDUE_TICK_MS = 5 * 60 * 1000;
-const CHECK_INTERVAL_MS = 15000;
-
-const deadlineState = {
-  approachingPlayed: {},
-  overduePlayed: {},
-  scheduledTimers: {},
-};
-
 function clearScheduledTimers(taskId) {
   const set = deadlineState.scheduledTimers[taskId];
   if (!set) return;
@@ -5942,7 +6272,7 @@ function checkDeadlines() {
 }
 
 /* ============================================================
-   21. TAB TITLE BADGE
+   25. TAB TITLE BADGE
    ============================================================ */
 const _baseTitle = "TaskFlow — трекер задач";
 let _blinkState = false;
@@ -5991,7 +6321,26 @@ function updateTabBadge() {
 }
 
 /* ============================================================
-   22. INIT
+   26. NAV HEIGHT OBSERVER (для точного padding у .main)
+   ============================================================ */
+function setupNavHeightObserver() {
+  const sidebar = document.querySelector(".sidebar");
+  if (!sidebar || !window.ResizeObserver) return;
+  const ro = new ResizeObserver(() => {
+    if (window.innerWidth > 560) {
+      document.documentElement.style.setProperty("--mobile-nav-h", "62px");
+      return;
+    }
+    const h = sidebar.getBoundingClientRect().height;
+    if (h > 0) {
+      document.documentElement.style.setProperty("--mobile-nav-h", `${Math.round(h)}px`);
+    }
+  });
+  ro.observe(sidebar);
+}
+
+/* ============================================================
+   27. INIT
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   loadAppearance();
@@ -6003,6 +6352,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindBoardSelector();
   bindEvents();
   renderBoardSelector();
+  setupNavHeightObserver();
 
   if (!Store.data.tasks.length && Store.data.nextTaskId === 1) {
     const board = Store.getActiveBoard();
@@ -6033,6 +6383,14 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("focus", () => {
     checkDeadlines();
     tick();
+  });
+
+  window.addEventListener("resize", () => {
+    // Закрываем мобильные шторки при повороте/расширении
+    if (window.innerWidth > 560) {
+      closeSettings();
+      closeMoreMenu();
+    }
   });
 
   checkDeadlines();
