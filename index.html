@@ -2,14 +2,14 @@
 <html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
-<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+<meta name="theme-color" content="#f6f7fb" id="theme-color-meta" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="TaskFlow" />
 <meta name="format-detection" content="telephone=no" />
+<meta name="color-scheme" content="light dark" />
 <title>TaskFlow — трекер задач</title>
 <style>
   :root,
@@ -104,6 +104,9 @@
     height: 100%;
     overscroll-behavior: none;
     background: var(--bg);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    transition: background 0.3s ease;
   }
   body {
     margin: 0;
@@ -116,13 +119,11 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     transition: background 0.3s ease, color 0.3s ease;
-    /* ВАЖНО: при apple-mobile-web-app-status-bar-style: default
-       статус-бар сам занимает свою полосу и не накладывается на контент.
-       Дополнительный padding-top не нужен. Оставляем только по бокам для «чёлки» в ландшафте. */
     padding-left: var(--safe-left);
     padding-right: var(--safe-right);
     background-color: var(--bg);
     background-clip: padding-box;
+    -webkit-tap-highlight-color: transparent;
   }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -155,10 +156,13 @@
     top: 0;
     align-self: flex-start;
     height: 100vh;
+    height: 100dvh;
     max-height: 100vh;
+    max-height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 95;
+    -webkit-overflow-scrolling: touch;
   }
   .logo-row {
     display: flex;
@@ -189,6 +193,8 @@
     transition: all 0.18s;
     font-family: inherit;
     flex-shrink: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .icon-btn:hover {
     background: rgba(255, 255, 255, 0.12);
@@ -225,11 +231,13 @@
     font-weight: 600;
     cursor: pointer;
     appearance: none;
+    -webkit-appearance: none;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b92a8' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 34px;
     transition: all 0.2s;
+    touch-action: manipulation;
   }
   .side-selector:hover { background-color: rgba(255, 255, 255, 0.09); }
   .side-selector:focus { outline: none; border-color: var(--primary); }
@@ -268,6 +276,8 @@
     min-width: 0;
     max-width: 100%;
     overflow: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .side-mini-btn:hover {
     background: rgba(255, 255, 255, 0.09);
@@ -324,6 +334,8 @@
     gap: 10px;
     border: none;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .nav button .icon { font-size: 15px; width: 18px; text-align: center; }
   .nav button.active,
@@ -383,6 +395,8 @@
     white-space: nowrap;
     line-height: 1;
     box-sizing: border-box;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .btn:hover { background: var(--surface-hover); border-color: var(--border-strong); }
   .btn.primary {
@@ -417,10 +431,12 @@
     overflow: hidden;
     cursor: pointer;
     user-select: none;
+    -webkit-user-select: none;
     min-height: 96px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    touch-action: manipulation;
   }
   .stat::before {
     content: "";
@@ -461,6 +477,8 @@
     transition: border-color 0.18s, box-shadow 0.18s;
     box-sizing: border-box;
     appearance: none;
+    -webkit-appearance: none;
+    touch-action: manipulation;
   }
   .filters-bar .filter-input::placeholder { color: var(--text-mute); }
   .filters-bar .filter-input:hover { border-color: var(--border-strong); }
@@ -488,6 +506,7 @@
     gap: var(--gap-kanban);
     align-items: start;
     margin-top: 14px;
+    overscroll-behavior: contain;
   }
   .kanban-col {
     background: var(--surface-2);
@@ -547,6 +566,9 @@
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(35, 43, 70, 0.03);
     padding-right: 34px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
   .kanban-card::before {
     content: "";
@@ -577,14 +599,20 @@
     background: var(--surface-2);
     color: var(--text-dim);
     cursor: pointer;
-    display: none;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
     font-family: inherit;
     z-index: 2;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .card-move-btn:hover { color: var(--primary); border-color: var(--primary); }
+  /* На устройствах с мышью кнопка не нужна (drag доступен) */
+  @media (hover: hover) and (pointer: fine) {
+    .card-move-btn { display: none; }
+  }
 
   .task-list { display: flex; flex-direction: column; gap: 10px; }
   .task-row {
@@ -600,6 +628,10 @@
     box-shadow: var(--shadow-sm);
     position: relative;
     overflow: hidden;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
   }
   .task-row::before {
     content: "";
@@ -706,6 +738,7 @@
     gap: 6px;
     flex: 1 1 auto;
     min-height: 0;
+    overscroll-behavior: contain;
   }
   .cal-cell {
     background: var(--surface);
@@ -721,6 +754,10 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
   }
   .cal-cell.cal-cell-empty {
     background: transparent;
@@ -758,6 +795,10 @@
     font-weight: 600;
     color: var(--text);
     flex-shrink: 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
   }
   .cal-task:hover { background: rgba(var(--primary-rgb), 0.12); }
   .cal-task.p-low { border-left-color: var(--prio-low); }
@@ -774,6 +815,7 @@
     background: var(--surface-hover);
     margin-top: 2px;
     user-select: none;
+    -webkit-user-select: none;
     flex-shrink: 0;
   }
   .cal-cell:hover .cal-more { color: var(--primary); }
@@ -791,8 +833,8 @@
     padding: 24px 16px;
     z-index: 100;
     overflow-y: auto;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
   .modal-backdrop.open { display: flex; }
   .modal {
@@ -805,6 +847,7 @@
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
     animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
     overflow: hidden;
     position: relative;
@@ -842,6 +885,7 @@
     flex: 1;
     min-width: 0;
     overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
   .modal-foot {
     padding: 16px 26px;
@@ -938,6 +982,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .repeat-btn:hover { color: var(--text); border-color: var(--border-strong); }
   .repeat-btn.active {
@@ -1003,30 +1049,41 @@
     font-size: 13px;
     transition: all 0.15s;
     position: relative;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: pan-y;
   }
   .subtasks li:hover { border-color: var(--border); }
   .subtasks li.done .subtask-title { text-decoration: line-through; color: var(--text-mute); }
   .subtasks li.dragging { opacity: 0.4; }
   .subtasks li.drag-over { border-top: 2px solid var(--primary); padding-top: 4px; }
   .subtasks .subtask-drag {
-    width: 14px; height: 14px;
+    width: 16px; height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text-mute);
     cursor: grab;
     user-select: none;
-    font-size: 11px;
+    -webkit-user-select: none;
+    font-size: 12px;
     flex-shrink: 0;
     opacity: 0;
     transition: opacity 0.15s;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
   }
   .subtasks li:hover .subtask-drag { opacity: 1; }
+  @media (hover: none) and (pointer: coarse) {
+    .subtasks .subtask-drag { opacity: 1; }
+  }
   .subtasks input[type="checkbox"] {
-    width: 16px; height: 16px;
+    width: 18px; height: 18px;
     cursor: pointer;
     accent-color: var(--primary);
     flex-shrink: 0;
+    touch-action: manipulation;
   }
   .subtask-prio {
     width: 8px; height: 8px;
@@ -1062,7 +1119,7 @@
     flex-shrink: 0;
   }
   .subtask-remove {
-    width: 20px; height: 20px;
+    width: 22px; height: 22px;
     border-radius: 6px;
     background: transparent;
     border: none;
@@ -1076,8 +1133,13 @@
     transition: all 0.15s;
     flex-shrink: 0;
     font-family: inherit;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .subtasks li:hover .subtask-remove { opacity: 1; }
+  @media (hover: none) and (pointer: coarse) {
+    .subtasks li .subtask-remove { opacity: 1; }
+  }
   .subtask-remove:hover { color: var(--danger); background: rgba(230, 83, 83, 0.1); }
 
   .inline-add { display: flex; gap: 8px; margin-top: 2px; }
@@ -1118,6 +1180,8 @@
     transition: all 0.18s;
     min-width: 0;
     min-height: var(--control-h);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .date-picker-trigger:hover { border-color: var(--border-strong); }
   .date-picker-trigger.open,
@@ -1131,7 +1195,7 @@
   .date-picker-trigger .value.placeholder { color: var(--text-mute); font-weight: 500; }
   .date-picker-trigger .value.overdue { color: var(--danger); }
   .date-picker-trigger .clear-inline {
-    width: 18px; height: 18px;
+    width: 20px; height: 20px;
     border-radius: 5px;
     border: none;
     background: transparent;
@@ -1143,6 +1207,7 @@
     font-size: 11px;
     flex-shrink: 0;
     transition: all 0.15s;
+    touch-action: manipulation;
   }
   .date-picker-trigger .clear-inline:hover { color: var(--danger); background: rgba(230, 83, 83, 0.1); }
 
@@ -1168,7 +1233,7 @@
   .dp-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
   .dp-month { font-size: 13px; font-weight: 700; text-transform: capitalize; }
   .dp-nav {
-    width: 26px; height: 26px;
+    width: 32px; height: 32px;
     border-radius: 7px;
     background: var(--surface-hover);
     border: 1px solid var(--border);
@@ -1180,6 +1245,8 @@
     font-size: 13px;
     font-family: inherit;
     transition: all 0.15s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .dp-nav:hover { color: var(--primary); border-color: var(--primary); }
   .dp-weekdays {
@@ -1196,7 +1263,7 @@
   .dp-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 10px; }
   .dp-day {
     aspect-ratio: 1;
-    max-height: 32px;
+    max-height: 34px;
     border-radius: 7px;
     border: none;
     background: transparent;
@@ -1210,6 +1277,8 @@
     justify-content: center;
     transition: all 0.15s;
     position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .dp-day:hover { background: rgba(var(--primary-rgb), 0.1); }
   .dp-day.other-month { color: var(--text-mute); opacity: 0.5; }
@@ -1286,6 +1355,8 @@
     gap: 1px;
     overflow: hidden;
     min-width: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .prio-seg-btn .prio-icon { font-size: 13px; line-height: 1; }
   .prio-seg-btn .prio-label { font-size: 9.5px; font-weight: 700; line-height: 1; opacity: 0.7; }
@@ -1311,6 +1382,7 @@
     justify-content: center;
     padding: 24px 16px;
     z-index: 150;
+    overscroll-behavior: contain;
   }
   .day-popup-backdrop.open { display: flex; }
   .day-popup {
@@ -1319,6 +1391,7 @@
     width: 100%;
     max-width: 460px;
     max-height: calc(100vh - 80px);
+    max-height: calc(100dvh - 80px);
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
@@ -1342,7 +1415,7 @@
     border: 1px solid var(--border);
     font-weight: 700;
   }
-  .day-popup-body { padding: 14px 18px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  .day-popup-body { padding: 14px 18px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; -webkit-overflow-scrolling: touch; }
   .day-task {
     display: flex;
     align-items: center;
@@ -1355,6 +1428,8 @@
     transition: all 0.15s;
     position: relative;
     overflow: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .day-task::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
   .day-task.p-low::before { background: var(--prio-low); }
@@ -1383,7 +1458,9 @@
     pointer-events: none;
     transition: opacity 0.2s, transform 0.2s;
     max-height: calc(100vh - 82px);
+    max-height: calc(100dvh - 82px);
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
   .settings-section { margin-bottom: 14px; }
@@ -1404,6 +1481,8 @@
     cursor: pointer;
     transition: all 0.15s;
     position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .swatch:hover { transform: scale(1.15); }
   .swatch.active { border-color: var(--text); box-shadow: 0 0 0 2px var(--surface); }
@@ -1456,6 +1535,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .density-btn:hover { color: var(--text); }
   .density-btn.active { background: var(--primary); color: #fff; box-shadow: 0 3px 10px var(--primary-glow); }
@@ -1490,6 +1571,8 @@
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .settings-reset:hover { color: var(--danger); border-color: var(--danger); }
 
@@ -1502,6 +1585,7 @@
     justify-content: center;
     padding: 20px;
     z-index: 250;
+    overscroll-behavior: contain;
   }
   .confirm-backdrop.open { display: flex; }
   .confirm-modal {
@@ -1513,7 +1597,9 @@
     padding: 24px;
     animation: modalIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
     max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .confirm-title {
     margin: 0 0 10px;
@@ -1536,7 +1622,7 @@
     border-radius: 9px;
     margin-bottom: 16px;
     font-family: inherit;
-    font-size: 13.5px;
+    font-size: 16px;
     background: var(--input-bg);
     color: var(--text);
     transition: border-color 0.15s, box-shadow 0.15s;
@@ -1565,7 +1651,7 @@
     background: var(--input-bg);
     color: var(--text);
     font-family: inherit;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
     transition: border-color 0.18s, box-shadow 0.18s;
     min-height: var(--control-h);
@@ -1588,6 +1674,7 @@
     min-width: 0;
     flex: 1 1 auto;
     min-height: calc(100vh - 160px);
+    min-height: calc(100dvh - 160px);
   }
 
   /* ============================================================
@@ -1928,6 +2015,8 @@
     gap: 9px;
     transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   .tpl-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
   .tpl-card-head { display: flex; align-items: center; gap: 10px; }
@@ -2052,6 +2141,8 @@
     cursor: pointer;
     font-family: inherit;
     transition: all 0.15s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .save-as-tpl-btn:hover {
     color: var(--primary);
@@ -2111,7 +2202,7 @@
     border-radius: 9px;
     margin-bottom: 12px;
     font-family: inherit;
-    font-size: 13px;
+    font-size: 16px;
     background: var(--input-bg);
     color: var(--text);
   }
@@ -2127,10 +2218,12 @@
   .mobile-header { display: none; }
   .mobile-tabbar { display: none; }
 
-  @media (hover: none) and (pointer: coarse) {
-    .card-move-btn { display: inline-flex; }
-    .subtasks li .subtask-drag,
-    .subtasks li .subtask-remove { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
   }
 
   @media (max-width: 1100px) {
@@ -2167,14 +2260,15 @@
       align-items: center;
       gap: 8px;
       padding: 8px 12px;
+      padding-top: calc(8px + var(--safe-top));
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
       position: relative;
       z-index: 5;
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
+      transition: transform 0.2s ease;
     }
+    .mobile-header.keyboard-open { display: none; }
     .mobile-header .logo-sm {
       font-size: 15px;
       font-weight: 800;
@@ -2208,6 +2302,7 @@
       line-height: 1.2;
       outline: none;
       box-shadow: none;
+      touch-action: manipulation;
     }
     .mobile-header .mh-btn {
       width: 36px;
@@ -2227,6 +2322,7 @@
       line-height: 1;
       outline: none;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
     .mobile-header .mh-btn.primary {
       background: var(--primary);
@@ -2263,7 +2359,9 @@
       justify-content: space-around;
       gap: 2px;
       padding: 6px 6px var(--safe-bottom);
+      transition: transform 0.2s ease;
     }
+    .mobile-tabbar.keyboard-open { transform: translateY(120%); }
     .mobile-tabbar button {
       flex: 1;
       background: transparent;
@@ -2284,6 +2382,7 @@
       transition: background 0.15s, color 0.15s;
       line-height: 1;
       -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
     .mobile-tabbar button .tab-icon { font-size: 20px; line-height: 1; }
     .mobile-tabbar button .tab-label { line-height: 1; letter-spacing: 0.02em; }
@@ -2301,7 +2400,7 @@
     #filters-bar #f-priority { grid-column: 1 / -1; }
     #filters-bar #f-deadline-after,
     #filters-bar #f-deadline-before { grid-column: auto; }
-    #filters-bar .filter-input { font-size: 15px; height: 44px; }
+    #filters-bar .filter-input { font-size: 16px; height: 44px; }
 
     .kanban {
       display: flex;
@@ -2312,6 +2411,7 @@
       margin: 0 -12px;
       padding: 4px 12px 12px;
       -webkit-overflow-scrolling: touch;
+      touch-action: pan-x;
     }
     .kanban-col {
       flex: 0 0 86vw;
@@ -2410,14 +2510,12 @@
     .an2-week-bar { max-width: 100%; }
     .an2-week-labels span { font-size: 9px; }
 
-    /* ==========================================================
-       МОДАЛКИ НА МОБИЛЕ — компактные и без «наползаний»
-       ========================================================== */
     .modal-backdrop { padding: 0; align-items: flex-end; }
     .modal {
       max-width: 100%;
       width: 100%;
       min-height: auto;
+      max-height: 92vh;
       max-height: 92dvh;
       border-radius: 18px 18px 0 0;
       animation: sheetIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2461,21 +2559,18 @@
       height: 100px;
       min-height: 100px;
       max-height: 140px;
-      font-size: 15px;
+      font-size: 16px;
     }
     .meta-row { grid-template-columns: 1fr; padding-top: 14px; gap: 12px; }
     .priority-seg { height: auto; min-height: 46px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .prio-seg-btn { min-height: 42px; padding: 4px 2px; min-width: 0; }
     .prio-seg-btn .prio-icon { font-size: 14px; }
     .prio-seg-btn .prio-label { font-size: 9px; }
-    .date-picker-trigger { min-height: 44px; font-size: 15px; }
+    .date-picker-trigger { min-height: 44px; font-size: 16px; }
 
     .repeat-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
     .repeat-btn { font-size: 10.5px; padding: 9px 4px; min-height: 42px; min-width: 0; }
 
-    /* ==========================================================
-       БЛОК ПОДЗАДАЧ — компактный, ничего не выходит за рамки
-       ========================================================== */
     .subtasks-block {
       padding: 10px 12px 12px;
       gap: 6px;
@@ -2495,7 +2590,6 @@
       font-size: 10px;
     }
 
-    /* Поле ввода подзадачи — компактное, кнопка — компактная */
     .subtasks-block .inline-add {
       flex-direction: row;
       gap: 6px;
@@ -2507,7 +2601,7 @@
       flex: 1 1 auto;
       min-width: 0;
       padding: 8px 10px;
-      font-size: 14px;
+      font-size: 16px;
       height: 40px;
       line-height: 1;
       border-radius: 8px;
@@ -2522,11 +2616,9 @@
       white-space: nowrap;
     }
 
-    /* То же для модалки шаблона */
     .tpl-editor-row { gap: 10px; }
     .tpl-icon-input { width: 44px; height: 44px; font-size: 20px; }
 
-    /* Футер модалки — 2x2 с контурными «Дублировать», «Отмена» */
     .modal-foot {
       padding: 10px 12px calc(10px + var(--safe-bottom));
       position: sticky;
@@ -2595,6 +2687,7 @@
     .day-popup {
       max-width: 100%;
       width: 100%;
+      max-height: 88vh;
       max-height: 88dvh;
       border-radius: 18px 18px 0 0;
     }
@@ -2611,7 +2704,14 @@
       right: calc(8px + var(--safe-right));
       width: auto;
       max-width: none;
+      max-height: 62vh;
       max-height: 62dvh;
+      transition: opacity 0.2s, transform 0.2s, bottom 0.2s;
+    }
+    .settings-panel.keyboard-open {
+      bottom: calc(8px + var(--safe-bottom));
+      max-height: 70vh;
+      max-height: 70dvh;
     }
 
     .date-popover {
@@ -2622,13 +2722,22 @@
       top: auto;
       width: auto;
       max-width: none;
+      max-height: 78vh;
       max-height: 78dvh;
       overflow-y: auto;
       z-index: 600;
       transform: translateY(20px) scale(0.98);
+      -webkit-overflow-scrolling: touch;
     }
     .date-popover.open { transform: translateY(0) scale(1); }
-    .dp-day { max-height: 38px; font-size: 14px; }
+    .date-popover.keyboard-open {
+      bottom: auto;
+      top: calc(8px + var(--safe-top));
+      max-height: 50vh;
+      max-height: 50dvh;
+    }
+    .dp-day { max-height: 40px; font-size: 14px; }
+    .dp-nav { width: 36px; height: 36px; }
     .dp-time-input { font-size: 16px; }
 
     .tpl-list { grid-template-columns: 1fr; }
@@ -2657,7 +2766,7 @@
   }
 
   @media (min-width: 721px) and (max-width: 1024px) {
-    #view-calendar { min-height: calc(100vh - 180px); }
+    #view-calendar { min-height: calc(100vh - 180px); min-height: calc(100dvh - 180px); }
   }
 
   @media (min-width: 1900px) {
@@ -3112,8 +3221,33 @@
       <div class="meta-row" style="padding-top:16px">
         <div class="meta-field">
           <div class="meta-label">📅 Дедлайн</div>
-          <input id="sm-deadline" class="field-datetime" type="datetime-local" />
-          <button type="button" class="btn ghost small" id="sm-deadline-clear" style="align-self:flex-start">Очистить</button>
+          <div class="date-picker">
+            <button type="button" class="date-picker-trigger" id="sm-dp-trigger">
+              <span class="icon">📅</span>
+              <span class="value placeholder" id="sm-dp-value">Не задан</span>
+            </button>
+            <div class="date-popover" id="sm-dp-popover">
+              <div class="dp-header">
+                <button type="button" class="dp-nav" id="sm-dp-prev" aria-label="Предыдущий месяц">‹</button>
+                <div class="dp-month" id="sm-dp-month"></div>
+                <button type="button" class="dp-nav" id="sm-dp-next" aria-label="Следующий месяц">›</button>
+              </div>
+              <div class="dp-weekdays">
+                <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+              </div>
+              <div class="dp-days" id="sm-dp-days"></div>
+              <div class="dp-time">
+                <div class="dp-time-label">Время</div>
+                <input type="text" class="dp-time-input" id="sm-dp-hour" maxlength="2" inputmode="numeric" placeholder="00" />
+                <div class="dp-time-sep">:</div>
+                <input type="text" class="dp-time-input" id="sm-dp-minute" maxlength="2" inputmode="numeric" placeholder="00" />
+              </div>
+              <div class="dp-actions">
+                <button type="button" class="btn ghost" id="sm-dp-clear">Очистить</button>
+                <button type="button" class="btn primary" id="sm-dp-apply">Применить</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="meta-field">
           <div class="meta-label">🏷 Приоритет</div>
@@ -3219,19 +3353,6 @@ function isOverdue(dt, isDone) {
   return new Date(dt) < new Date();
 }
 
-function toDatetimeLocalValue(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return "";
-  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-}
-function fromDatetimeLocalValue(v) {
-  if (!v) return null;
-  const d = new Date(v);
-  if (isNaN(d.getTime())) return null;
-  return d.toISOString();
-}
-
 const _ruDateCache = new Map();
 function parseRuDate(str, endOfDay) {
   const cacheKey = str + "|" + (endOfDay ? 1 : 0);
@@ -3251,10 +3372,6 @@ function parseRuDate(str, endOfDay) {
   const iso = d.toISOString();
   _ruDateCache.set(cacheKey, iso);
   return iso;
-}
-
-function isTouch() {
-  return window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 }
 
 /* ============================================================
@@ -3307,10 +3424,9 @@ function applyAppearance() {
   const mixTarget = appearance.theme === "dark" ? { r: 255, g: 255, b: 255 } : { r: 0, g: 0, b: 0 };
   root.style.setProperty("--primary-2", mix(appearance.accent, mixTarget, appearance.theme === "dark" ? 0.3 : 0.15));
   root.style.setProperty("--primary-glow", `rgba(${rgb}, 0.25)`);
-  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  const metaTheme = document.getElementById("theme-color-meta");
   if (metaTheme) {
-    if (appearance.theme === "dark") metaTheme.setAttribute("content", "#0a0c15");
-    else metaTheme.setAttribute("content", "#f6f7fb");
+    metaTheme.setAttribute("content", appearance.theme === "dark" ? "#0a0c15" : "#f6f7fb");
   }
   syncSettingsUI();
   try { localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearance)); } catch (e) {}
@@ -3545,7 +3661,7 @@ const Sound = {
     this._tone(440, 0.45, "square", t + 0.5, 0.55);
   },
 };
-["click", "keydown", "touchstart", "pointerdown"].forEach((ev) => {
+["pointerdown", "keydown"].forEach((ev) => {
   document.addEventListener(ev, () => {
     if (!Sound.ctx) Sound.init();
     else if (Sound.ctx.state === "suspended") Sound.ctx.resume().catch(() => {});
@@ -3986,7 +4102,7 @@ function renderKanban() {
       const card = document.createElement("div");
       card.className = `kanban-card p-${t.priority}`;
       if (isOverdue(t.deadline, Store.isTaskDone(t))) card.classList.add("overdue");
-      card.draggable = !isTouch();
+      card.draggable = !isTouchDevice();
       card.dataset.id = t.id;
 
       const subDone = (t.subtasks || []).filter((s) => s.done).length;
@@ -4886,6 +5002,7 @@ function bindDatePicker(prefix) {
 let currentTaskId = null;
 let currentPriority = "medium";
 let currentRepeat = "";
+let currentDeadline = null;
 let subtaskDragId = null;
 
 let draftSubtasks = [];
@@ -4902,6 +5019,7 @@ function getActiveSubtasks() {
 let editingSubtaskId = null;
 let smPriority = "medium";
 let smRepeat = "";
+let smDeadline = null;
 
 function setSubtaskPriority(p) {
   smPriority = p || "medium";
@@ -4924,7 +5042,9 @@ function openSubtaskEditor(subtaskId) {
 
   if (isNew) {
     $("#sm-title").value = "";
-    $("#sm-deadline").value = "";
+    smDeadline = null;
+    datePickers["sm-dp"].setValue(null);
+    renderDateTrigger("sm-dp");
     $("#sm-done").checked = false;
     setSubtaskPriority("medium");
     setSubtaskRepeat("");
@@ -4933,7 +5053,9 @@ function openSubtaskEditor(subtaskId) {
     const s = items.find((x) => x.id === subtaskId);
     if (!s) return;
     $("#sm-title").value = s.title || "";
-    $("#sm-deadline").value = toDatetimeLocalValue(s.deadline);
+    smDeadline = s.deadline || null;
+    datePickers["sm-dp"].setValue(smDeadline);
+    renderDateTrigger("sm-dp");
     $("#sm-done").checked = !!s.done;
     setSubtaskPriority(s.priority || "medium");
     setSubtaskRepeat(s.repeat || "");
@@ -4945,6 +5067,7 @@ function openSubtaskEditor(subtaskId) {
 
 function closeSubtaskEditor() {
   $("#subtask-modal-backdrop").classList.remove("open");
+  closeDatePopover("sm-dp");
   editingSubtaskId = null;
 }
 
@@ -4954,7 +5077,7 @@ function saveSubtaskEditor() {
 
   const patch = {
     title,
-    deadline: fromDatetimeLocalValue($("#sm-deadline").value),
+    deadline: smDeadline,
     priority: smPriority,
     done: $("#sm-done").checked,
     repeat: smRepeat,
@@ -5005,7 +5128,6 @@ function bindSubtaskEditor() {
   $("#sm-cancel").addEventListener("click", closeSubtaskEditor);
   $("#sm-save").addEventListener("click", saveSubtaskEditor);
   $("#sm-delete").addEventListener("click", deleteSubtaskFromEditor);
-  $("#sm-deadline-clear").addEventListener("click", () => { $("#sm-deadline").value = ""; });
 
   backdrop.addEventListener("click", (e) => {
     if (e.target === backdrop) closeSubtaskEditor();
@@ -5058,7 +5180,8 @@ function openTaskModal(id = null) {
   if (isNew) {
     $("#m-title").value = "";
     $("#m-description").value = "";
-    datePickers["dp"] && datePickers["dp"].setValue(null);
+    currentDeadline = null;
+    datePickers["dp"].setValue(null);
     renderDateTrigger("dp");
     setPriority("medium");
     setRepeat("");
@@ -5068,7 +5191,8 @@ function openTaskModal(id = null) {
     if (!t) { showAlert({ title: "Задача не найдена", text: "Возможно, она была удалена." }); return; }
     $("#m-title").value = t.title;
     $("#m-description").value = t.description || "";
-    datePickers["dp"] && datePickers["dp"].setValue(t.deadline);
+    currentDeadline = t.deadline || null;
+    datePickers["dp"].setValue(currentDeadline);
     renderDateTrigger("dp");
     setPriority(t.priority || "medium");
     setRepeat(t.repeat || "");
@@ -5084,6 +5208,107 @@ function closeTaskModal() {
   draftSubtasks = [];
 }
 
+/* ---------- Pointer Events drag для подзадач ---------- */
+function attachSubtaskPointerDrag(li, subtask) {
+  const handle = li.querySelector(".subtask-drag");
+  if (!handle) return;
+
+  let startY = 0, startX = 0;
+  let dragging = false;
+  let longPressTimer = null;
+  let activePointerId = null;
+
+  const onPointerDown = (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    activePointerId = e.pointerId;
+    startY = e.clientY;
+    startX = e.clientX;
+
+    if (e.pointerType === "touch" || e.pointerType === "pen") {
+      longPressTimer = setTimeout(() => {
+        dragging = true;
+        li.classList.add("dragging");
+        if (navigator.vibrate) navigator.vibrate(15);
+      }, 180);
+    } else {
+      dragging = true;
+      li.classList.add("dragging");
+    }
+
+    handle.setPointerCapture?.(e.pointerId);
+  };
+
+  const onPointerMove = (e) => {
+    if (activePointerId !== e.pointerId) return;
+
+    if (!dragging) {
+      if (longPressTimer && (Math.abs(e.clientY - startY) > 8 || Math.abs(e.clientX - startX) > 8)) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+      }
+      return;
+    }
+
+    e.preventDefault();
+    const y = e.clientY;
+    const items = $$("#m-subtasks li");
+    let target = null;
+    for (const item of items) {
+      if (item === li) continue;
+      const r = item.getBoundingClientRect();
+      if (y >= r.top && y <= r.bottom) { target = item; break; }
+    }
+    items.forEach((x) => x.classList.remove("drag-over"));
+    if (target) target.classList.add("drag-over");
+  };
+
+  const onPointerUp = (e) => {
+    if (activePointerId !== e.pointerId) return;
+    if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+
+    if (dragging) {
+      const items = $$("#m-subtasks li");
+      const y = e.clientY;
+      let targetId = null;
+      for (const item of items) {
+        if (item === li) continue;
+        const r = item.getBoundingClientRect();
+        if (y >= r.top && y <= r.bottom) { targetId = parseInt(item.dataset.id, 10); break; }
+      }
+
+      if (targetId !== null && targetId !== subtask.id) {
+        const arr = getActiveSubtasks();
+        const a = arr.findIndex((x) => x.id === subtask.id);
+        const b = arr.findIndex((x) => x.id === targetId);
+        if (a >= 0 && b >= 0) {
+          if (currentTaskId !== null) {
+            Store.reorderSubtask(currentTaskId, subtask.id, targetId);
+          } else {
+            const [m] = arr.splice(a, 1);
+            arr.splice(b, 0, m);
+          }
+        }
+      }
+    }
+
+    dragging = false;
+    li.classList.remove("dragging");
+    $$("#m-subtasks li").forEach((x) => x.classList.remove("drag-over"));
+    activePointerId = null;
+    try { handle.releasePointerCapture?.(e.pointerId); } catch (err) {}
+    if (subtaskDragId !== null) subtaskDragId = null;
+  };
+
+  handle.addEventListener("pointerdown", onPointerDown);
+  handle.addEventListener("pointermove", onPointerMove);
+  handle.addEventListener("pointerup", onPointerUp);
+  handle.addEventListener("pointercancel", onPointerUp);
+
+  if (window.PointerEvent) {
+    li.draggable = false;
+  }
+}
+
 function renderSubtasks() {
   const ul = $("#m-subtasks");
   if (!ul) return;
@@ -5094,7 +5319,6 @@ function renderSubtasks() {
     const li = document.createElement("li");
     li.className = s.done ? "done" : "";
     li.dataset.id = s.id;
-    li.draggable = !isTouch();
 
     const deadlineText = s.deadline ? fmtDateTime(s.deadline) : "";
     const repeatIcon = s.repeat ? `<span class="subtask-repeat" title="Повторяется">🔁</span>` : "";
@@ -5138,40 +5362,7 @@ function renderSubtasks() {
       renderSubtasks();
     });
 
-    li.addEventListener("dragstart", (e) => {
-      subtaskDragId = s.id;
-      li.classList.add("dragging");
-      try { e.dataTransfer.setData("text/plain", String(s.id)); } catch (err) {}
-      e.dataTransfer.effectAllowed = "move";
-    });
-    li.addEventListener("dragend", () => {
-      subtaskDragId = null;
-      li.classList.remove("dragging");
-      $$("#m-subtasks li").forEach((x) => x.classList.remove("drag-over"));
-    });
-    li.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
-      li.classList.add("drag-over");
-    });
-    li.addEventListener("dragleave", () => li.classList.remove("drag-over"));
-    li.addEventListener("drop", (e) => {
-      e.preventDefault();
-      li.classList.remove("drag-over");
-      if (subtaskDragId === null || subtaskDragId === s.id) return;
-      const arr = getActiveSubtasks();
-      const a = arr.findIndex((x) => x.id === subtaskDragId);
-      const b = arr.findIndex((x) => x.id === s.id);
-      if (a < 0 || b < 0) return;
-      if (currentTaskId !== null) {
-        Store.reorderSubtask(currentTaskId, subtaskDragId, s.id);
-      } else {
-        const [m] = arr.splice(a, 1);
-        arr.splice(b, 0, m);
-      }
-      subtaskDragId = null;
-      renderSubtasks();
-    });
+    attachSubtaskPointerDrag(li, s);
 
     ul.appendChild(li);
   });
@@ -5290,7 +5481,8 @@ function applyTemplate(tplId) {
   setPriority(tpl.priority || "medium");
   setRepeat(tpl.repeat || "");
 
-  datePickers["dp"] && datePickers["dp"].setValue(tpl.deadline || null);
+  currentDeadline = tpl.deadline || null;
+  datePickers["dp"].setValue(currentDeadline);
   renderDateTrigger("dp");
 
   draftSubtasks = (tpl.subtasks || []).map((text) => ({
@@ -5734,7 +5926,14 @@ function tick() {
 }
 
 /* ============================================================
-   19. EVENTS
+   19. HELPERS
+   ============================================================ */
+function isTouchDevice() {
+  return (navigator.maxTouchPoints > 0) || ("ontouchstart" in window) || window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+}
+
+/* ============================================================
+   20. EVENTS
    ============================================================ */
 function bindDateMask(input) {
   if (!input) return;
@@ -5880,7 +6079,7 @@ function bindEvents() {
           description: $("#m-description").value,
           priority: currentPriority,
           repeat: currentRepeat,
-          deadline: datePickers["dp"] ? datePickers["dp"].getValue() : null,
+          deadline: currentDeadline,
           subtasks: subs,
         });
 
@@ -5896,7 +6095,7 @@ function bindEvents() {
   $("#m-save").addEventListener("click", () => {
     const title = $("#m-title").value.trim();
     if (!title) { $("#m-title").focus(); return; }
-    const deadline = datePickers["dp"] ? datePickers["dp"].getValue() : null;
+    const deadline = currentDeadline;
     const priority = currentPriority;
     const repeat = currentRepeat;
     const description = $("#m-description").value;
@@ -5954,14 +6153,51 @@ function bindEvents() {
 
   bindSubtaskEditor();
   bindTemplatesEvents();
+
+  /* ---------- Автоскролл к активному input в модалке ---------- */
+  document.addEventListener("focusin", (e) => {
+    const el = e.target;
+    if (!el) return;
+    if (!el.matches("input, textarea, select")) return;
+    const modalBody = el.closest(".modal-body");
+    if (!modalBody) return;
+    setTimeout(() => {
+      try {
+        el.scrollIntoView({ block: "center", behavior: "smooth" });
+      } catch (err) {
+        el.scrollIntoView();
+      }
+    }, 280);
+  });
+
+  /* ---------- visualViewport: реакция на клавиатуру ---------- */
+  if (window.visualViewport) {
+    const vv = window.visualViewport;
+    const mobileHeader = document.querySelector(".mobile-header");
+    const mobileTabbar = document.querySelector(".mobile-tabbar");
+    const settingsPanel = $("#settings-panel");
+    const datePopovers = document.querySelectorAll(".date-popover");
+
+    const onViewportResize = () => {
+      const keyboardOpen = vv.height < window.innerHeight * 0.78;
+      if (mobileHeader) mobileHeader.classList.toggle("keyboard-open", keyboardOpen);
+      if (mobileTabbar) mobileTabbar.classList.toggle("keyboard-open", keyboardOpen);
+      if (settingsPanel) settingsPanel.classList.toggle("keyboard-open", keyboardOpen);
+      datePopovers.forEach((p) => p.classList.toggle("keyboard-open", keyboardOpen));
+    };
+
+    vv.addEventListener("resize", onViewportResize);
+    vv.addEventListener("scroll", onViewportResize);
+    onViewportResize();
+  }
 }
 
 /* ============================================================
-   20. DEADLINE WATCHER
+   21. DEADLINE WATCHER
    ============================================================ */
 const APPROACH_THRESHOLDS_MIN = [15, 10, 5];
 const OVERDUE_TICK_MS = 5 * 60 * 1000;
-const CHECK_INTERVAL_MS = 15000;
+const CHECK_INTERVAL_MS = 30000;
 
 const deadlineState = {
   approachingPlayed: {},
@@ -6037,7 +6273,7 @@ function checkDeadlines() {
 }
 
 /* ============================================================
-   21. TAB TITLE BADGE
+   22. TAB TITLE BADGE
    ============================================================ */
 const _baseTitle = "TaskFlow — трекер задач";
 let _blinkState = false;
@@ -6046,7 +6282,10 @@ let _blinkIntervalId = null;
 function updateTabBadge() {
   const now = Date.now();
   const board = Store.getActiveBoard();
-  if (!board) { document.title = _baseTitle; return; }
+  if (!board) {
+    if (document.title !== _baseTitle) document.title = _baseTitle;
+    return;
+  }
   const doneCols = board.columns.filter((c) => c.type === "done").map((c) => c.id);
 
   let overdue = 0;
@@ -6066,7 +6305,8 @@ function updateTabBadge() {
   } else if (approaching > 0) {
     prefix = `🟠 (${approaching}) `;
   }
-  document.title = prefix + _baseTitle;
+  const newTitle = prefix + _baseTitle;
+  if (document.title !== newTitle) document.title = newTitle;
 
   if ((overdue > 0 || approaching > 0) && document.hidden) {
     if (!_blinkIntervalId) {
@@ -6086,7 +6326,7 @@ function updateTabBadge() {
 }
 
 /* ============================================================
-   22. INIT
+   23. INIT
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   loadAppearance();
@@ -6097,17 +6337,23 @@ document.addEventListener("DOMContentLoaded", () => {
   Store.load();
 
   registerDatePicker("dp",
-    () => (window.__currentDeadline ?? null),
-    (v) => { window.__currentDeadline = v; }
+    () => currentDeadline,
+    (v) => { currentDeadline = v; }
   );
   registerDatePicker("tpl-dp",
     () => tplDeadline,
     (v) => { tplDeadline = v; }
   );
+  registerDatePicker("sm-dp",
+    () => smDeadline,
+    (v) => { smDeadline = v; }
+  );
   bindDatePicker("dp");
   bindDatePicker("tpl-dp");
+  bindDatePicker("sm-dp");
   renderDateTrigger("dp");
   renderDateTrigger("tpl-dp");
+  renderDateTrigger("sm-dp");
 
   bindBoardSelector();
   bindEvents();
@@ -6144,8 +6390,12 @@ document.addEventListener("DOMContentLoaded", () => {
     tick();
   });
 
+  let _resizeTimer = null;
   window.addEventListener("resize", () => {
-    if (currentView === "calendar") renderCalendar();
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => {
+      if (currentView === "calendar") renderCalendar();
+    }, 150);
   });
 
   checkDeadlines();
