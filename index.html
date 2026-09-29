@@ -103,7 +103,6 @@
   html {
     height: 100%;
     overscroll-behavior: none;
-    /* PWA: непрозрачный фон предотвращает «туман» под статус-баром */
     background: var(--bg);
   }
   body {
@@ -117,7 +116,6 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     transition: background 0.3s ease, color 0.3s ease;
-    /* PWA safe-area. Не даёт контенту уезжать под «чёлку». */
     padding-top: var(--safe-top);
     padding-left: var(--safe-left);
     padding-right: var(--safe-right);
@@ -400,6 +398,27 @@
   .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .btn.small { height: 34px; padding: 0 12px; font-size: 12px; }
 
+  /* Кнопки с контуром — для «Дублировать» и «Отмена» на мобиле */
+  .btn.outline {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+  }
+  .btn.outline:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .btn.outline.danger-outline {
+    background: transparent;
+    border: 1px solid rgba(230, 83, 83, 0.45);
+    color: var(--danger);
+  }
+  .btn.outline.danger-outline:hover {
+    background: rgba(230, 83, 83, 0.1);
+    border-color: var(--danger);
+  }
+
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -441,6 +460,12 @@
   .stat .num { font-size: 28px; font-weight: 800; margin-top: 6px; letter-spacing: -0.02em; line-height: 1.1; }
   .stat .sub { font-size: 12px; color: var(--text-mute); margin-top: 3px; line-height: 1.2; }
 
+  /* ============================================================
+     FILTERS — обновлённая раскладка
+     Desktop: 4 колонки ровные.
+     Mobile: поиск + приоритет на всю ширину (в столбик),
+     две даты — в одном ряду друг под другом по 2 колонки.
+     ============================================================ */
   .filters-bar {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -834,6 +859,7 @@
   .modal-body {
     padding: 22px 26px;
     overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -1362,13 +1388,13 @@
   .day-task-time { font-size: 11.5px; color: var(--text-mute); font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0; }
 
   /* ============================================================
-     SETTINGS PANEL — теперь на всю ширину сайдбара
+     SETTINGS
      ============================================================ */
   .settings-panel {
     position: fixed;
     top: calc(66px + var(--safe-top));
     left: calc(16px + var(--safe-left));
-    width: 280px;
+    width: calc(280px - 32px);
     max-width: calc(100vw - 32px);
     background: var(--modal-bg);
     border: 1px solid var(--border);
@@ -2140,7 +2166,7 @@
   @media (max-width: 1100px) {
     .sidebar { width: 240px; padding: 20px 12px; }
     .main { padding: 16px 16px 40px; }
-    .settings-panel { width: 240px; }
+    .settings-panel { width: calc(240px - 32px); }
   }
   @media (max-width: 900px) {
     .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
@@ -2294,9 +2320,30 @@
     }
     .mobile-tabbar button:active { transform: scale(0.96); }
 
-    #filters-bar { grid-template-columns: 1fr 1fr; }
-    #filters-bar #f-search { grid-column: 1 / -1; }
-    #filters-bar .filter-input { font-size: 15px; }
+    /* ============================================================
+       FILTERS mobile — новая раскладка
+       Поиск — 1 колонка (полная ширина)
+       Приоритет — 1 колонка (полная ширина)
+       Даты — 2 колонки рядом
+       ============================================================ */
+    #filters-bar {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    #filters-bar #f-search {
+      grid-column: 1 / -1;
+    }
+    #filters-bar #f-priority {
+      grid-column: 1 / -1;
+    }
+    #filters-bar #f-deadline-after,
+    #filters-bar #f-deadline-before {
+      grid-column: auto;
+    }
+    #filters-bar .filter-input {
+      font-size: 15px;
+      height: 44px;
+    }
 
     .kanban {
       display: flex;
@@ -2463,18 +2510,21 @@
       white-space: nowrap;
     }
     .modal-body {
-      padding: var(--modal-body-pad);
+      /* Жёстко фиксируем padding по горизонтали, чтобы заголовок и подзадачи не выходили за край */
+      padding: 18px var(--modal-body-pad);
+      padding-bottom: 20px;
       gap: 16px;
       min-width: 0;
       overflow-x: hidden;
       overflow-y: auto;
-      /* Важно: не даём нижнему краю «уезжать» под sticky-футер */
-      padding-bottom: 20px;
     }
     .field-title {
       font-size: clamp(16px, 5vw, 20px);
       padding: 6px 2px;
       line-height: 1.3;
+      /* Убираем визуальное «слипание» с левым краем */
+      margin-left: 0;
+      margin-right: 0;
     }
     .field-description {
       height: 100px;
@@ -2492,7 +2542,7 @@
     .repeat-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
     .repeat-btn { font-size: 10.5px; padding: 10px 4px; min-height: 44px; min-width: 0; }
 
-    /* Подзадачи: инпут и кнопка в один ряд, не column */
+    /* Подзадачи: инпут и кнопка в один ряд, но с гарантией от перекрытий */
     .subtasks-block { padding: 12px; }
     .subtasks-block .inline-add {
       flex-direction: row;
@@ -2513,7 +2563,7 @@
       font-size: 13px;
     }
 
-    /* Footer: сетка 2x2, кнопки одинаковой ширины, не выходят за экран */
+    /* Footer: сетка 2x2, «Дублировать» и «Отмена» — контурные */
     .modal-foot {
       padding: 10px 12px calc(10px + var(--safe-bottom));
       position: sticky;
@@ -2547,6 +2597,42 @@
     #modal-backdrop .modal-foot #m-cancel { order: 3; }
     #modal-backdrop .modal-foot #m-save { order: 4; }
 
+    /* Контур для «Дублировать» и «Отмена» на мобиле */
+    #modal-backdrop .modal-foot #m-duplicate,
+    #modal-backdrop .modal-foot #m-cancel {
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      box-shadow: none;
+    }
+    #modal-backdrop .modal-foot #m-duplicate:active,
+    #modal-backdrop .modal-foot #m-cancel:active {
+      background: var(--surface-hover);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    /* «Удалить» — danger с контуром */
+    #modal-backdrop .modal-foot #m-delete {
+      background: transparent;
+      border: 1px solid rgba(230, 83, 83, 0.45);
+      color: var(--danger);
+      box-shadow: none;
+    }
+    #modal-backdrop .modal-foot #m-delete:active {
+      background: rgba(230, 83, 83, 0.1);
+      border-color: var(--danger);
+    }
+    /* «Сохранить» — остаётся primary */
+
+    /* Контурные кнопки на мобиле для остальных модалок */
+    #tpl-editor-backdrop .modal-foot #tpl-cancel,
+    #board-create-backdrop .modal-foot #board-create-cancel,
+    #subtask-modal-backdrop .modal-foot #sm-cancel {
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+    }
+
     .day-popup-backdrop { padding: 0; align-items: flex-end; }
     .day-popup {
       max-width: 100%;
@@ -2560,7 +2646,6 @@
     .confirm-actions { flex-wrap: wrap; }
     .confirm-actions .btn { flex: 1 1 auto; min-width: 0; }
 
-    /* Settings panel на мобиле — на всю ширину, но над таб-баром */
     .settings-panel {
       top: auto;
       bottom: calc(var(--mobile-tabbar-h) + 8px + var(--safe-bottom));
@@ -2608,6 +2693,10 @@
     .an2-kpis { grid-template-columns: 1fr; }
     .stats { grid-template-columns: 1fr; }
     .repeat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #filters-bar #f-deadline-after,
+    #filters-bar #f-deadline-before {
+      grid-column: 1 / -1;
+    }
   }
 
   @media (min-width: 721px) and (max-width: 1024px) {
@@ -3241,7 +3330,6 @@ function applyAppearance() {
   const mixTarget = appearance.theme === "dark" ? { r: 255, g: 255, b: 255 } : { r: 0, g: 0, b: 0 };
   root.style.setProperty("--primary-2", mix(appearance.accent, mixTarget, appearance.theme === "dark" ? 0.3 : 0.15));
   root.style.setProperty("--primary-glow", `rgba(${rgb}, 0.25)`);
-  // Обновляем theme-color для PWA и системного статус-бара
   const metaTheme = document.querySelector('meta[name="theme-color"]');
   if (metaTheme) {
     if (appearance.theme === "dark") metaTheme.setAttribute("content", "#0a0c15");
