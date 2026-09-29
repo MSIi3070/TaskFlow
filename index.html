@@ -44,6 +44,10 @@
     --prio-high: #f5c518;
     --prio-urgent: #ef4444;
     --tpl-muted: #5a6275;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
   }
 
   [data-theme="dark"] {
@@ -99,6 +103,8 @@
   html {
     height: 100%;
     overscroll-behavior: none;
+    /* PWA: непрозрачный фон предотвращает «туман» под статус-баром */
+    background: var(--bg);
   }
   body {
     margin: 0;
@@ -111,9 +117,12 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     transition: background 0.3s ease, color 0.3s ease;
-    padding-top: env(safe-area-inset-top);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+    /* PWA safe-area. Не даёт контенту уезжать под «чёлку». */
+    padding-top: var(--safe-top);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+    background-color: var(--bg);
+    background-clip: padding-box;
   }
 
   ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -130,8 +139,10 @@
     display: flex;
     min-height: 100vh;
     min-height: 100dvh;
+    background: var(--bg);
   }
 
+  /* ==================== SIDEBAR (desktop) ==================== */
   .sidebar {
     width: 280px;
     background: var(--sidebar-bg);
@@ -828,6 +839,7 @@
     gap: 24px;
     flex: 1;
     min-width: 0;
+    overscroll-behavior: contain;
   }
   .modal-foot {
     padding: 16px 26px;
@@ -1350,18 +1362,19 @@
   .day-task-time { font-size: 11.5px; color: var(--text-mute); font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0; }
 
   /* ============================================================
-     SETTINGS
+     SETTINGS PANEL — теперь на всю ширину сайдбара
      ============================================================ */
   .settings-panel {
     position: fixed;
-    top: 66px;
-    left: 16px;
-    width: 213px;
+    top: calc(66px + var(--safe-top));
+    left: calc(16px + var(--safe-left));
+    width: 280px;
+    max-width: calc(100vw - 32px);
     background: var(--modal-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
-    padding: 14px;
+    padding: 16px;
     z-index: 200;
     opacity: 0;
     transform: translateY(-6px) scale(0.98);
@@ -1371,17 +1384,17 @@
     overflow-y: auto;
   }
   .settings-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-  .settings-section { margin-bottom: 12px; }
+  .settings-section { margin-bottom: 14px; }
   .settings-section:last-child { margin-bottom: 0; }
   .settings-section h4 {
-    margin: 0 0 6px;
+    margin: 0 0 8px;
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-mute);
   }
-  .palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .swatch {
     aspect-ratio: 1;
     border-radius: 50%;
@@ -1400,26 +1413,27 @@
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
-  .color-picker-row { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+  .color-picker-row { display: flex; gap: 10px; margin-top: 10px; align-items: center; }
   .color-picker-row input[type="color"] {
-    width: 32px;
-    height: 32px;
+    width: 38px;
+    height: 38px;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 9px;
     background: transparent;
     cursor: pointer;
     padding: 2px;
+    flex-shrink: 0;
   }
-  .color-picker-row label { font-size: 11.5px; color: var(--text-dim); }
+  .color-picker-row label { font-size: 12px; color: var(--text-dim); font-weight: 600; }
   .density-row {
     display: flex;
-    gap: 3px;
+    gap: 4px;
     background: var(--surface-2);
-    padding: 3px;
+    padding: 4px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
     min-width: 0;
@@ -1429,13 +1443,13 @@
     min-width: 0;
     background: transparent;
     border: none;
-    padding: 6px 2px;
+    padding: 8px 4px;
     border-radius: 6px;
     cursor: pointer;
     color: var(--text-dim);
-    font-size: 10px;
+    font-size: 11px;
     font-family: inherit;
-    font-weight: 600;
+    font-weight: 700;
     transition: all 0.15s;
     white-space: nowrap;
     overflow: hidden;
@@ -1446,32 +1460,32 @@
   .volume-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 5px 9px;
+    padding: 8px 12px;
   }
-  .volume-row .vol-icon { font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
+  .volume-row .vol-icon { font-size: 14px; color: var(--text-dim); flex-shrink: 0; }
   .volume-row .vol-value {
-    font-size: 10.5px;
+    font-size: 11.5px;
     font-weight: 700;
     color: var(--text-dim);
-    min-width: 30px;
+    min-width: 38px;
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
   .volume-row input[type="range"] { flex: 1; min-width: 0; accent-color: var(--primary); cursor: pointer; }
   .settings-reset {
     width: 100%;
-    margin-top: 6px;
-    padding: 7px;
+    margin-top: 8px;
+    padding: 10px;
     border-radius: var(--radius-sm);
     border: 1px dashed var(--border-strong);
     background: transparent;
     color: var(--text-dim);
     font-family: inherit;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -2126,6 +2140,7 @@
   @media (max-width: 1100px) {
     .sidebar { width: 240px; padding: 20px 12px; }
     .main { padding: 16px 16px 40px; }
+    .settings-panel { width: 240px; }
   }
   @media (max-width: 900px) {
     .stats { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
@@ -2136,8 +2151,6 @@
     :root {
       --mobile-header-h: 56px;
       --mobile-tabbar-h: 64px;
-      /* Адаптивные размеры для разных телефонов */
-      --cal-cell-min: clamp(46px, 12vw, 68px);
       --modal-body-pad: clamp(14px, 4vw, 20px);
     }
 
@@ -2228,7 +2241,7 @@
     .main {
       flex: 1;
       padding: 10px 12px;
-      padding-bottom: calc(var(--mobile-tabbar-h) + 16px + env(safe-area-inset-bottom));
+      padding-bottom: calc(var(--mobile-tabbar-h) + 16px + var(--safe-bottom));
       max-width: 100%;
       display: flex;
       flex-direction: column;
@@ -2250,7 +2263,7 @@
       align-items: stretch;
       justify-content: space-around;
       gap: 2px;
-      padding: 6px 6px env(safe-area-inset-bottom);
+      padding: 6px 6px var(--safe-bottom);
     }
     .mobile-tabbar button {
       flex: 1;
@@ -2298,7 +2311,7 @@
     .kanban-col {
       flex: 0 0 86vw;
       max-width: 400px;
-      min-height: calc(100dvh - var(--mobile-header-h) - var(--mobile-tabbar-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 40px);
+      min-height: calc(100dvh - var(--mobile-header-h) - var(--mobile-tabbar-h) - var(--safe-top) - var(--safe-bottom) - 40px);
       scroll-snap-align: start;
       padding: 14px 12px;
     }
@@ -2335,23 +2348,23 @@
     .stat .label { font-size: 10.5px; }
     .stat .sub { font-size: 10.5px; }
 
-    /* ====== CALENDAR mobile ====== */
+    /* Calendar mobile */
     #view-calendar {
       min-height: 0;
       height: calc(
         100dvh
         - var(--mobile-header-h)
         - var(--mobile-tabbar-h)
-        - env(safe-area-inset-top)
-        - env(safe-area-inset-bottom)
+        - var(--safe-top)
+        - var(--safe-bottom)
         - 20px
       );
       max-height: calc(
         100dvh
         - var(--mobile-header-h)
         - var(--mobile-tabbar-h)
-        - env(safe-area-inset-top)
-        - env(safe-area-inset-bottom)
+        - var(--safe-top)
+        - var(--safe-bottom)
         - 20px
       );
       overflow: hidden;
@@ -2419,7 +2432,7 @@
     .an2-week-bar { max-width: 100%; }
     .an2-week-labels span { font-size: 9px; }
 
-    /* ====== MODAL mobile ====== */
+    /* Modal mobile */
     .modal-backdrop { padding: 0; align-items: flex-end; }
     .modal {
       max-width: 100%;
@@ -2428,6 +2441,7 @@
       max-height: 92dvh;
       border-radius: 18px 18px 0 0;
       animation: sheetIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      padding-bottom: 0;
     }
     @keyframes sheetIn {
       from { transform: translateY(100%); }
@@ -2440,6 +2454,7 @@
       z-index: 3;
       border-radius: 18px 18px 0 0;
       gap: 8px;
+      background: var(--modal-bg);
     }
     .modal-head h2 { font-size: 11px; }
     .save-as-tpl-btn {
@@ -2452,6 +2467,9 @@
       gap: 16px;
       min-width: 0;
       overflow-x: hidden;
+      overflow-y: auto;
+      /* Важно: не даём нижнему краю «уезжать» под sticky-футер */
+      padding-bottom: 20px;
     }
     .field-title {
       font-size: clamp(16px, 5vw, 20px);
@@ -2474,25 +2492,30 @@
     .repeat-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
     .repeat-btn { font-size: 10.5px; padding: 10px 4px; min-height: 44px; min-width: 0; }
 
-    .subtasks-block { padding: 12px 12px; }
+    /* Подзадачи: инпут и кнопка в один ряд, не column */
+    .subtasks-block { padding: 12px; }
     .subtasks-block .inline-add {
-      flex-direction: column;
+      flex-direction: row;
       gap: 8px;
+      align-items: stretch;
     }
     .subtasks-block .inline-add input {
-      width: 100%;
+      flex: 1 1 auto;
+      min-width: 0;
       font-size: 15px;
     }
     .subtasks-block .inline-add .btn {
-      width: 100%;
-      height: 40px;
+      flex: 0 0 auto;
+      height: auto;
+      min-height: 44px;
+      padding: 0 14px;
       justify-content: center;
       font-size: 13px;
     }
 
-    /* ====== MODAL FOOT mobile — кнопки в сетке 2x2 ====== */
+    /* Footer: сетка 2x2, кнопки одинаковой ширины, не выходят за экран */
     .modal-foot {
-      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      padding: 10px 12px calc(10px + var(--safe-bottom));
       position: sticky;
       bottom: 0;
       z-index: 3;
@@ -2501,6 +2524,7 @@
       gap: 8px;
       align-items: stretch;
       flex-wrap: initial;
+      background: var(--surface-2);
     }
     .modal-foot .spacer { display: none; }
     .modal-foot .btn {
@@ -2514,16 +2538,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    /* Кнопки, скрытые через inline style, не занимают ячейку */
     .modal-foot .btn[style*="display: none"],
     .modal-foot .btn[style*="display:none"] { display: none !important; }
 
-    /* Если кнопка одна (например, только «Сохранить») — растягиваем на 2 колонки */
-    .modal-foot:has(> .btn:not([style*="display: none"]):not([style*="display:none"]):only-of-type) > .btn {
-      grid-column: 1 / -1;
-    }
-
-    /* Специальная раскладка для модалки задачи */
+    /* Спец-раскладка для модалки задачи */
     #modal-backdrop .modal-foot #m-delete { order: 1; }
     #modal-backdrop .modal-foot #m-duplicate { order: 2; }
     #modal-backdrop .modal-foot #m-cancel { order: 3; }
@@ -2542,20 +2560,22 @@
     .confirm-actions { flex-wrap: wrap; }
     .confirm-actions .btn { flex: 1 1 auto; min-width: 0; }
 
+    /* Settings panel на мобиле — на всю ширину, но над таб-баром */
     .settings-panel {
       top: auto;
-      bottom: calc(var(--mobile-tabbar-h) + 8px + env(safe-area-inset-bottom));
-      left: 8px;
-      right: 8px;
+      bottom: calc(var(--mobile-tabbar-h) + 8px + var(--safe-bottom));
+      left: calc(8px + var(--safe-left));
+      right: calc(8px + var(--safe-right));
       width: auto;
+      max-width: none;
       max-height: 62dvh;
     }
 
     .date-popover {
       position: fixed;
-      left: 8px;
-      right: 8px;
-      bottom: calc(8px + env(safe-area-inset-bottom));
+      left: calc(8px + var(--safe-left));
+      right: calc(8px + var(--safe-right));
+      bottom: calc(8px + var(--safe-bottom));
       top: auto;
       width: auto;
       max-width: none;
@@ -2590,7 +2610,6 @@
     .repeat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
-  /* Очень широкие экраны (планшеты в портрете и т.п.) */
   @media (min-width: 721px) and (max-width: 1024px) {
     #view-calendar {
       min-height: calc(100vh - 180px);
@@ -3222,6 +3241,12 @@ function applyAppearance() {
   const mixTarget = appearance.theme === "dark" ? { r: 255, g: 255, b: 255 } : { r: 0, g: 0, b: 0 };
   root.style.setProperty("--primary-2", mix(appearance.accent, mixTarget, appearance.theme === "dark" ? 0.3 : 0.15));
   root.style.setProperty("--primary-glow", `rgba(${rgb}, 0.25)`);
+  // Обновляем theme-color для PWA и системного статус-бара
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) {
+    if (appearance.theme === "dark") metaTheme.setAttribute("content", "#0a0c15");
+    else metaTheme.setAttribute("content", "#f6f7fb");
+  }
   syncSettingsUI();
   try { localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearance)); } catch (e) {}
 }
