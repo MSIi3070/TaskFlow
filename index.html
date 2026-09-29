@@ -140,7 +140,6 @@
     background: var(--bg);
   }
 
-  /* ==================== SIDEBAR (desktop) ==================== */
   .sidebar {
     width: 280px;
     background: var(--sidebar-bg);
@@ -398,27 +397,6 @@
   .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
   .btn.small { height: 34px; padding: 0 12px; font-size: 12px; }
 
-  /* Кнопки с контуром — для «Дублировать» и «Отмена» на мобиле */
-  .btn.outline {
-    background: transparent;
-    border: 1px solid var(--border-strong);
-    color: var(--text);
-  }
-  .btn.outline:hover {
-    background: var(--surface-hover);
-    border-color: var(--primary);
-    color: var(--primary);
-  }
-  .btn.outline.danger-outline {
-    background: transparent;
-    border: 1px solid rgba(230, 83, 83, 0.45);
-    color: var(--danger);
-  }
-  .btn.outline.danger-outline:hover {
-    background: rgba(230, 83, 83, 0.1);
-    border-color: var(--danger);
-  }
-
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -460,12 +438,6 @@
   .stat .num { font-size: 28px; font-weight: 800; margin-top: 6px; letter-spacing: -0.02em; line-height: 1.1; }
   .stat .sub { font-size: 12px; color: var(--text-mute); margin-top: 3px; line-height: 1.2; }
 
-  /* ============================================================
-     FILTERS — обновлённая раскладка
-     Desktop: 4 колонки ровные.
-     Mobile: поиск + приоритет на всю ширину (в столбик),
-     две даты — в одном ряду друг под другом по 2 колонки.
-     ============================================================ */
   .filters-bar {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -810,13 +782,15 @@
   .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(12, 18, 32, 0.45);
+    background: rgba(12, 18, 32, 0.55);
     display: none;
     align-items: center;
     justify-content: center;
     padding: 24px 16px;
     z-index: 100;
     overflow-y: auto;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
   .modal-backdrop.open { display: flex; }
   .modal {
@@ -974,15 +948,22 @@
   .subtasks-block {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 14px 16px;
+    padding: 12px 14px;
     background: var(--surface-2);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     min-height: 80px;
     min-width: 0;
   }
-  .section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    line-height: 1;
+    min-height: 20px;
+  }
   .section-head h3 {
     margin: 0;
     font-size: 11px;
@@ -990,6 +971,7 @@
     color: var(--text-mute);
     text-transform: uppercase;
     letter-spacing: 0.08em;
+    line-height: 1;
   }
   .checklist-progress {
     font-size: 10.5px;
@@ -999,6 +981,7 @@
     border-radius: 20px;
     border: 1px solid var(--border);
     font-weight: 700;
+    line-height: 1;
   }
   .checklist-progress.all-done {
     color: var(--success);
@@ -1272,9 +1255,6 @@
   .dp-actions { display: flex; gap: 6px; }
   .dp-actions .btn { flex: 1; justify-content: center; height: 36px; font-size: 12px; }
 
-  /* ============================================================
-     PRIORITY SEG
-     ============================================================ */
   .priority-seg {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1320,13 +1300,10 @@
   .prio-seg-btn.active .prio-label { opacity: 1; }
   .prio-seg-btn[data-prio="high"].active { color: #1a1a1a; }
 
-  /* ============================================================
-     DAY POPUP
-     ============================================================ */
   .day-popup-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(12, 18, 32, 0.5);
+    background: rgba(12, 18, 32, 0.55);
     display: none;
     align-items: center;
     justify-content: center;
@@ -1387,9 +1364,6 @@
   .day-task.done .day-task-title { text-decoration: line-through; color: var(--text-mute); }
   .day-task-time { font-size: 11.5px; color: var(--text-mute); font-weight: 700; font-variant-numeric: tabular-nums; flex-shrink: 0; }
 
-  /* ============================================================
-     SETTINGS
-     ============================================================ */
   .settings-panel {
     position: fixed;
     top: calc(66px + var(--safe-top));
@@ -1517,13 +1491,10 @@
   }
   .settings-reset:hover { color: var(--danger); border-color: var(--danger); }
 
-  /* ============================================================
-     CONFIRM
-     ============================================================ */
   .confirm-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(12, 18, 32, 0.5);
+    background: rgba(12, 18, 32, 0.55);
     display: none;
     align-items: center;
     justify-content: center;
@@ -1602,9 +1573,6 @@
   .field-datetime:hover { border-color: var(--border-strong); }
   .field-datetime:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
 
-  /* ============================================================
-     VIEWS
-     ============================================================ */
   .view { width: 100%; min-width: 0; overflow: visible; }
   #view-analytics, #view-kanban, #view-list {
     overflow: visible;
@@ -2187,6 +2155,7 @@
       flex-direction: column;
       min-height: 100vh;
       min-height: 100dvh;
+      background: var(--bg);
     }
 
     .sidebar { display: none; }
@@ -2196,11 +2165,14 @@
       align-items: center;
       gap: 8px;
       padding: 8px 12px;
+      /* Фон непрозрачный — иначе в PWA сверху просвечивает системный слой */
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
       position: relative;
       z-index: 5;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
     }
     .mobile-header .logo-sm {
       font-size: 15px;
@@ -2320,12 +2292,6 @@
     }
     .mobile-tabbar button:active { transform: scale(0.96); }
 
-    /* ============================================================
-       FILTERS mobile — новая раскладка
-       Поиск — 1 колонка (полная ширина)
-       Приоритет — 1 колонка (полная ширина)
-       Даты — 2 колонки рядом
-       ============================================================ */
     #filters-bar {
       grid-template-columns: 1fr 1fr;
       gap: 8px;
@@ -2395,7 +2361,6 @@
     .stat .label { font-size: 10.5px; }
     .stat .sub { font-size: 10.5px; }
 
-    /* Calendar mobile */
     #view-calendar {
       min-height: 0;
       height: calc(
@@ -2479,7 +2444,7 @@
     .an2-week-bar { max-width: 100%; }
     .an2-week-labels span { font-size: 9px; }
 
-    /* Modal mobile */
+    /* Модалки-шторки */
     .modal-backdrop { padding: 0; align-items: flex-end; }
     .modal {
       max-width: 100%;
@@ -2510,7 +2475,6 @@
       white-space: nowrap;
     }
     .modal-body {
-      /* Жёстко фиксируем padding по горизонтали, чтобы заголовок и подзадачи не выходили за край */
       padding: 18px var(--modal-body-pad);
       padding-bottom: 20px;
       gap: 16px;
@@ -2522,7 +2486,6 @@
       font-size: clamp(16px, 5vw, 20px);
       padding: 6px 2px;
       line-height: 1.3;
-      /* Убираем визуальное «слипание» с левым краем */
       margin-left: 0;
       margin-right: 0;
     }
@@ -2542,12 +2505,24 @@
     .repeat-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
     .repeat-btn { font-size: 10.5px; padding: 10px 4px; min-height: 44px; min-width: 0; }
 
-    /* Подзадачи: инпут и кнопка в один ряд, но с гарантией от перекрытий */
-    .subtasks-block { padding: 12px; }
+    /* Блок подзадач — уменьшаем отступ сверху и убираем наползание */
+    .subtasks-block {
+      padding: 10px 12px 12px;
+      gap: 6px;
+    }
+    .subtasks-block .section-head {
+      min-height: 18px;
+      margin-bottom: 2px;
+    }
+    .subtasks-block .section-head h3 {
+      font-size: 10.5px;
+      line-height: 1;
+    }
     .subtasks-block .inline-add {
       flex-direction: row;
       gap: 8px;
       align-items: stretch;
+      margin-top: 0;
     }
     .subtasks-block .inline-add input {
       flex: 1 1 auto;
@@ -2563,7 +2538,11 @@
       font-size: 13px;
     }
 
-    /* Footer: сетка 2x2, «Дублировать» и «Отмена» — контурные */
+    /* Шаблон — шапка-редактор */
+    .tpl-editor-row { gap: 10px; }
+    .tpl-icon-input { width: 44px; height: 44px; font-size: 20px; }
+
+    /* Footer модалки — 2x2 с контурными «Дублировать», «Отмена» */
     .modal-foot {
       padding: 10px 12px calc(10px + var(--safe-bottom));
       position: sticky;
@@ -2591,13 +2570,11 @@
     .modal-foot .btn[style*="display: none"],
     .modal-foot .btn[style*="display:none"] { display: none !important; }
 
-    /* Спец-раскладка для модалки задачи */
     #modal-backdrop .modal-foot #m-delete { order: 1; }
     #modal-backdrop .modal-foot #m-duplicate { order: 2; }
     #modal-backdrop .modal-foot #m-cancel { order: 3; }
     #modal-backdrop .modal-foot #m-save { order: 4; }
 
-    /* Контур для «Дублировать» и «Отмена» на мобиле */
     #modal-backdrop .modal-foot #m-duplicate,
     #modal-backdrop .modal-foot #m-cancel {
       background: transparent;
@@ -2611,7 +2588,6 @@
       border-color: var(--primary);
       color: var(--primary);
     }
-    /* «Удалить» — danger с контуром */
     #modal-backdrop .modal-foot #m-delete {
       background: transparent;
       border: 1px solid rgba(230, 83, 83, 0.45);
@@ -2622,9 +2598,7 @@
       background: rgba(230, 83, 83, 0.1);
       border-color: var(--danger);
     }
-    /* «Сохранить» — остаётся primary */
 
-    /* Контурные кнопки на мобиле для остальных модалок */
     #tpl-editor-backdrop .modal-foot #tpl-cancel,
     #board-create-backdrop .modal-foot #board-create-cancel,
     #subtask-modal-backdrop .modal-foot #sm-cancel {
@@ -2942,6 +2916,7 @@
   </div>
 </div>
 
+<!-- Редактор шаблона — новая структура -->
 <div class="modal-backdrop" id="tpl-editor-backdrop" role="dialog" aria-modal="true">
   <div class="modal" style="max-width:600px;min-height:auto">
     <div class="modal-head">
@@ -2949,25 +2924,62 @@
       <button class="btn ghost" id="tpl-editor-close" aria-label="Закрыть">✕</button>
     </div>
     <div class="modal-body" style="gap:18px">
+      <!-- 1. Иконка + заголовок задачи (объединено с названием шаблона) -->
       <div class="tpl-editor-row">
         <input id="tpl-icon" class="tpl-icon-input" type="text" maxlength="2" placeholder="📝" aria-label="Иконка" />
-        <input id="tpl-name" class="field-title" type="text" placeholder="Название шаблона" />
+        <input id="tpl-title" class="field-title" type="text" placeholder="Заголовок задачи" />
       </div>
 
-      <div class="description-block">
-        <div class="description-label">Заголовок задачи</div>
-        <input id="tpl-task-title" class="tpl-text-input" type="text" placeholder="Что нужно сделать?" />
+      <!-- 2. Подзадачи — сразу после заголовка -->
+      <div class="subtasks-block">
+        <div class="section-head">
+          <h3>☑ Подзадачи</h3>
+          <span class="checklist-progress" id="tpl-subtask-progress">0</span>
+        </div>
+        <ul id="tpl-subtasks" class="subtasks"></ul>
+        <div class="inline-add">
+          <input id="tpl-subtask-input" type="text" placeholder="Новая подзадача..." />
+          <button id="tpl-subtask-add" class="btn">Добавить</button>
+        </div>
       </div>
 
+      <!-- 3. Описание -->
       <div class="description-block">
         <div class="description-label">Описание</div>
         <textarea id="tpl-description" class="field-description" style="height:100px;min-height:100px;max-height:100px" placeholder="Детали, заметки..."></textarea>
       </div>
 
+      <!-- 4. Дедлайн (полный date-picker как в задаче) + приоритет -->
       <div class="meta-row" style="padding-top:16px">
         <div class="meta-field">
-          <div class="meta-label">📅 Дедлайн через</div>
-          <input id="tpl-offset" class="tpl-text-input" type="number" min="0" max="365" placeholder="дней" />
+          <div class="meta-label">📅 Дедлайн</div>
+          <div class="date-picker">
+            <button type="button" class="date-picker-trigger" id="tpl-dp-trigger">
+              <span class="icon">📅</span>
+              <span class="value placeholder" id="tpl-dp-value">Не задан</span>
+            </button>
+            <div class="date-popover" id="tpl-dp-popover">
+              <div class="dp-header">
+                <button type="button" class="dp-nav" id="tpl-dp-prev" aria-label="Предыдущий месяц">‹</button>
+                <div class="dp-month" id="tpl-dp-month"></div>
+                <button type="button" class="dp-nav" id="tpl-dp-next" aria-label="Следующий месяц">›</button>
+              </div>
+              <div class="dp-weekdays">
+                <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+              </div>
+              <div class="dp-days" id="tpl-dp-days"></div>
+              <div class="dp-time">
+                <div class="dp-time-label">Время</div>
+                <input type="text" class="dp-time-input" id="tpl-dp-hour" maxlength="2" inputmode="numeric" placeholder="00" />
+                <div class="dp-time-sep">:</div>
+                <input type="text" class="dp-time-input" id="tpl-dp-minute" maxlength="2" inputmode="numeric" placeholder="00" />
+              </div>
+              <div class="dp-actions">
+                <button type="button" class="btn ghost" id="tpl-dp-clear">Очистить</button>
+                <button type="button" class="btn primary" id="tpl-dp-apply">Применить</button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="meta-field">
           <div class="meta-label">🏷 Приоритет</div>
@@ -2988,6 +3000,7 @@
         </div>
       </div>
 
+      <!-- 5. Повтор -->
       <div class="repeat-block">
         <div class="section-head"><h3>🔁 Повтор</h3></div>
         <div class="repeat-row" id="tpl-repeat-row">
@@ -2996,18 +3009,6 @@
           <button type="button" class="repeat-btn" data-repeat="weekdays">По будням</button>
           <button type="button" class="repeat-btn" data-repeat="weekly">Еженедельно</button>
           <button type="button" class="repeat-btn" data-repeat="monthly">Ежемесячно</button>
-        </div>
-      </div>
-
-      <div class="subtasks-block">
-        <div class="section-head">
-          <h3>☑ Подзадачи</h3>
-          <span class="checklist-progress" id="tpl-subtask-progress">0</span>
-        </div>
-        <ul id="tpl-subtasks" class="subtasks"></ul>
-        <div class="inline-add">
-          <input id="tpl-subtask-input" type="text" placeholder="Новая подзадача..." />
-          <button id="tpl-subtask-add" class="btn">Добавить</button>
         </div>
       </div>
     </div>
@@ -3661,15 +3662,36 @@ const Store = {
       const maxId = this.data.templates.reduce((m, t) => Math.max(m, Number(t.id) || 0), 0);
       this.data.nextTemplateId = maxId + 1;
     }
+    // Миграция шаблонов: если раньше хранилось поле deadlineOffsetDays,
+    // конвертируем его в deadline (ISO) относительно сегодня в 18:00.
+    this.data.templates.forEach((tpl) => {
+      if (!("deadline" in tpl)) {
+        if (typeof tpl.deadlineOffsetDays === "number") {
+          const d = new Date();
+          d.setDate(d.getDate() + tpl.deadlineOffsetDays);
+          d.setHours(18, 0, 0, 0);
+          tpl.deadline = d.toISOString();
+        } else {
+          tpl.deadline = null;
+        }
+      }
+      if (!("name" in tpl) || !tpl.name) tpl.name = tpl.title || "Шаблон";
+    });
     if (this.data.templates.length === 0) this._seedTemplates();
   },
 
   _seedTemplates() {
+    const mkDeadline = (offsetDays) => {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      d.setHours(18, 0, 0, 0);
+      return d.toISOString();
+    };
     this.data.templates = [
-      { id: this.data.nextTemplateId++, icon: "📞", name: "Звонок клиенту", title: "Позвонить клиенту", description: "Уточнить текущие потребности и договориться о следующем шаге.", priority: "medium", repeat: "", deadlineOffsetDays: 1, subtasks: ["Подготовить список вопросов", "Уточнить дату следующего контакта", "Записать итоги в CRM"] },
-      { id: this.data.nextTemplateId++, icon: "📧", name: "Письмо с КП", title: "Отправить коммерческое предложение", description: "Собрать условия, приложить прайс и отправить клиенту.", priority: "high", repeat: "", deadlineOffsetDays: 3, subtasks: ["Сформировать КП", "Проверить цены и скидки", "Отправить на согласование", "Отправить клиенту"] },
-      { id: this.data.nextTemplateId++, icon: "🎯", name: "Еженедельный отчёт", title: "Подготовить еженедельный отчёт", description: "Собрать метрики за неделю и отправить руководителю.", priority: "medium", repeat: "weekly", deadlineOffsetDays: 7, subtasks: ["Собрать данные по продажам", "Собрать данные по звонкам", "Оформить презентацию", "Отправить руководителю"] },
-      { id: this.data.nextTemplateId++, icon: "🧹", name: "Ревью задач", title: "Разобрать входящие задачи", description: "Пройтись по списку, уточнить приоритеты и дедлайны.", priority: "low", repeat: "weekdays", deadlineOffsetDays: 0, subtasks: ["Просмотреть новые задачи", "Расставить приоритеты", "Обновить дедлайны"] },
+      { id: this.data.nextTemplateId++, icon: "📞", name: "Позвонить клиенту", title: "Позвонить клиенту", description: "Уточнить текущие потребности и договориться о следующем шаге.", priority: "medium", repeat: "", deadline: mkDeadline(1), subtasks: ["Подготовить список вопросов", "Уточнить дату следующего контакта", "Записать итоги в CRM"] },
+      { id: this.data.nextTemplateId++, icon: "📧", name: "Отправить коммерческое предложение", title: "Отправить коммерческое предложение", description: "Собрать условия, приложить прайс и отправить клиенту.", priority: "high", repeat: "", deadline: mkDeadline(3), subtasks: ["Сформировать КП", "Проверить цены и скидки", "Отправить на согласование", "Отправить клиенту"] },
+      { id: this.data.nextTemplateId++, icon: "🎯", name: "Подготовить еженедельный отчёт", title: "Подготовить еженедельный отчёт", description: "Собрать метрики за неделю и отправить руководителю.", priority: "medium", repeat: "weekly", deadline: mkDeadline(7), subtasks: ["Собрать данные по продажам", "Собрать данные по звонкам", "Оформить презентацию", "Отправить руководителю"] },
+      { id: this.data.nextTemplateId++, icon: "🧹", name: "Разобрать входящие задачи", title: "Разобрать входящие задачи", description: "Пройтись по списку, уточнить приоритеты и дедлайны.", priority: "low", repeat: "weekdays", deadline: mkDeadline(0), subtasks: ["Просмотреть новые задачи", "Расставить приоритеты", "Обновить дедлайны"] },
     ];
   },
 
@@ -3819,12 +3841,12 @@ const Store = {
     const tpl = {
       id: this.data.nextTemplateId++,
       icon: payload.icon || "📝",
-      name: payload.name || "Новый шаблон",
-      title: payload.title || "",
+      name: payload.name || payload.title || "Новый шаблон",
+      title: payload.title || payload.name || "",
       description: payload.description || "",
       priority: payload.priority || "medium",
       repeat: payload.repeat || "",
-      deadlineOffsetDays: (typeof payload.deadlineOffsetDays === "number") ? payload.deadlineOffsetDays : null,
+      deadline: payload.deadline || null,
       subtasks: Array.isArray(payload.subtasks) ? payload.subtasks.slice() : [],
     };
     this.data.templates.push(tpl);
@@ -4600,16 +4622,26 @@ function openDayPopup(day, tasks) {
 }
 
 /* ============================================================
-   13. DATE PICKER
+   13. DATE PICKER (универсальный, работает для нескольких триггеров)
    ============================================================ */
 const MONTHS_RU = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
 const WEEKDAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
-let currentDeadline = null;
-let dpViewDate = new Date();
-let dpSelectedDate = null;
-let dpSelectedHour = 18;
-let dpSelectedMinute = 0;
+// Каждый picker регистрируется здесь с префиксом (dp для задачи, tpl-dp для шаблона).
+// Состояние хранится отдельно для каждого.
+const datePickers = {};
+
+function registerDatePicker(prefix, getValue, setValue) {
+  datePickers[prefix] = {
+    prefix,
+    getValue,
+    setValue,
+    viewDate: new Date(),
+    selectedDate: null,
+    selectedHour: 18,
+    selectedMinute: 0,
+  };
+}
 
 function formatDeadlineDisplay(date) {
   if (!date) return null;
@@ -4626,16 +4658,20 @@ function formatDeadlineDisplay(date) {
   return `${weekday}, ${date.getDate()} ${month}${yearPart} · ${time}`;
 }
 
-function renderDateTrigger() {
-  const valEl = $("#dp-value");
-  const trigger = $("#dp-trigger");
-  if (!currentDeadline) {
+function renderDateTrigger(prefix) {
+  const p = datePickers[prefix];
+  if (!p) return;
+  const trigger = document.getElementById(`${prefix}-trigger`);
+  const valEl = document.getElementById(`${prefix}-value`);
+  if (!trigger || !valEl) return;
+  const current = p.getValue();
+  if (!current) {
     valEl.textContent = "Не задан";
     valEl.className = "value placeholder";
     trigger.querySelector(".clear-inline")?.remove();
     return;
   }
-  const d = new Date(currentDeadline);
+  const d = new Date(current);
   valEl.textContent = formatDeadlineDisplay(d);
   const overdue = d < new Date();
   valEl.className = "value" + (overdue ? " overdue" : "");
@@ -4647,21 +4683,26 @@ function renderDateTrigger() {
     clearBtn.textContent = "✕";
     clearBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      currentDeadline = null;
-      renderDateTrigger();
+      p.setValue(null);
+      renderDateTrigger(prefix);
     });
     trigger.appendChild(clearBtn);
   }
 }
 
-function renderDatePopover() {
-  $("#dp-month").textContent = `${MONTHS_RU[dpViewDate.getMonth()]} ${dpViewDate.getFullYear()}`;
-  const year = dpViewDate.getFullYear();
-  const month = dpViewDate.getMonth();
+function renderDatePopover(prefix) {
+  const p = datePickers[prefix];
+  if (!p) return;
+  const monthEl = document.getElementById(`${prefix}-month`);
+  const daysEl = document.getElementById(`${prefix}-days`);
+  if (!monthEl || !daysEl) return;
+
+  monthEl.textContent = `${MONTHS_RU[p.viewDate.getMonth()]} ${p.viewDate.getFullYear()}`;
+  const year = p.viewDate.getFullYear();
+  const month = p.viewDate.getMonth();
   const first = new Date(year, month, 1);
   const startOffset = (first.getDay() + 6) % 7;
   const start = new Date(year, month, 1 - startOffset);
-  const daysEl = $("#dp-days");
   daysEl.innerHTML = "";
   const today = new Date();
 
@@ -4674,162 +4715,196 @@ function renderDatePopover() {
     btn.textContent = day.getDate();
     if (day.getMonth() !== month) btn.classList.add("other-month");
     if (isSameDay(day, today)) btn.classList.add("today");
-    if (dpSelectedDate && isSameDay(day, dpSelectedDate)) btn.classList.add("selected");
+    if (p.selectedDate && isSameDay(day, p.selectedDate)) btn.classList.add("selected");
     btn.addEventListener("click", () => {
-      dpSelectedDate = new Date(day);
-      renderDatePopover();
+      p.selectedDate = new Date(day);
+      renderDatePopover(prefix);
     });
     daysEl.appendChild(btn);
   }
 
-  const hourInput = $("#dp-hour");
-  const minInput = $("#dp-minute");
-  if (document.activeElement !== hourInput) hourInput.value = pad2(dpSelectedHour);
-  if (document.activeElement !== minInput) minInput.value = pad2(dpSelectedMinute);
+  const hourInput = document.getElementById(`${prefix}-hour`);
+  const minInput = document.getElementById(`${prefix}-minute`);
+  if (hourInput && document.activeElement !== hourInput) hourInput.value = pad2(p.selectedHour);
+  if (minInput && document.activeElement !== minInput) minInput.value = pad2(p.selectedMinute);
 }
 
-function openDatePopover() {
-  if (currentDeadline) {
-    const d = new Date(currentDeadline);
-    dpSelectedDate = new Date(d);
-    dpViewDate = new Date(d);
-    dpSelectedHour = d.getHours();
-    dpSelectedMinute = d.getMinutes();
+function openDatePopover(prefix) {
+  const p = datePickers[prefix];
+  if (!p) return;
+  const current = p.getValue();
+  if (current) {
+    const d = new Date(current);
+    p.selectedDate = new Date(d);
+    p.viewDate = new Date(d);
+    p.selectedHour = d.getHours();
+    p.selectedMinute = d.getMinutes();
   } else {
     const now = new Date();
-    dpSelectedDate = null;
-    dpViewDate = new Date(now);
-    dpSelectedHour = 18;
-    dpSelectedMinute = 0;
+    p.selectedDate = null;
+    p.viewDate = new Date(now);
+    p.selectedHour = 18;
+    p.selectedMinute = 0;
   }
-  renderDatePopover();
-  $("#dp-popover").classList.add("open");
-  $("#dp-trigger").classList.add("open");
+  renderDatePopover(prefix);
+  const pop = document.getElementById(`${prefix}-popover`);
+  const trigger = document.getElementById(`${prefix}-trigger`);
+  if (pop) pop.classList.add("open");
+  if (trigger) trigger.classList.add("open");
 }
-function closeDatePopover() {
-  $("#dp-popover").classList.remove("open");
-  $("#dp-trigger").classList.remove("open");
+function closeDatePopover(prefix) {
+  const p = datePickers[prefix];
+  if (!p) return;
+  const pop = document.getElementById(`${prefix}-popover`);
+  const trigger = document.getElementById(`${prefix}-trigger`);
+  if (pop) pop.classList.remove("open");
+  if (trigger) trigger.classList.remove("open");
 }
 
-function readTimeFromInputs() {
-  const hourInput = $("#dp-hour");
-  const minInput = $("#dp-minute");
-  let h = parseInt((hourInput.value || "").replace(/\D/g, ""), 10);
-  let m = parseInt((minInput.value || "").replace(/\D/g, ""), 10);
+function readTimeFromInputs(prefix) {
+  const p = datePickers[prefix];
+  if (!p) return;
+  const hourInput = document.getElementById(`${prefix}-hour`);
+  const minInput = document.getElementById(`${prefix}-minute`);
+  let h = parseInt((hourInput?.value || "").replace(/\D/g, ""), 10);
+  let m = parseInt((minInput?.value || "").replace(/\D/g, ""), 10);
   if (isNaN(h)) h = 0;
   if (isNaN(m)) m = 0;
   if (h < 0) h = 0; if (h > 23) h = 23;
   if (m < 0) m = 0; if (m > 59) m = 59;
-  dpSelectedHour = h;
-  dpSelectedMinute = m;
-  hourInput.value = pad2(h);
-  minInput.value = pad2(m);
+  p.selectedHour = h;
+  p.selectedMinute = m;
+  if (hourInput) hourInput.value = pad2(h);
+  if (minInput) minInput.value = pad2(m);
 }
 
-function applyDatePopover() {
-  readTimeFromInputs();
-  if (!dpSelectedDate) {
+function applyDatePopover(prefix) {
+  const p = datePickers[prefix];
+  if (!p) return;
+  readTimeFromInputs(prefix);
+  if (!p.selectedDate) {
     const today = new Date();
-    today.setHours(dpSelectedHour, dpSelectedMinute, 0, 0);
-    currentDeadline = today.toISOString();
+    today.setHours(p.selectedHour, p.selectedMinute, 0, 0);
+    p.setValue(today.toISOString());
   } else {
-    const d = new Date(dpSelectedDate);
-    d.setHours(dpSelectedHour, dpSelectedMinute, 0, 0);
-    currentDeadline = d.toISOString();
+    const d = new Date(p.selectedDate);
+    d.setHours(p.selectedHour, p.selectedMinute, 0, 0);
+    p.setValue(d.toISOString());
   }
-  renderDateTrigger();
-  closeDatePopover();
+  renderDateTrigger(prefix);
+  closeDatePopover(prefix);
 }
 
-function bindDatePicker() {
-  const trigger = $("#dp-trigger");
-  const pop = $("#dp-popover");
+function bindDatePicker(prefix) {
+  const trigger = document.getElementById(`${prefix}-trigger`);
+  const pop = document.getElementById(`${prefix}-popover`);
+  if (!trigger || !pop) return;
 
   trigger.addEventListener("click", (e) => {
     if (e.target.closest(".clear-inline")) return;
-    if (pop.classList.contains("open")) closeDatePopover();
-    else openDatePopover();
+    if (pop.classList.contains("open")) closeDatePopover(prefix);
+    else openDatePopover(prefix);
   });
-  $("#dp-prev").addEventListener("click", () => { dpViewDate.setMonth(dpViewDate.getMonth() - 1); renderDatePopover(); });
-  $("#dp-next").addEventListener("click", () => { dpViewDate.setMonth(dpViewDate.getMonth() + 1); renderDatePopover(); });
 
-  const hourInput = $("#dp-hour");
-  const minInput = $("#dp-minute");
+  const prevBtn = document.getElementById(`${prefix}-prev`);
+  const nextBtn = document.getElementById(`${prefix}-next`);
+  if (prevBtn) prevBtn.addEventListener("click", () => {
+    const p = datePickers[prefix];
+    p.viewDate.setMonth(p.viewDate.getMonth() - 1);
+    renderDatePopover(prefix);
+  });
+  if (nextBtn) nextBtn.addEventListener("click", () => {
+    const p = datePickers[prefix];
+    p.viewDate.setMonth(p.viewDate.getMonth() + 1);
+    renderDatePopover(prefix);
+  });
 
-  hourInput.addEventListener("input", () => {
-    let v = hourInput.value.replace(/\D/g, "").slice(0, 2);
-    hourInput.value = v;
-    if (v.length === 2) {
-      let n = parseInt(v, 10);
+  const hourInput = document.getElementById(`${prefix}-hour`);
+  const minInput = document.getElementById(`${prefix}-minute`);
+  const p = datePickers[prefix];
+
+  if (hourInput) {
+    hourInput.addEventListener("input", () => {
+      let v = hourInput.value.replace(/\D/g, "").slice(0, 2);
+      hourInput.value = v;
+      if (v.length === 2) {
+        let n = parseInt(v, 10);
+        if (isNaN(n)) n = 0;
+        if (n > 23) { n = 23; hourInput.value = pad2(n); }
+        p.selectedHour = n;
+        minInput.focus();
+        minInput.select();
+      }
+    });
+    hourInput.addEventListener("blur", () => {
+      let v = hourInput.value.replace(/\D/g, "");
+      let n = v === "" ? 0 : parseInt(v, 10);
       if (isNaN(n)) n = 0;
-      if (n > 23) { n = 23; hourInput.value = pad2(n); }
-      dpSelectedHour = n;
-      minInput.focus();
-      minInput.select();
-    }
-  });
-  hourInput.addEventListener("blur", () => {
-    let v = hourInput.value.replace(/\D/g, "");
-    let n = v === "" ? 0 : parseInt(v, 10);
-    if (isNaN(n)) n = 0;
-    if (n > 23) n = 23;
-    hourInput.value = pad2(n);
-    dpSelectedHour = n;
-  });
-  hourInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); hourInput.blur(); }
+      if (n > 23) n = 23;
+      hourInput.value = pad2(n);
+      p.selectedHour = n;
+    });
+    hourInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); hourInput.blur(); }
+    });
+  }
+
+  if (minInput) {
+    minInput.addEventListener("input", () => {
+      let v = minInput.value.replace(/\D/g, "").slice(0, 2);
+      minInput.value = v;
+      if (v.length === 2) {
+        let n = parseInt(v, 10);
+        if (isNaN(n)) n = 0;
+        if (n > 59) { n = 59; minInput.value = pad2(n); }
+        p.selectedMinute = n;
+      }
+    });
+    minInput.addEventListener("blur", () => {
+      let v = minInput.value.replace(/\D/g, "");
+      let n = v === "" ? 0 : parseInt(v, 10);
+      if (isNaN(n)) n = 0;
+      if (n > 59) n = 59;
+      minInput.value = pad2(n);
+      p.selectedMinute = n;
+    });
+    minInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); minInput.blur(); }
+      if (e.key === "Backspace" && minInput.value === "") {
+        e.preventDefault();
+        hourInput.focus();
+        const len = hourInput.value.length;
+        hourInput.setSelectionRange(len, len);
+      }
+    });
+  }
+
+  const clearBtn = document.getElementById(`${prefix}-clear`);
+  if (clearBtn) clearBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    p.setValue(null);
+    p.selectedDate = null;
+    renderDateTrigger(prefix);
+    closeDatePopover(prefix);
   });
 
-  minInput.addEventListener("input", () => {
-    let v = minInput.value.replace(/\D/g, "").slice(0, 2);
-    minInput.value = v;
-    if (v.length === 2) {
-      let n = parseInt(v, 10);
-      if (isNaN(n)) n = 0;
-      if (n > 59) { n = 59; minInput.value = pad2(n); }
-      dpSelectedMinute = n;
-    }
-  });
-  minInput.addEventListener("blur", () => {
-    let v = minInput.value.replace(/\D/g, "");
-    let n = v === "" ? 0 : parseInt(v, 10);
-    if (isNaN(n)) n = 0;
-    if (n > 59) n = 59;
-    minInput.value = pad2(n);
-    dpSelectedMinute = n;
-  });
-  minInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); minInput.blur(); }
-    if (e.key === "Backspace" && minInput.value === "") {
+  const applyBtn = document.getElementById(`${prefix}-apply`);
+  if (applyBtn) {
+    applyBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      hourInput.focus();
-      const len = hourInput.value.length;
-      hourInput.setSelectionRange(len, len);
-    }
-  });
-
-  $("#dp-clear").addEventListener("click", (e) => {
-    e.stopPropagation();
-    currentDeadline = null;
-    dpSelectedDate = null;
-    renderDateTrigger();
-    closeDatePopover();
-  });
-
-  $("#dp-apply").addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    applyDatePopover();
-  });
-  $("#dp-apply").addEventListener("mousedown", (e) => e.stopPropagation());
+      e.stopPropagation();
+      applyDatePopover(prefix);
+    });
+    applyBtn.addEventListener("mousedown", (e) => e.stopPropagation());
+  }
 
   document.addEventListener("click", (e) => {
     if (!pop.classList.contains("open")) return;
     if (pop.contains(e.target) || trigger.contains(e.target)) return;
-    closeDatePopover();
+    closeDatePopover(prefix);
   });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && pop.classList.contains("open")) closeDatePopover();
+    if (e.key === "Escape" && pop.classList.contains("open")) closeDatePopover(prefix);
   });
 }
 
@@ -5002,7 +5077,7 @@ function openTaskModal(id = null) {
   $("#m-delete").style.display = isNew ? "none" : "";
   const dupBtn = $("#m-duplicate");
   if (dupBtn) dupBtn.style.display = isNew ? "none" : "";
-  closeDatePopover();
+  closeDatePopover("dp");
   closeSubtaskEditor();
 
   draftSubtasks = [];
@@ -5011,8 +5086,8 @@ function openTaskModal(id = null) {
   if (isNew) {
     $("#m-title").value = "";
     $("#m-description").value = "";
-    currentDeadline = null;
-    renderDateTrigger();
+    datePickers["dp"] && datePickers["dp"].setValue(null);
+    renderDateTrigger("dp");
     setPriority("medium");
     setRepeat("");
     renderSubtasks();
@@ -5021,8 +5096,8 @@ function openTaskModal(id = null) {
     if (!t) { showAlert({ title: "Задача не найдена", text: "Возможно, она была удалена." }); return; }
     $("#m-title").value = t.title;
     $("#m-description").value = t.description || "";
-    currentDeadline = t.deadline;
-    renderDateTrigger();
+    datePickers["dp"] && datePickers["dp"].setValue(t.deadline);
+    renderDateTrigger("dp");
     setPriority(t.priority || "medium");
     setRepeat(t.repeat || "");
     renderSubtasks();
@@ -5032,7 +5107,7 @@ function openTaskModal(id = null) {
 }
 function closeTaskModal() {
   $("#modal-backdrop").classList.remove("open");
-  closeDatePopover();
+  closeDatePopover("dp");
   closeSubtaskEditor();
   draftSubtasks = [];
 }
@@ -5148,6 +5223,7 @@ let editingTemplateId = null;
 let tplPriority = "medium";
 let tplRepeat = "";
 let tplSubtasks = [];
+let tplDeadline = null;
 
 function openTemplatesModal() {
   renderTemplatesList();
@@ -5182,9 +5258,7 @@ function renderTemplatesList() {
       monthly: "🔁 Ежемесячно",
     }[tpl.repeat || ""] || null;
 
-    const offsetLabel = (typeof tpl.deadlineOffsetDays === "number")
-      ? `📅 +${tpl.deadlineOffsetDays} дн.`
-      : null;
+    const deadlineLabel = tpl.deadline ? `📅 ${fmtDateTime(tpl.deadline)}` : null;
 
     const prioLabel = {
       low: "🔵 Низкий",
@@ -5197,13 +5271,13 @@ function renderTemplatesList() {
       <div class="tpl-card-head">
         <div class="tpl-card-icon">${escapeHtml(tpl.icon || "📝")}</div>
         <div style="min-width:0;flex:1">
-          <div class="tpl-card-name">${escapeHtml(tpl.name)}</div>
-          <div class="tpl-card-title">${escapeHtml(tpl.title || "")}</div>
+          <div class="tpl-card-name">${escapeHtml(tpl.title || tpl.name || "Шаблон")}</div>
+          <div class="tpl-card-title">${escapeHtml(tpl.description || "")}</div>
         </div>
       </div>
       <div class="tpl-card-meta">
         ${prioLabel ? `<span class="tpl-tag">${prioLabel}</span>` : ""}
-        ${offsetLabel ? `<span class="tpl-tag">${offsetLabel}</span>` : ""}
+        ${deadlineLabel ? `<span class="tpl-tag">${deadlineLabel}</span>` : ""}
         ${repeatLabel ? `<span class="tpl-tag">${repeatLabel}</span>` : ""}
         ${tpl.subtasks.length ? `<span class="tpl-tag">☑ ${tpl.subtasks.length}</span>` : ""}
       </div>
@@ -5244,15 +5318,8 @@ function applyTemplate(tplId) {
   setPriority(tpl.priority || "medium");
   setRepeat(tpl.repeat || "");
 
-  if (typeof tpl.deadlineOffsetDays === "number") {
-    const d = new Date();
-    d.setDate(d.getDate() + tpl.deadlineOffsetDays);
-    d.setHours(18, 0, 0, 0);
-    currentDeadline = d.toISOString();
-  } else {
-    currentDeadline = null;
-  }
-  renderDateTrigger();
+  datePickers["dp"] && datePickers["dp"].setValue(tpl.deadline || null);
+  renderDateTrigger("dp");
 
   draftSubtasks = (tpl.subtasks || []).map((text) => ({
     id: nextDraftId(),
@@ -5275,32 +5342,37 @@ function openTemplateEditor(tplId = null) {
 
   if (isNew) {
     $("#tpl-icon").value = "📝";
-    $("#tpl-name").value = "";
-    $("#tpl-task-title").value = "";
+    $("#tpl-title").value = "";
     $("#tpl-description").value = "";
-    $("#tpl-offset").value = "";
     setTplPriority("medium");
     setTplRepeat("");
     tplSubtasks = [];
+    tplDeadline = null;
   } else {
     const tpl = Store.getTemplate(tplId);
     if (!tpl) return;
     $("#tpl-icon").value = tpl.icon || "📝";
-    $("#tpl-name").value = tpl.name || "";
-    $("#tpl-task-title").value = tpl.title || "";
+    $("#tpl-title").value = tpl.title || tpl.name || "";
     $("#tpl-description").value = tpl.description || "";
-    $("#tpl-offset").value = (typeof tpl.deadlineOffsetDays === "number") ? tpl.deadlineOffsetDays : "";
     setTplPriority(tpl.priority || "medium");
     setTplRepeat(tpl.repeat || "");
     tplSubtasks = Array.isArray(tpl.subtasks) ? tpl.subtasks.slice() : [];
+    tplDeadline = tpl.deadline || null;
   }
+
+  if (datePickers["tpl-dp"]) {
+    datePickers["tpl-dp"].setValue(tplDeadline);
+    renderDateTrigger("tpl-dp");
+  }
+
   renderTplSubtasks();
   $("#tpl-editor-backdrop").classList.add("open");
-  setTimeout(() => $("#tpl-name").focus(), 80);
+  setTimeout(() => $("#tpl-title").focus(), 80);
 }
 
 function closeTemplateEditor() {
   $("#tpl-editor-backdrop").classList.remove("open");
+  closeDatePopover("tpl-dp");
   editingTemplateId = null;
 }
 
@@ -5339,22 +5411,18 @@ function renderTplSubtasks() {
 }
 
 function saveTemplateEditor() {
-  const name = $("#tpl-name").value.trim();
-  const title = $("#tpl-task-title").value.trim();
-  if (!name) { $("#tpl-name").focus(); return; }
-  if (!title) { $("#tpl-task-title").focus(); return; }
-
-  const offsetVal = $("#tpl-offset").value.trim();
-  const deadlineOffsetDays = offsetVal === "" ? null : Math.max(0, Math.min(365, parseInt(offsetVal, 10) || 0));
+  const title = $("#tpl-title").value.trim();
+  if (!title) { $("#tpl-title").focus(); return; }
 
   const payload = {
     icon: ($("#tpl-icon").value.trim() || "📝").slice(0, 2),
-    name,
+    // name = title, чтобы в списке шаблонов карточка называлась так же, как заголовок задачи
+    name: title,
     title,
     description: $("#tpl-description").value,
     priority: tplPriority,
     repeat: tplRepeat,
-    deadlineOffsetDays,
+    deadline: datePickers["tpl-dp"] ? datePickers["tpl-dp"].getValue() : null,
     subtasks: tplSubtasks.slice(),
   };
 
@@ -5379,7 +5447,7 @@ function confirmDeleteTemplate(tplId) {
   if (!tpl) return;
   showConfirm({
     title: "Удалить шаблон?",
-    text: `Шаблон <strong>«${escapeHtml(tpl.name)}»</strong> будет удалён. Это не затронет уже созданные задачи.`,
+    text: `Шаблон <strong>«${escapeHtml(tpl.title || tpl.name)}»</strong> будет удалён. Это не затронет уже созданные задачи.`,
     onConfirm: () => {
       Store.deleteTemplate(tplId);
       renderTemplatesList();
@@ -5799,8 +5867,6 @@ function bindEvents() {
     b.addEventListener("click", () => setRepeat(b.dataset.repeat || ""));
   });
 
-  bindDatePicker();
-
   $("#m-subtask-add").addEventListener("click", () => {
     const text = $("#m-subtask-input").value.trim();
     if (!text) return;
@@ -5835,13 +5901,6 @@ function bindEvents() {
       placeholder: "Например: Звонок клиенту",
       confirmText: "Сохранить",
       onConfirm: (name) => {
-        let offset = null;
-        if (currentDeadline) {
-          const d = new Date(currentDeadline);
-          const now = new Date();
-          const diff = Math.round((d.setHours(0,0,0,0) - now.setHours(0,0,0,0)) / 86400000);
-          offset = Math.max(0, diff);
-        }
         const subs = getActiveSubtasks().map((s) => s.title);
         Store.createTemplate({
           icon: "📝",
@@ -5850,7 +5909,7 @@ function bindEvents() {
           description: $("#m-description").value,
           priority: currentPriority,
           repeat: currentRepeat,
-          deadlineOffsetDays: offset,
+          deadline: datePickers["dp"] ? datePickers["dp"].getValue() : null,
           subtasks: subs,
         });
 
@@ -5866,7 +5925,7 @@ function bindEvents() {
   $("#m-save").addEventListener("click", () => {
     const title = $("#m-title").value.trim();
     if (!title) { $("#m-title").focus(); return; }
-    const deadline = currentDeadline;
+    const deadline = datePickers["dp"] ? datePickers["dp"].getValue() : null;
     const priority = currentPriority;
     const repeat = currentRepeat;
     const description = $("#m-description").value;
@@ -6065,6 +6124,21 @@ document.addEventListener("DOMContentLoaded", () => {
   bindSettingsEvents();
   syncSettingsUI();
   Store.load();
+
+  // Регистрируем date-picker'ы: для задачи (dp) и для шаблона (tpl-dp)
+  registerDatePicker("dp",
+    () => (window.__currentDeadline ?? null),
+    (v) => { window.__currentDeadline = v; }
+  );
+  registerDatePicker("tpl-dp",
+    () => tplDeadline,
+    (v) => { tplDeadline = v; }
+  );
+  bindDatePicker("dp");
+  bindDatePicker("tpl-dp");
+  renderDateTrigger("dp");
+  renderDateTrigger("tpl-dp");
+
   bindBoardSelector();
   bindEvents();
   renderBoardSelector();
