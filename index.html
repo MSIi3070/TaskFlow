@@ -104,6 +104,7 @@
     height: 100%;
     overscroll-behavior: none;
     background: var(--bg);
+    background-color: var(--bg);
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     transition: background 0.3s ease;
@@ -114,6 +115,7 @@
     min-height: 100dvh;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: var(--bg);
+    background-color: var(--bg);
     color: var(--text);
     font-size: 14px;
     line-height: 1.5;
@@ -121,7 +123,6 @@
     transition: background 0.3s ease, color 0.3s ease;
     padding-left: var(--safe-left);
     padding-right: var(--safe-right);
-    background-color: var(--bg);
     background-clip: padding-box;
     -webkit-tap-highlight-color: transparent;
   }
@@ -141,6 +142,7 @@
     min-height: 100vh;
     min-height: 100dvh;
     background: var(--bg);
+    background-color: var(--bg);
   }
 
   .sidebar {
@@ -609,7 +611,6 @@
     -webkit-tap-highlight-color: transparent;
   }
   .card-move-btn:hover { color: var(--primary); border-color: var(--primary); }
-  /* На устройствах с мышью кнопка не нужна (drag доступен) */
   @media (hover: hover) and (pointer: fine) {
     .card-move-btn { display: none; }
   }
@@ -876,12 +877,12 @@
     color: var(--text-mute);
   }
   .modal-body {
-    padding: 22px 26px;
+    padding: 22px 26px 24px;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
     flex: 1;
     min-width: 0;
     overscroll-behavior: contain;
@@ -898,6 +899,8 @@
     flex-shrink: 0;
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
   }
   .spacer { flex: 1; }
 
@@ -919,7 +922,7 @@
   .field-title::placeholder { color: var(--text-mute); font-weight: 600; }
   .field-title:focus { outline: none; border-bottom-color: var(--primary); }
 
-  .description-block { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .description-block { display: flex; flex-direction: column; gap: 6px; min-width: 0; position: relative; }
   .description-label,
   .meta-label {
     font-size: 10px;
@@ -949,7 +952,7 @@
   .field-description::placeholder { color: var(--text-mute); }
   .field-description:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
 
-  .meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 22px; border-top: 1px solid var(--border); }
+  .meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 22px; border-top: 1px solid var(--border); position: relative; }
   .meta-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 
   .repeat-block {
@@ -961,6 +964,7 @@
     flex-direction: column;
     gap: 10px;
     min-width: 0;
+    position: relative;
   }
   .repeat-row {
     display: grid;
@@ -1003,6 +1007,7 @@
     gap: 8px;
     min-height: 80px;
     min-width: 0;
+    position: relative;
   }
   .section-head {
     display: flex;
@@ -2251,6 +2256,7 @@
       min-height: 100vh;
       min-height: 100dvh;
       background: var(--bg);
+      background-color: var(--bg);
     }
 
     .sidebar { display: none; }
@@ -2262,11 +2268,14 @@
       padding: 8px 12px;
       padding-top: calc(8px + var(--safe-top));
       background: var(--surface);
+      background-color: var(--surface);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
       position: relative;
       z-index: 5;
-      transition: transform 0.2s ease;
+      /* Явно отключаем любые фильтры — предотвращает размытие на iPhone 15+ */
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
     }
     .mobile-header.keyboard-open { display: none; }
     .mobile-header .logo-sm {
@@ -2288,6 +2297,7 @@
       border: 1px solid var(--border);
       border-radius: 9px;
       background: var(--input-bg);
+      background-color: var(--input-bg);
       color: var(--text);
       font-family: inherit;
       font-size: 13px;
@@ -2310,6 +2320,7 @@
       border-radius: 9px;
       border: 1px solid var(--border);
       background: var(--surface);
+      background-color: var(--surface);
       color: var(--text-dim);
       font-family: inherit;
       font-size: 15px;
@@ -2352,6 +2363,7 @@
       right: 0;
       bottom: 0;
       background: var(--sidebar-bg);
+      background-color: var(--sidebar-bg);
       color: #fff;
       z-index: 100;
       border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -2510,6 +2522,9 @@
     .an2-week-bar { max-width: 100%; }
     .an2-week-labels span { font-size: 9px; }
 
+    /* ==========================================================
+       МОДАЛКИ НА МОБИЛЕ
+       ========================================================== */
     .modal-backdrop { padding: 0; align-items: flex-end; }
     .modal {
       max-width: 100%;
@@ -2527,23 +2542,21 @@
     }
     .modal-head {
       padding: 14px 16px 12px;
-      position: sticky;
-      top: 0;
-      z-index: 3;
       border-radius: 18px 18px 0 0;
       gap: 8px;
       background: var(--modal-bg);
+      background-color: var(--modal-bg);
+      flex-shrink: 0;
     }
     .modal-head h2 { font-size: 11px; }
     .save-as-tpl-btn {
-      padding: 6px 10px;
-      font-size: 10.5px;
+      padding: 6px 8px;
+      font-size: 10px;
       white-space: nowrap;
     }
     .modal-body {
-      padding: 16px var(--modal-body-pad);
-      padding-bottom: 18px;
-      gap: 16px;
+      padding: 16px var(--modal-body-pad) 20px;
+      gap: 18px;
       min-width: 0;
       overflow-x: hidden;
       overflow-y: auto;
@@ -2561,7 +2574,7 @@
       max-height: 140px;
       font-size: 16px;
     }
-    .meta-row { grid-template-columns: 1fr; padding-top: 14px; gap: 12px; }
+    .meta-row { grid-template-columns: 1fr; padding-top: 16px; gap: 14px; margin-top: 2px; }
     .priority-seg { height: auto; min-height: 46px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .prio-seg-btn { min-height: 42px; padding: 4px 2px; min-width: 0; }
     .prio-seg-btn .prio-icon { font-size: 14px; }
@@ -2573,12 +2586,13 @@
 
     .subtasks-block {
       padding: 10px 12px 12px;
-      gap: 6px;
+      gap: 8px;
       min-height: 0;
+      margin-top: 2px;
     }
     .subtasks-block .section-head {
-      min-height: 16px;
-      margin-bottom: 2px;
+      min-height: 18px;
+      margin-bottom: 4px;
     }
     .subtasks-block .section-head h3 {
       font-size: 10.5px;
@@ -2594,7 +2608,7 @@
       flex-direction: row;
       gap: 6px;
       align-items: stretch;
-      margin-top: 0;
+      margin-top: 4px;
       min-width: 0;
     }
     .subtasks-block .inline-add input {
@@ -2616,20 +2630,25 @@
       white-space: nowrap;
     }
 
+    .description-block { margin-top: 2px; }
+    .description-block .description-label { margin-bottom: 2px; }
+    .repeat-block { margin-top: 2px; }
+
     .tpl-editor-row { gap: 10px; }
     .tpl-icon-input { width: 44px; height: 44px; font-size: 20px; }
 
     .modal-foot {
       padding: 10px 12px calc(10px + var(--safe-bottom));
-      position: sticky;
-      bottom: 0;
-      z-index: 3;
+      position: relative;
+      bottom: auto;
+      z-index: 1;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       align-items: stretch;
       flex-wrap: initial;
       background: var(--surface-2);
+      background-color: var(--surface-2);
     }
     .modal-foot .spacer { display: none; }
     .modal-foot .btn {
@@ -2714,6 +2733,7 @@
       max-height: 70dvh;
     }
 
+    /* === DATE PICKER на мобиле: всегда bottom-sheet, без keyboard-open === */
     .date-popover {
       position: fixed;
       left: calc(8px + var(--safe-left));
@@ -2722,20 +2742,14 @@
       top: auto;
       width: auto;
       max-width: none;
-      max-height: 78vh;
-      max-height: 78dvh;
+      max-height: 70vh;
+      max-height: 70dvh;
       overflow-y: auto;
       z-index: 600;
       transform: translateY(20px) scale(0.98);
       -webkit-overflow-scrolling: touch;
     }
     .date-popover.open { transform: translateY(0) scale(1); }
-    .date-popover.keyboard-open {
-      bottom: auto;
-      top: calc(8px + var(--safe-top));
-      max-height: 50vh;
-      max-height: 50dvh;
-    }
     .dp-day { max-height: 40px; font-size: 14px; }
     .dp-nav { width: 36px; height: 36px; }
     .dp-time-input { font-size: 16px; }
@@ -2754,6 +2768,20 @@
     .board-editor-row input[type="color"] { grid-area: color; justify-self: end; }
     .board-editor-row select { grid-area: type; }
     .board-editor-row button[data-del] { grid-area: del; justify-self: end; }
+  }
+
+  @media (max-width: 400px) {
+    .save-as-tpl-btn {
+      padding: 6px 6px;
+      font-size: 0;
+      width: 32px;
+      min-width: 32px;
+      text-align: center;
+    }
+    .save-as-tpl-btn::before {
+      content: "📁";
+      font-size: 14px;
+    }
   }
 
   @media (max-width: 380px) {
@@ -6159,31 +6187,30 @@ function bindEvents() {
     const el = e.target;
     if (!el) return;
     if (!el.matches("input, textarea, select")) return;
+    if (el.closest(".date-popover")) return;
     const modalBody = el.closest(".modal-body");
     if (!modalBody) return;
     setTimeout(() => {
       try {
-        el.scrollIntoView({ block: "center", behavior: "smooth" });
+        el.scrollIntoView({ block: "nearest", behavior: "smooth" });
       } catch (err) {
         el.scrollIntoView();
       }
     }, 280);
   });
 
-  /* ---------- visualViewport: реакция на клавиатуру ---------- */
+  /* ---------- visualViewport: скрытие таббара/хедера при клавиатуре ---------- */
   if (window.visualViewport) {
     const vv = window.visualViewport;
     const mobileHeader = document.querySelector(".mobile-header");
     const mobileTabbar = document.querySelector(".mobile-tabbar");
     const settingsPanel = $("#settings-panel");
-    const datePopovers = document.querySelectorAll(".date-popover");
 
     const onViewportResize = () => {
       const keyboardOpen = vv.height < window.innerHeight * 0.78;
       if (mobileHeader) mobileHeader.classList.toggle("keyboard-open", keyboardOpen);
       if (mobileTabbar) mobileTabbar.classList.toggle("keyboard-open", keyboardOpen);
       if (settingsPanel) settingsPanel.classList.toggle("keyboard-open", keyboardOpen);
-      datePopovers.forEach((p) => p.classList.toggle("keyboard-open", keyboardOpen));
     };
 
     vv.addEventListener("resize", onViewportResize);
