@@ -884,6 +884,7 @@
     flex-direction: column;
     gap: 20px;
     flex: 1;
+    min-height: 0;
     min-width: 0;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
@@ -2257,6 +2258,7 @@
       min-height: 100dvh;
       background: var(--bg);
       background-color: var(--bg);
+      padding-top: var(--safe-top);
     }
 
     .sidebar { display: none; }
@@ -2266,14 +2268,13 @@
       align-items: center;
       gap: 8px;
       padding: 8px 12px;
-      padding-top: calc(8px + var(--safe-top));
+      padding-top: 8px;
       background: var(--surface);
       background-color: var(--surface);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
       position: relative;
       z-index: 5;
-      /* Явно отключаем любые фильтры — предотвращает размытие на iPhone 15+ */
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
@@ -2535,6 +2536,8 @@
       border-radius: 18px 18px 0 0;
       animation: sheetIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
       padding-bottom: 0;
+      display: flex;
+      flex-direction: column;
     }
     @keyframes sheetIn {
       from { transform: translateY(100%); }
@@ -2555,11 +2558,13 @@
       white-space: nowrap;
     }
     .modal-body {
-      padding: 16px var(--modal-body-pad) 20px;
-      gap: 18px;
+      padding: 16px var(--modal-body-pad) 100px;
+      gap: 20px;
+      min-height: 0;
       min-width: 0;
       overflow-x: hidden;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .field-title {
       font-size: clamp(16px, 5vw, 20px);
@@ -2574,7 +2579,24 @@
       max-height: 140px;
       font-size: 16px;
     }
-    .meta-row { grid-template-columns: 1fr; padding-top: 16px; gap: 14px; margin-top: 2px; }
+    .meta-row {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-top: 16px;
+      margin-top: 4px;
+    }
+    .meta-field {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+    }
+    .meta-field + .meta-field {
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
     .priority-seg { height: auto; min-height: 46px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .prio-seg-btn { min-height: 42px; padding: 4px 2px; min-width: 0; }
     .prio-seg-btn .prio-icon { font-size: 14px; }
@@ -2639,9 +2661,9 @@
 
     .modal-foot {
       padding: 10px 12px calc(10px + var(--safe-bottom));
-      position: relative;
-      bottom: auto;
-      z-index: 1;
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
@@ -2649,6 +2671,8 @@
       flex-wrap: initial;
       background: var(--surface-2);
       background-color: var(--surface-2);
+      border-radius: 0;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
     }
     .modal-foot .spacer { display: none; }
     .modal-foot .btn {
@@ -2733,19 +2757,18 @@
       max-height: 70dvh;
     }
 
-    /* === DATE PICKER на мобиле: всегда bottom-sheet, без keyboard-open === */
+    /* === DATE PICKER на мобиле: bottom-sheet над футером === */
     .date-popover {
       position: fixed;
       left: calc(8px + var(--safe-left));
       right: calc(8px + var(--safe-right));
-      bottom: calc(8px + var(--safe-bottom));
+      bottom: calc(88px + var(--safe-bottom));
       top: auto;
       width: auto;
       max-width: none;
-      max-height: 70vh;
-      max-height: 70dvh;
+      max-height: calc(100dvh - 180px);
       overflow-y: auto;
-      z-index: 600;
+      z-index: 700;
       transform: translateY(20px) scale(0.98);
       -webkit-overflow-scrolling: touch;
     }
@@ -3454,7 +3477,7 @@ function applyAppearance() {
   root.style.setProperty("--primary-glow", `rgba(${rgb}, 0.25)`);
   const metaTheme = document.getElementById("theme-color-meta");
   if (metaTheme) {
-    metaTheme.setAttribute("content", appearance.theme === "dark" ? "#0a0c15" : "#f6f7fb");
+    metaTheme.setAttribute("content", appearance.theme === "dark" ? "#0b0d17" : "#f6f7fb");
   }
   syncSettingsUI();
   try { localStorage.setItem(APPEARANCE_KEY, JSON.stringify(appearance)); } catch (e) {}
